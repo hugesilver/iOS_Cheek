@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E2460E0B2C00FABE00424739 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E2460E0A2C00FABE00424739 /* .gitignore */; };
+		E2460E112C010ECB00424739 /* TextStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2460E102C010ECB00424739 /* TextStyles.swift */; };
+		E2460E292C0119F700424739 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = E2460E282C0119F700424739 /* Fonts */; };
+		E2460E2B2C011A0100424739 /* Images in Resources */ = {isa = PBXBuildFile; fileRef = E2460E2A2C011A0100424739 /* Images */; };
 		E2E740E32C00B289003B510B /* CHEEKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E740E22C00B289003B510B /* CHEEKApp.swift */; };
 		E2E740E52C00B289003B510B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E740E42C00B289003B510B /* ContentView.swift */; };
 		E2E740E72C00B28B003B510B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2E740E62C00B28B003B510B /* Assets.xcassets */; };
@@ -14,6 +18,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E2460E0A2C00FABE00424739 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		E2460E102C010ECB00424739 /* TextStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextStyles.swift; sourceTree = "<group>"; };
+		E2460E122C01119200424739 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E2460E282C0119F700424739 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
+		E2460E2A2C011A0100424739 /* Images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Images; sourceTree = "<group>"; };
 		E2E740DF2C00B289003B510B /* CHEEK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CHEEK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2E740E22C00B289003B510B /* CHEEKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEEKApp.swift; sourceTree = "<group>"; };
 		E2E740E42C00B289003B510B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -32,9 +41,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E2460E0C2C010D5600424739 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E2E740E42C00B289003B510B /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E2460E0D2C010D5B00424739 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E2460E0E2C010D6000424739 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E2460E0F2C010EBC00424739 /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				E2460E102C010ECB00424739 /* TextStyles.swift */,
+			);
+			path = Styles;
+			sourceTree = "<group>";
+		};
 		E2E740D62C00B289003B510B = {
 			isa = PBXGroup;
 			children = (
+				E2460E0A2C00FABE00424739 /* .gitignore */,
+				E2460E2A2C011A0100424739 /* Images */,
+				E2460E282C0119F700424739 /* Fonts */,
 				E2E740E12C00B289003B510B /* CHEEK */,
 				E2E740E02C00B289003B510B /* Products */,
 			);
@@ -51,8 +93,12 @@
 		E2E740E12C00B289003B510B /* CHEEK */ = {
 			isa = PBXGroup;
 			children = (
+				E2460E122C01119200424739 /* Info.plist */,
+				E2460E0F2C010EBC00424739 /* Styles */,
+				E2460E0E2C010D6000424739 /* ViewModels */,
+				E2460E0D2C010D5B00424739 /* Models */,
+				E2460E0C2C010D5600424739 /* Views */,
 				E2E740E22C00B289003B510B /* CHEEKApp.swift */,
-				E2E740E42C00B289003B510B /* ContentView.swift */,
 				E2E740E62C00B28B003B510B /* Assets.xcassets */,
 				E2E740E82C00B28B003B510B /* Preview Content */,
 			);
@@ -104,11 +150,11 @@
 			};
 			buildConfigurationList = E2E740DA2C00B289003B510B /* Build configuration list for PBXProject "CHEEK" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				ko,
 			);
 			mainGroup = E2E740D62C00B289003B510B;
 			productRefGroup = E2E740E02C00B289003B510B /* Products */;
@@ -125,8 +171,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2460E2B2C011A0100424739 /* Images in Resources */,
+				E2460E0B2C00FABE00424739 /* .gitignore in Resources */,
 				E2E740EA2C00B28B003B510B /* Preview Assets.xcassets in Resources */,
 				E2E740E72C00B28B003B510B /* Assets.xcassets in Resources */,
+				E2460E292C0119F700424739 /* Fonts in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +186,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2460E112C010ECB00424739 /* TextStyles.swift in Sources */,
 				E2E740E52C00B289003B510B /* ContentView.swift in Sources */,
 				E2E740E32C00B289003B510B /* CHEEKApp.swift in Sources */,
 			);
@@ -197,7 +247,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -254,7 +304,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -275,6 +325,7 @@
 				DEVELOPMENT_TEAM = 42NW282TDP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CHEEK/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -304,6 +355,7 @@
 				DEVELOPMENT_TEAM = 42NW282TDP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CHEEK/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
