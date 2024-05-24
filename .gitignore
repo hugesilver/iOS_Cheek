@@ -111,6 +111,5 @@ iOSInjectionProject/
 ### Others ###
 
 .DS_Store
-*.plist
 *.ttf
 *.otf
