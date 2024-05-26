@@ -11,8 +11,8 @@ struct Headline1: ViewModifier {
             .font(.custom(font, size: 24))
             .foregroundColor(color)
             .fontWeight(bold ? .bold : .regular)
-            .lineSpacing(32)
-            .tracking(-0.02)
+            .lineSpacing(8)
+            .tracking(-0.02) // -2%
     }
 }
 
@@ -27,8 +27,8 @@ struct Title1: ViewModifier {
             .font(.custom(font, size: 20))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(28)
-            .tracking(-0.015)
+            .lineSpacing(8)
+            .tracking(-0.015) // -1.5%
     }
 }
 
@@ -43,8 +43,8 @@ struct Body1: ViewModifier {
             .font(.custom(font, size: 16))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(24)
-            .tracking(0)
+            .lineSpacing(8)
+            .tracking(0) // 0%
     }
 }
 
@@ -59,8 +59,8 @@ struct Body2: ViewModifier {
             .font(.custom(font, size: 15))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(22)
-            .tracking(0.005)
+            .lineSpacing(7)
+            .tracking(0.005) // 0.5%
     }
 }
 
@@ -75,8 +75,8 @@ struct Label1: ViewModifier {
             .font(.custom(font, size: 16))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(24)
-            .tracking(0)
+            .lineSpacing(8)
+            .tracking(0) // 0%
     }
 }
 
@@ -91,8 +91,8 @@ struct Label2: ViewModifier {
             .font(.custom(font, size: 14))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(20)
-            .tracking(0.005)
+            .lineSpacing(6)
+            .tracking(0.005) // 0.5%
     }
 }
 
@@ -107,8 +107,8 @@ struct Caption1: ViewModifier {
             .font(.custom(font, size: 12))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(16)
-            .tracking(0.01)
+            .lineSpacing(4)
+            .tracking(0.01) // 1%
     }
 }
 
