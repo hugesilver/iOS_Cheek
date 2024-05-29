@@ -6,12 +6,30 @@
 //
 
 import SwiftUI
+import KakaoSDKCommon
+import KakaoSDKAuth
 
 @main
 struct CHEEKApp: App {
+    @StateObject private var kakaoAuth = KakaoAuthViewModel()
+    let appKeyKakao = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as! String
+    
+    init() {
+        // Kakao SDK 초기화
+        KakaoSDK.initSDK(appKey: appKeyKakao)
+        kakaoAuth.checkToken() { isHasToken in
+            
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WelcomeView()
+                .onOpenURL { url in
+                    if (AuthApi.isKakaoTalkLoginUrl(url)) {
+                        _ = AuthController.handleOpenUrl(url: url)
+                    }
+                }
         }
     }
 }
