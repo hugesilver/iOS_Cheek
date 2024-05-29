@@ -112,3 +112,4 @@ iOSInjectionProject/
 .DS_Store
 *.ttf
 *.otf
+*.xcconfig
