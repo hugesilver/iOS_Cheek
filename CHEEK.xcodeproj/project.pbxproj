@@ -12,14 +12,21 @@
 		E2460E292C0119F700424739 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = E2460E282C0119F700424739 /* Fonts */; };
 		E2460E2B2C011A0100424739 /* Images in Resources */ = {isa = PBXBuildFile; fileRef = E2460E2A2C011A0100424739 /* Images */; };
 		E2635C7B2C071AE300CC3287 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2635C7A2C071AE300CC3287 /* HomeView.swift */; };
-		E2635C7D2C07636E00CC3287 /* SetProfileMenteeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2635C7C2C07636E00CC3287 /* SetProfileMenteeViewModel.swift */; };
+		E2635C7D2C07636E00CC3287 /* SetProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2635C7C2C07636E00CC3287 /* SetProfileViewModel.swift */; };
 		E28365242C01D84F002D4624 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28365232C01D84F002D4624 /* WelcomeView.swift */; };
 		E283652A2C034FCD002D4624 /* SelectMentorMenteeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28365292C034FCD002D4624 /* SelectMentorMenteeView.swift */; };
 		E28365322C047EE6002D4624 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E28365312C047EE6002D4624 /* KakaoSDKAuth */; };
 		E28365342C047EE6002D4624 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = E28365332C047EE6002D4624 /* KakaoSDKCommon */; };
 		E28365362C047EE6002D4624 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = E28365352C047EE6002D4624 /* KakaoSDKUser */; };
-		E28365382C04B263002D4624 /* SetProfileMenteeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28365372C04B263002D4624 /* SetProfileMenteeView.swift */; };
+		E28365382C04B263002D4624 /* SetProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28365372C04B263002D4624 /* SetProfileView.swift */; };
 		E283653D2C059DD8002D4624 /* KakaoAuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E283653C2C059DD8002D4624 /* KakaoAuthViewModel.swift */; };
+		E2A626262C1043E3005B28BE /* VerifyEmailMentorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A626252C1043E3005B28BE /* VerifyEmailMentorView.swift */; };
+		E2A626282C1043F5005B28BE /* VerifyEmailMentorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A626272C1043F5005B28BE /* VerifyEmailMentorViewModel.swift */; };
+		E2A6262A2C104413005B28BE /* RegisterDomainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A626292C104413005B28BE /* RegisterDomainView.swift */; };
+		E2A6262D2C106247005B28BE /* AuthTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A6262C2C106247005B28BE /* AuthTokenModel.swift */; };
+		E2A6262F2C106504005B28BE /* VefiryEmailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A6262E2C106504005B28BE /* VefiryEmailModel.swift */; };
+		E2A626312C137D84005B28BE /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A626302C137D84005B28BE /* ProfileModel.swift */; };
+		E2A626362C1787A1005B28BE /* VerifyCodesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A626352C1787A1005B28BE /* VerifyCodesModel.swift */; };
 		E2E740E32C00B289003B510B /* CHEEKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E740E22C00B289003B510B /* CHEEKApp.swift */; };
 		E2E740E72C00B28B003B510B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2E740E62C00B28B003B510B /* Assets.xcassets */; };
 		E2E740EA2C00B28B003B510B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2E740E92C00B28B003B510B /* Preview Assets.xcassets */; };
@@ -32,12 +39,19 @@
 		E2460E282C0119F700424739 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		E2460E2A2C011A0100424739 /* Images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Images; sourceTree = "<group>"; };
 		E2635C7A2C071AE300CC3287 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		E2635C7C2C07636E00CC3287 /* SetProfileMenteeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileMenteeViewModel.swift; sourceTree = "<group>"; };
+		E2635C7C2C07636E00CC3287 /* SetProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileViewModel.swift; sourceTree = "<group>"; };
 		E28365232C01D84F002D4624 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		E28365292C034FCD002D4624 /* SelectMentorMenteeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectMentorMenteeView.swift; sourceTree = "<group>"; };
-		E28365372C04B263002D4624 /* SetProfileMenteeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileMenteeView.swift; sourceTree = "<group>"; };
+		E28365372C04B263002D4624 /* SetProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetProfileView.swift; sourceTree = "<group>"; };
 		E28365392C04ECAF002D4624 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		E283653C2C059DD8002D4624 /* KakaoAuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoAuthViewModel.swift; sourceTree = "<group>"; };
+		E2A626252C1043E3005B28BE /* VerifyEmailMentorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailMentorView.swift; sourceTree = "<group>"; };
+		E2A626272C1043F5005B28BE /* VerifyEmailMentorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailMentorViewModel.swift; sourceTree = "<group>"; };
+		E2A626292C104413005B28BE /* RegisterDomainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDomainView.swift; sourceTree = "<group>"; };
+		E2A6262C2C106247005B28BE /* AuthTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthTokenModel.swift; sourceTree = "<group>"; };
+		E2A6262E2C106504005B28BE /* VefiryEmailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VefiryEmailModel.swift; sourceTree = "<group>"; };
+		E2A626302C137D84005B28BE /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
+		E2A626352C1787A1005B28BE /* VerifyCodesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodesModel.swift; sourceTree = "<group>"; };
 		E2E740DF2C00B289003B510B /* CHEEK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CHEEK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2E740E22C00B289003B510B /* CHEEKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEEKApp.swift; sourceTree = "<group>"; };
 		E2E740E62C00B28B003B510B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -70,6 +84,8 @@
 		E2460E0D2C010D5B00424739 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E2A6262B2C1061C8005B28BE /* Welcome */,
+				E2A626302C137D84005B28BE /* ProfileModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -101,7 +117,7 @@
 		E28365222C01D836002D4624 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
-				E28365262C025AE4002D4624 /* Mentee */,
+				E28365372C04B263002D4624 /* SetProfileView.swift */,
 				E28365252C01D854002D4624 /* Mentor */,
 				E28365232C01D84F002D4624 /* WelcomeView.swift */,
 				E28365292C034FCD002D4624 /* SelectMentorMenteeView.swift */,
@@ -112,23 +128,18 @@
 		E28365252C01D854002D4624 /* Mentor */ = {
 			isa = PBXGroup;
 			children = (
+				E2A626252C1043E3005B28BE /* VerifyEmailMentorView.swift */,
+				E2A626292C104413005B28BE /* RegisterDomainView.swift */,
 			);
 			path = Mentor;
-			sourceTree = "<group>";
-		};
-		E28365262C025AE4002D4624 /* Mentee */ = {
-			isa = PBXGroup;
-			children = (
-				E28365372C04B263002D4624 /* SetProfileMenteeView.swift */,
-			);
-			path = Mentee;
 			sourceTree = "<group>";
 		};
 		E28365272C034EF0002D4624 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
 				E28365282C034F4E002D4624 /* ThirdParties */,
-				E2635C7C2C07636E00CC3287 /* SetProfileMenteeViewModel.swift */,
+				E2635C7C2C07636E00CC3287 /* SetProfileViewModel.swift */,
+				E2A626272C1043F5005B28BE /* VerifyEmailMentorViewModel.swift */,
 			);
 			path = Welcome;
 			sourceTree = "<group>";
@@ -139,6 +150,16 @@
 				E283653C2C059DD8002D4624 /* KakaoAuthViewModel.swift */,
 			);
 			path = ThirdParties;
+			sourceTree = "<group>";
+		};
+		E2A6262B2C1061C8005B28BE /* Welcome */ = {
+			isa = PBXGroup;
+			children = (
+				E2A6262C2C106247005B28BE /* AuthTokenModel.swift */,
+				E2A6262E2C106504005B28BE /* VefiryEmailModel.swift */,
+				E2A626352C1787A1005B28BE /* VerifyCodesModel.swift */,
+			);
+			path = Welcome;
 			sourceTree = "<group>";
 		};
 		E2E740D62C00B289003B510B = {
@@ -265,14 +286,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2A626282C1043F5005B28BE /* VerifyEmailMentorViewModel.swift in Sources */,
+				E2A626312C137D84005B28BE /* ProfileModel.swift in Sources */,
 				E2460E112C010ECB00424739 /* TextStyles.swift in Sources */,
+				E2A6262A2C104413005B28BE /* RegisterDomainView.swift in Sources */,
+				E2A626262C1043E3005B28BE /* VerifyEmailMentorView.swift in Sources */,
 				E2E740E32C00B289003B510B /* CHEEKApp.swift in Sources */,
 				E28365242C01D84F002D4624 /* WelcomeView.swift in Sources */,
-				E28365382C04B263002D4624 /* SetProfileMenteeView.swift in Sources */,
-				E2635C7D2C07636E00CC3287 /* SetProfileMenteeViewModel.swift in Sources */,
+				E28365382C04B263002D4624 /* SetProfileView.swift in Sources */,
+				E2A6262D2C106247005B28BE /* AuthTokenModel.swift in Sources */,
+				E2A6262F2C106504005B28BE /* VefiryEmailModel.swift in Sources */,
+				E2635C7D2C07636E00CC3287 /* SetProfileViewModel.swift in Sources */,
 				E2635C7B2C071AE300CC3287 /* HomeView.swift in Sources */,
 				E283653D2C059DD8002D4624 /* KakaoAuthViewModel.swift in Sources */,
 				E283652A2C034FCD002D4624 /* SelectMentorMenteeView.swift in Sources */,
+				E2A626362C1787A1005B28BE /* VerifyCodesModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

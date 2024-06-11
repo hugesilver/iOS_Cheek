@@ -8,18 +8,30 @@
 import SwiftUI
 import PhotosUI
 
-struct SetProfileMenteeView: View {
+struct SetProfileView: View {
     @Environment(\.presentationMode) var presentationMode
     
     @Binding var socialProvider: String
+    @Binding var isMentor: Bool
     
-    @StateObject private var setProfileMenteeViewModel = SetProfileMenteeViewModel()
+    @StateObject private var viewModel = SetProfileViewModel()
     
     @State private var selectImage: UIImage?
     @State private var photosPickerItem: PhotosPickerItem?
     
     @State private var nickname: String = ""
+    
+    @FocusState private var isFocused: Bool
+    @State private var isUniqueNickname: Bool = false
+    
     @State private var information: String = ""
+    
+    enum alertCase {
+        case isNicknameError, isNotUniqueNickname, isError
+    }
+    
+    @State private var showAlert: Bool = false
+    @State private var activeAlert: alertCase = .isNicknameError
     
     @State private var isLoading: Bool = false
     @State private var isDone: Bool = false
@@ -76,9 +88,14 @@ struct SetProfileMenteeView: View {
                     
                     // 닉네임
                     VStack(spacing: 6) {
-                        HStack {
+                        HStack(spacing: 8) {
                             Text("닉네임")
                                 .caption1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                            
+                            if !nickname.isEmpty {
+                                Text(isUniqueNickname ? "사용 가능한 닉네임입니다." : "중복된 닉네임입니다.")
+                                    .caption1(font: "SUIT", color: isUniqueNickname ? .cheekStatusPositive : .cheekStatusAlert, bold: true)
+                            }
                             Spacer()
                         }
                         
@@ -94,6 +111,16 @@ struct SetProfileMenteeView: View {
                         .foregroundColor(.cheekTextStrong)
                         .padding(.leading, 11)
                         .frame(height: 36)
+                        .focused($isFocused)
+                        .onChange(of: isFocused) { focus in
+                            if !nickname.isEmpty {
+                                if !focus {
+                                    viewModel.checkUniqueNickname(nickname: nickname) { response in
+                                        isUniqueNickname = response
+                                    }
+                                }
+                            }
+                        }
                         .overlay(
                             RoundedRectangle(cornerRadius: 5)
                                 .stroke(.cheekTextAssitive, lineWidth: 1)
@@ -133,23 +160,40 @@ struct SetProfileMenteeView: View {
                     Spacer()
                     
                     // 확인 버튼
-                    Text("확인")
-                        .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                    RoundedRectangle(cornerRadius: 8)
+                        .foregroundColor(!nickname.isEmpty ? .cheekMainHeavy : Color(red: 0.85, green: 0.85, blue: 0.85))
                         .frame(maxWidth: .infinity)
                         .frame(height: 41)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(!nickname.isEmpty ? .cheekMainHeavy : Color(red: 0.85, green: 0.85, blue: 0.85))
+                        .overlay(
+                            Text("확인")
+                                .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
                         )
                         .padding(.horizontal, 17)
                         .onTapGesture {
                             hideKeyboard()
-                            if !nickname.isEmpty {
+                            if !isLoading && !nickname.isEmpty && isUniqueNickname {
                                 isLoading = true
-                                setProfileMenteeViewModel.setProfile(socialProvider: socialProvider, nickname: nickname, information: information, profilePicture: selectImage) { success in
-                                    isDone = success
-                                    isLoading = false
+                                viewModel.checkUniqueNickname(nickname: nickname) {
+                                    response in
+                                    if response {
+                                        viewModel.setProfile(socialProvider: socialProvider, nickname: nickname, information: information, isMentor: isMentor, profilePicture: selectImage) { success in
+                                            if success {
+                                                isDone = success
+                                            } else {
+                                                activeAlert = .isError
+                                                showAlert = true
+                                            }
+                                            isLoading = false
+                                        }
+                                    } else {
+                                        activeAlert = .isNotUniqueNickname
+                                        showAlert = true
+                                        isLoading = false
+                                    }
                                 }
+                            } else {
+                                activeAlert = .isNicknameError
+                                showAlert = true
                             }
                         }
                 }
@@ -178,6 +222,18 @@ struct SetProfileMenteeView: View {
         .navigationDestination(isPresented: $isDone, destination: {
             HomeView()
         })
+        .alert(isPresented: $showAlert) {
+            switch activeAlert {
+            case .isNicknameError:
+                Alert(title: Text("오류"), message: Text("닉네임을 확인해주세요."), dismissButton: .default(Text("확인")))
+                
+            case .isNotUniqueNickname:
+                Alert(title: Text("오류"), message: Text("이미 등록된 닉네임입니다."), dismissButton: .default(Text("확인")))
+                
+            case .isError:
+                Alert(title: Text("오류"), message: Text("오류가 발생하였습니다."), dismissButton: .default(Text("확인")))
+            }
+        }
     }
     
     // 키보드 숨기기
@@ -187,5 +243,5 @@ struct SetProfileMenteeView: View {
 }
 
 #Preview {
-    SetProfileMenteeView(socialProvider: .constant("Kakao"))
+    SetProfileView(socialProvider: .constant("Kakao"), isMentor: .constant(false))
 }

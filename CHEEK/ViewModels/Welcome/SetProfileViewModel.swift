@@ -8,7 +8,7 @@
 import Foundation
 import PhotosUI
 
-class SetProfileMenteeViewModel: ObservableObject {
+class SetProfileViewModel: ObservableObject {
     func getEmail(socialProvider: String, completion: @escaping (String?) -> Void) {
         if socialProvider == "Kakao" {
             KakaoAuthViewModel().checkToken() { isHasToken in
@@ -21,7 +21,38 @@ class SetProfileMenteeViewModel: ObservableObject {
         }
     }
     
-    func setProfile(socialProvider: String, nickname: String?, information: String?, profilePicture: UIImage?, completion: @escaping (Bool) -> Void) {
+    func checkUniqueNickname(nickname: String, completion: @escaping (Bool) -> Void) {
+        let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
+        let url = URL(string: "http://\(ip)/email/register-domain")!
+        
+        // Header 세팅
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Body 세팅
+        let bodyData: String = nickname
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData)
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("닉네임 중복 확인 중 오류: \(error)")
+                completion(false)
+            } else if let data = data {
+                // 응답 처리
+                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+                if let responseJSON = responseJSON as? Bool {
+                    print("닉네임 중복 확인 응답: \(responseJSON)")
+                    completion(responseJSON)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func setProfile(socialProvider: String, nickname: String?, information: String?, isMentor: Bool, profilePicture: UIImage?, completion: @escaping (Bool) -> Void) {
         getEmail(socialProvider: socialProvider) { email in
             guard let email = email else {
                 print("오류: 멘티 프로필 설정 중 이메일 없음")
@@ -30,9 +61,7 @@ class SetProfileMenteeViewModel: ObservableObject {
             }
             
             let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-            let port = Bundle.main.object(forInfoDictionaryKey: "SERVER_PORT") as! String
-            
-            let url = URL(string: "http://\(ip):\(port)/member/profile")!
+            let url = URL(string: "http://\(ip)/member/profile")!
             
             // Header 세팅
             var request = URLRequest(url: url)
@@ -43,7 +72,7 @@ class SetProfileMenteeViewModel: ObservableObject {
                 "email": email,
                 "nickname": nickname ?? "",
                 "information": information ?? "",
-                "role": "MENTEE"
+                "role": isMentor ? "MENTOR" : "MENTEE"
             ]
             
             var httpBody = Data()

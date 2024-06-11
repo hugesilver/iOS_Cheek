@@ -17,9 +17,7 @@ struct CHEEKApp: App {
     init() {
         // Kakao SDK 초기화
         KakaoSDK.initSDK(appKey: appKeyKakao)
-        kakaoAuth.checkToken() { isHasToken in
-            
-        }
+        kakaoAuth.checkToken() { isHasToken in}
     }
     
     var body: some Scene {

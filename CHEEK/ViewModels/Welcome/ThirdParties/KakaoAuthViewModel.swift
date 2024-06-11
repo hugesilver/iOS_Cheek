@@ -77,9 +77,7 @@ class KakaoAuthViewModel: ObservableObject {
     // 토큰 전송
     func sendToken(token: OAuthToken, completion: @escaping (Bool) -> Void) {
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        let port = Bundle.main.object(forInfoDictionaryKey: "SERVER_PORT") as! String
-        
-        let url = URL(string: "http://\(ip):\(port)/member/login")!
+        let url = URL(string: "http://\(ip)/member/login")!
         
         // Header 세팅
         var request = URLRequest(url: url)
@@ -91,12 +89,12 @@ class KakaoAuthViewModel: ObservableObject {
         formatter.dateFormat = "yyyy-MM-dd"
         
         // Body 세팅
-        let bodyData: [String: Any] = [
-            "accessToken": token.accessToken,
-            "refreshToken": token.refreshToken,
-            "accessTokenExpireTime": formatter.string(from: token.expiredAt),
-            "refreshTokenExpireTime": formatter.string(from: token.refreshTokenExpiredAt)
-        ]
+        let bodyData: AuthTokenModel = AuthTokenModel(
+            accessToken: token.accessToken,
+            refreshToken: token.refreshToken,
+            accessTokenExpireTime: formatter.string(from: token.expiredAt),
+            refreshTokenExpireTime: formatter.string(from: token.refreshTokenExpiredAt)
+        )!
         
         request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData)
         
@@ -104,15 +102,44 @@ class KakaoAuthViewModel: ObservableObject {
             if let error = error {
                 print("카카오 토큰 전송 중 오류: \(error)")
                 completion(false)
-            } else {
-                completion(true)
+            } else if let data = data {
+                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+                if let responseJSON = responseJSON as? Bool {
+                    print("카카오 토큰 전송 응답 후 프로필 설정 여부: \(responseJSON)")
+                    completion(responseJSON)
+                }
             }
-//            else if let data = data {
-//                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-//                if let responseJSON = responseJSON as? [String: Any] {
-//                    print("카카오 토큰 전송 응답: \(responseJSON)")
-//                }
-//            }
+        }
+        
+        task.resume()
+    }
+    
+    // 프로필 조회
+    func getProfileFromKakao(token: OAuthToken, completion: @escaping (ProfileModel?) -> Void) {
+        let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
+        let url = URL(string: "http://\(ip)/member/login")!
+        
+        // Header 세팅
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Body 세팅
+        let bodyData: String = token.accessToken
+        
+        request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData)
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("카카오 프로필 조회 중 오류: \(error)")
+                completion(nil)
+            } else if let data = data {
+                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
+                if let responseJSON = responseJSON as? ProfileModel {
+                    print("카카오 기반 유저 프로필 조회 성공: \(responseJSON)")
+                    completion(responseJSON)
+                }
+            }
         }
         
         task.resume()

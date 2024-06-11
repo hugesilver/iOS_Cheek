@@ -12,7 +12,7 @@ struct SelectMentorMenteeView: View {
     
     @Binding var socialProvider: String
     
-    @State var isMentor: Bool?
+    @State var isMentor: Bool = true
     @State var isDone: Bool = false
     
     var body: some View {
@@ -51,7 +51,7 @@ struct SelectMentorMenteeView: View {
                 .padding(.bottom, 24)
                 .padding(.horizontal, 25)
                 .onTapGesture {
-                    // isMentor = true
+                     isMentor = true
                 }
                 
                 // 멘티
@@ -99,7 +99,9 @@ struct SelectMentorMenteeView: View {
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $isDone, destination: {
             if isMentor == false {
-                SetProfileMenteeView(socialProvider: $socialProvider)
+                SetProfileView(socialProvider: $socialProvider, isMentor: $isMentor)
+            } else {
+                VerifyEmailMentorView(socialProvider: $socialProvider)
             }
         })
     }
