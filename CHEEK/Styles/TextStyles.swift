@@ -11,7 +11,7 @@ struct Headline1: ViewModifier {
             .font(.custom(font, size: 24))
             .foregroundColor(color)
             .fontWeight(bold ? .bold : .regular)
-            .lineSpacing(8) // 32
+            .lineSpacing(32 - UIFont(name: font, size: 24)!.lineHeight) // 32
             .tracking(-0.02) // -2%
     }
 }
@@ -27,7 +27,7 @@ struct Title1: ViewModifier {
             .font(.custom(font, size: 20))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(8) // 28
+            .lineSpacing(28 - UIFont(name: font, size: 20)!.lineHeight) // 28
             .tracking(-0.015) // -1.5%
     }
 }
@@ -43,7 +43,7 @@ struct Body1: ViewModifier {
             .font(.custom(font, size: 16))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(8) // 24
+            .lineSpacing(24 - UIFont(name: font, size: 16)!.lineHeight) // 24
             .tracking(0) // 0%
     }
 }
@@ -59,7 +59,7 @@ struct Body2: ViewModifier {
             .font(.custom(font, size: 15))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(7) // 22
+            .lineSpacing(22 - UIFont(name: font, size: 15)!.lineHeight) // 22
             .tracking(0.005) // 0.5%
     }
 }
@@ -75,7 +75,7 @@ struct Label1: ViewModifier {
             .font(.custom(font, size: 16))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(8) // 24
+            .lineSpacing(24 - UIFont(name: font, size: 16)!.lineHeight) // 24
             .tracking(0) // 0%
     }
 }
@@ -91,7 +91,7 @@ struct Label2: ViewModifier {
             .font(.custom(font, size: 14))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(6) // 20
+            .lineSpacing(20 - UIFont(name: font, size: 14)!.lineHeight) // 20
             .tracking(0.005) // 0.5%
     }
 }
@@ -107,7 +107,7 @@ struct Caption1: ViewModifier {
             .font(.custom(font, size: 12))
             .foregroundColor(color)
             .fontWeight(bold ? .semibold : .regular)
-            .lineSpacing(4) // 16
+            .lineSpacing(16 - UIFont(name: font, size: 12)!.lineHeight) // 16
             .tracking(0.01) // 1%
     }
 }
