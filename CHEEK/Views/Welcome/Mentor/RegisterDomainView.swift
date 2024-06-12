@@ -19,17 +19,15 @@ struct RegisterDomainView: View {
     @StateObject private var viewModel = VerifyEmailMentorViewModel()
     @State private var isEmailValidated: Bool = false
     
-    enum alertCase {
-        case isNotEmail, isError
-    }
-    
     @State private var showAlert: Bool = false
-    @State private var activeAlert: alertCase = .isNotEmail
+    @State private var alertMessage: String = ""
     
     @State private var isSent: Bool = false
     
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
     @State private var time = 3
-    @State private var timer: Timer?
+    @State private var timeRunning: Bool = false
     
     @State private var isDone: Bool = false
     
@@ -107,16 +105,17 @@ struct RegisterDomainView: View {
                                             isLoading = false
                                             
                                             isSent = true
-                                            startTimer()
+                                            timeRunning = true
+                                            
                                         } else {
-                                            activeAlert = .isError
+                                            alertMessage = "오류가 발생하였습니다.\n다시 시도해주세요."
                                             showAlert = true
                                             isLoading = false
                                         }
                                         
                                     }
                                 } else {
-                                    activeAlert = .isNotEmail
+                                    alertMessage = "이메일을 다시 확인해주세요."
                                     showAlert = true
                                     isLoading = false
                                 }
@@ -148,6 +147,15 @@ struct RegisterDomainView: View {
                                 .caption1(font: "SUIT", color: .cheekTextAlternative, bold: true)
                                 .padding(.bottom, 32)
                         }
+                        .onReceive(timer) { _ in
+                            if timeRunning {
+                                if time > 0 {
+                                    time -= 1
+                                }
+                            } else {
+                                isDone = true
+                            }
+                        }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.cheekBackgroundTeritory)
@@ -162,32 +170,13 @@ struct RegisterDomainView: View {
             SetProfileView(socialProvider: $socialProvider, isMentor: $isMentor)
         })
         .alert(isPresented: $showAlert) {
-            switch activeAlert {
-            case .isNotEmail:
-                Alert(title: Text("오류"), message: Text("이메일 형식을 다시 확인하세요."), dismissButton: .default(Text("확인")))
-                
-            case .isError:
-                Alert(title: Text("오류"), message: Text("오류가 발생하였습니다."), dismissButton: .default(Text("확인")))
-            }
+                Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
         }
     }
     
     // 키보드 숨기기
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-    
-    func startTimer() {
-        timer?.invalidate()
-        time = 3
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            if time > 0 {
-                time -= 1
-            } else {
-                timer?.invalidate()
-                isDone = true
-            }
-        }
     }
 }
 

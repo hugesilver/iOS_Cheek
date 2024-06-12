@@ -92,7 +92,7 @@ struct SetProfileView: View {
                             Text("닉네임")
                                 .caption1(font: "SUIT", color: .cheekTextStrong, bold: true)
                             
-                            if !nickname.isEmpty {
+                            if !nickname.isEmpty && !isFocused {
                                 Text(isUniqueNickname ? "사용 가능한 닉네임입니다." : "중복된 닉네임입니다.")
                                     .caption1(font: "SUIT", color: isUniqueNickname ? .cheekStatusPositive : .cheekStatusAlert, bold: true)
                             }

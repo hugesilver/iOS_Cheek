@@ -21,22 +21,20 @@ struct VerifyEmailMentorView: View {
     
     @State private var isEmailValidated: Bool = false
     
-    enum alertCase {
-        case isNotEmail, isError, isNotCodesMatched
-    }
-    
     @State private var showAlert: Bool = false
-    @State private var activeAlert: alertCase = .isNotEmail
+    @State private var alertMessage: String = ""
     
     @State private var showPopup: Bool = false
     
     @State private var isSent: Bool = false
     
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
     @State private var resendTime = 60
-    @State private var resendTimer: Timer?
+    @State private var resendTimerRunning: Bool = false
     
     @State private var codeExpireTime = 180
-    @State private var codeExpireTimer: Timer?
+    @State private var codeExpireTimerRunning: Bool = false
     
     @State private var isDone: Bool = false
     
@@ -98,11 +96,21 @@ struct VerifyEmailMentorView: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: 32)
                         .overlay(
-                            Text(resendTime == 60 ? "인증번호 받기" : "전송 완료 (\(String(format: "%02d:%02d", resendTime / 60, resendTime % 60)))")
-                                .caption1(font: "SUIT", color: isEmailValidated && resendTime == 60 ? .cheekTextStrong : .cheekTextAssitive, bold: true)
+                            Text(!resendTimerRunning && resendTime == 60 ? "인증번호 받기" : "전송 완료 (\(String(format: "%02d:%02d", resendTime / 60, resendTime % 60)))")
+                                .caption1(font: "SUIT", color: !resendTimerRunning && isEmailValidated && resendTime == 60 ? .cheekTextStrong : .cheekTextAssitive, bold: true)
                         )
                         .padding(.bottom, 24)
                         .contentShape(Rectangle())
+                        .onReceive(timer) { _ in
+                            if resendTimerRunning {
+                                if resendTime > 0 {
+                                    resendTime -= 1
+                                } else {
+                                    resendTime = 60
+                                    resendTimerRunning = false
+                                }
+                            }
+                        }
                         .onTapGesture {
                             hideKeyboard()
                             
@@ -110,17 +118,18 @@ struct VerifyEmailMentorView: View {
                                 isLoading = true
                                 if viewModel.validateEmail(email: email) {
                                     viewModel.validateDomain(email: email) { result in
-                                        if result == true {
+                                        if result {
                                             viewModel.sendEmail(email: email) { response in
                                                 if response != nil && response == "ok" {
                                                     isSent = true
-                                                    startResendTimer()
-                                                    startCodeExpireTimer()
-                                                    isLoading = false
+                                                    resendTime = 60
+                                                    resendTimerRunning = true
+                                                    codeExpireTime = 180
+                                                    codeExpireTimerRunning = true
                                                     
-                                                    isDone = true
+                                                    isLoading = false
                                                 } else {
-                                                    activeAlert = .isError
+                                                    alertMessage = "오류가 발생하였습니다.\n다시 시도해주세요."
                                                     showAlert = true
                                                     isLoading = false
                                                 }
@@ -131,27 +140,27 @@ struct VerifyEmailMentorView: View {
                                         }
                                     }
                                 } else {
-                                    activeAlert = .isNotEmail
+                                    alertMessage = "이메일을 다시 확인해주세요."
                                     showAlert = true
                                     isLoading = false
                                 }
                             }
                         }
                     
-                    if isSent && codeExpireTime > 0 {
+                    if isSent && codeExpireTimerRunning {
                         Text("인증번호")
                             .caption1(font: "SUIT", color: .cheekTextStrong, bold: true)
                             .padding(.bottom, 4)
                         
-                        // 이메일 입력칸
+                        // 인증번호 입력칸
                         TextField(
                             "",
-                            value: $verificationCodes,
-                            formatter: NumberFormatter(),
+                            text: $verificationCodes,
                             prompt:
-                                Text(verbatim: "인증번호 입력 (\(String(format: "%02d:%02d", codeExpireTime / 60, codeExpireTime % 60)))")
+                                Text("인증번호 입력 (\(String(format: "%02d:%02d", codeExpireTime / 60, codeExpireTime % 60)))")
                                 .foregroundColor(.cheekTextAlternative)
                         )
+                        .textContentType(.oneTimeCode)
                         .keyboardType(.numberPad)
                         .disabled(showPopup)
                         .caption1(font: "SUIT", color: .cheekTextStrong, bold: true)
@@ -163,6 +172,18 @@ struct VerifyEmailMentorView: View {
                                 .stroke(.cheekTextStrong, lineWidth: 1)
                         )
                         .padding(.bottom, 12)
+                        .onReceive(timer) { _ in
+                            if codeExpireTimerRunning {
+                                if codeExpireTime > 0 {
+                                    codeExpireTime -= 1
+                                } else {
+                                    codeExpireTime = 180
+                                    verificationCodes = ""
+                                    isSent = false
+                                    codeExpireTimerRunning = false
+                                }
+                            }
+                        }
                         
                         Spacer()
                         
@@ -179,12 +200,14 @@ struct VerifyEmailMentorView: View {
                             .onTapGesture {
                                 hideKeyboard()
                                 
-                                viewModel.verifyEmailCode(email: email, verificationCode: verificationCodes) { response in
-                                    if response != nil && response == "ok" {
-                                        
-                                    } else {
-                                        activeAlert = .isNotEmail
-                                        showAlert = true
+                                if !verificationCodes.isEmpty{
+                                    viewModel.verifyEmailCode(email: email, verificationCode: verificationCodes) { response in
+                                        if response != nil && response == "ok" {
+                                            isDone = true
+                                        } else {
+                                            alertMessage = "인증번호를 다시 확인해주세요."
+                                            showAlert = true
+                                        }
                                     }
                                 }
                             }
@@ -208,6 +231,17 @@ struct VerifyEmailMentorView: View {
                 }
                 
                 EmailPopupView(showPopup: $showPopup, isDone: $isDone)
+                
+                if isLoading {
+                    VStack {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .tint(.white)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.black.opacity(0.7))
+                    .ignoresSafeArea()
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onTapGesture {
@@ -224,48 +258,13 @@ struct VerifyEmailMentorView: View {
             }
         })
         .alert(isPresented: $showAlert) {
-            switch activeAlert {
-            case .isNotEmail:
-                Alert(title: Text("오류"), message: Text("이메일 형식을 다시 확인하세요."), dismissButton: .default(Text("확인")))
-                
-            case .isError:
-                Alert(title: Text("오류"), message: Text("오류가 발생하였습니다."), dismissButton: .default(Text("확인")))
-                
-            case .isNotCodesMatched:
-                Alert(title: Text("오류"), message: Text("인증번호가 틀렸거나 다른 문제가 생겼습니다."), dismissButton: .default(Text("확인")))
-            }
+            Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
         }
     }
     
     // 키보드 숨기기
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-    
-    func startResendTimer() {
-        resendTimer?.invalidate()
-        resendTime = 60
-        resendTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            if resendTime > 0 {
-                resendTime -= 1
-            } else {
-                resendTimer?.invalidate()
-                resendTime = 60
-            }
-        }
-    }
-    
-    func startCodeExpireTimer() {
-        codeExpireTimer?.invalidate()
-        codeExpireTime = 180
-        codeExpireTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            if codeExpireTime > 0 {
-                codeExpireTime -= 1
-            } else {
-                codeExpireTimer?.invalidate()
-                verificationCodes = ""
-            }
-        }
     }
 }
 
