@@ -24,6 +24,7 @@ class VerifyEmailMentorViewModel: ObservableObject {
     
     func validateDomain(email: String, completion: @escaping (Bool) -> Void) {
         guard let domain = splitDomain(email: email) else {
+            completion(false)
             return
         }
         
@@ -36,22 +37,24 @@ class VerifyEmailMentorViewModel: ObservableObject {
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("text/plain; charset=utf-8", forHTTPHeaderField: "Content-Type")
         
         // Body 세팅
         let bodyData: String = domain
         
-        request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData)
+        request.httpBody = bodyData.data(using: .utf8)
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("도메인 유효성 검증 중 오류: \(error)")
             } else if let data = data {
-                // 응답 처리
-                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-                if let responseJSON = responseJSON as? Bool {
-                    print("도메인 유효성 검증 응답: \(responseJSON)")
-                    completion(responseJSON)
+                if let dataString = String(data: data, encoding: .utf8) {
+                    let response = (dataString as NSString).boolValue
+                    print("도메인 유효성 검증 응답: \(response)")
+                    completion(response)
+                } else {
+                    print("도메인 유효성 검증 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
+                    completion(false)
                 }
             }
         }
@@ -73,23 +76,24 @@ class VerifyEmailMentorViewModel: ObservableObject {
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("text/plain; charset=utf-8", forHTTPHeaderField: "Content-Type")
         
         // Body 세팅
         let bodyData: String = domain
         
-        request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData)
+        request.httpBody = bodyData.data(using: .utf8)
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("도메인 등록 중 오류: \(error)")
                 completion(nil)
             } else if let data = data {
-                // 응답 처리
-                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-                if let responseJSON = responseJSON as? String {
-                    print("도메인 등록 응답: \(responseJSON)")
-                    completion(responseJSON)
+                if let dataString = String(data: data, encoding: .utf8) {
+                    print("도메인 등록 응답: \(dataString)")
+                    completion(dataString)
+                } else {
+                    print("도메인 등록 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
+                    completion(nil)
                 }
             }
         }
@@ -109,18 +113,25 @@ class VerifyEmailMentorViewModel: ObservableObject {
         // Body 세팅
         let bodyData: VefiryEmailModel = VefiryEmailModel(email: email)!
         
-        request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData)
+        do {
+            request.httpBody = try JSONEncoder().encode(bodyData)
+        } catch {
+            print("이메일 코드 전송 JSON 변환 중 오류: \(error)")
+            completion(nil)
+            return
+        }
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("도메인 유효성 검증 중 오류: \(error)")
+                print("이메일 코드 전송 중 오류: \(error)")
                 completion(nil)
             } else if let data = data {
-                // 응답 처리
-                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-                if let responseJSON = responseJSON as? String {
-                    print("도메인 유효성 검증 응답: \(responseJSON)")
-                    completion(responseJSON)
+                if let dataString = String(data: data, encoding: .utf8) {
+                    print("이메일 코드 전송 응답: \(dataString)")
+                    completion(dataString)
+                } else {
+                    print("이메일 코드 전송 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
+                    completion(nil)
                 }
             }
         }
@@ -140,24 +151,29 @@ class VerifyEmailMentorViewModel: ObservableObject {
         // Body 세팅
         let bodyData: VefiryCodesModel = VefiryCodesModel(email: email, verificationCode: verificationCode)!
         
-        request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData)
+        do {
+            request.httpBody = try JSONEncoder().encode(bodyData)
+        } catch {
+            print("확인 코드 검증 JSON 변환 중 오류: \(error)")
+            completion(nil)
+            return
+        }
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("도메인 유효성 검증 중 오류: \(error)")
+                print("확인 코드 검증 중 오류: \(error)")
                 completion(nil)
             } else if let data = data {
-                // 응답 처리
-                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-                if let responseJSON = responseJSON as? String {
-                    print("도메인 유효성 검증 응답: \(responseJSON)")
-                    completion(responseJSON)
+                if let dataString = String(data: data, encoding: .utf8) {
+                    print("확인 코드 검증 응답: \(dataString)")
+                    completion(dataString)
+                } else {
+                    print("확인 코드 검증 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
+                    completion(nil)
                 }
             }
         }
         
         task.resume()
     }
-    
-    
 }

@@ -40,11 +40,13 @@ class SetProfileViewModel: ObservableObject {
                 print("닉네임 중복 확인 중 오류: \(error)")
                 completion(false)
             } else if let data = data {
-                // 응답 처리
-                let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-                if let responseJSON = responseJSON as? Bool {
-                    print("닉네임 중복 확인 응답: \(responseJSON)")
-                    completion(responseJSON)
+                if let dataString = String(data: data, encoding: .utf8) {
+                    let response = (dataString as NSString).boolValue
+                    print("닉네임 중복 확인 응답: \(response)")
+                    completion(response)
+                } else {
+                    print("닉네임 중복 확인 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
+                    completion(false)
                 }
             }
         }
