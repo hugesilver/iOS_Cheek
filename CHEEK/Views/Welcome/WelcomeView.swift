@@ -11,6 +11,7 @@ import SwiftUI
 struct WelcomeView: View {
     @State private var socialProvider: String = ""
     @State private var isLoginSuccess: Bool = false
+    @State private var isProfileSet: Bool = false
     
     @StateObject private var kakaoAuthViewModel = KakaoAuthViewModel()
     
@@ -63,7 +64,10 @@ struct WelcomeView: View {
                     .onTapGesture {
                         socialProvider = "Kakao"
                         kakaoAuthViewModel.kakaoAuth() { success in
-                            isLoginSuccess = success
+                            isLoginSuccess = success != nil
+                            if success != nil {
+                                isProfileSet = success!
+                            }
                         }
                     }
                     

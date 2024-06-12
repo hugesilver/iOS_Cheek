@@ -76,6 +76,7 @@ struct VerifyEmailMentorView: View {
                             Text(verbatim: "예 > cheek@cheek.com")
                             .foregroundColor(.cheekTextAlternative)
                     )
+                    .keyboardType(.emailAddress)
                     .disabled(showPopup || isSent)
                     .caption1(font: "SUIT", color: .cheekTextStrong, bold: true)
                     .foregroundColor(.cheekTextStrong)
@@ -137,7 +138,7 @@ struct VerifyEmailMentorView: View {
                             }
                         }
                     
-                    if !isSent && codeExpireTime > 0 {
+                    if isSent && codeExpireTime > 0 {
                         Text("인증번호")
                             .caption1(font: "SUIT", color: .cheekTextStrong, bold: true)
                             .padding(.bottom, 4)

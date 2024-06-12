@@ -112,9 +112,9 @@ struct SetProfileView: View {
                         .padding(.leading, 11)
                         .frame(height: 36)
                         .focused($isFocused)
-                        .onChange(of: isFocused) { focus in
+                        .onChange(of: isFocused) { isFocused in
                             if !nickname.isEmpty {
-                                if !focus {
+                                if !isFocused {
                                     viewModel.checkUniqueNickname(nickname: nickname) { response in
                                         isUniqueNickname = response
                                     }

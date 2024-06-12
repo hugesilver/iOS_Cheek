@@ -69,6 +69,7 @@ struct RegisterDomainView: View {
                             Text(verbatim: "예 > cheek@cheek.com")
                             .foregroundColor(.cheekTextAlternative)
                     )
+                    .keyboardType(.emailAddress)
                     .disabled(isLoading)
                     .caption1(font: "SUIT", color: .cheekTextStrong, bold: true)
                     .foregroundColor(.cheekTextStrong)
@@ -129,26 +130,28 @@ struct RegisterDomainView: View {
                 .padding(.horizontal, 23)
                 .background(.cheekBackgroundTeritory)
                 
-                ZStack {
-                    VStack(spacing: 0) {
-                        Text("멘토 신청이 완료되었습니다.")
-                            .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                            .padding(.bottom, 8)
+                if isSent {
+                    ZStack {
+                        VStack(spacing: 0) {
+                            Text("멘토 신청이 완료되었습니다.")
+                                .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                .padding(.bottom, 8)
+                            
+                            Text("관리자가 확인 후 유효한 이메일 도메인일 시\n멘토 회원으로 전환되며, 알림을 보내드려요.")
+                                .caption1(font: "SUIT", color: .cheekTextAlternative, bold: true)
+                        }
                         
-                        Text("관리자가 확인 후 유효한 이메일 도메인일 시\n멘토 회원으로 전환되며, 알림을 보내드려요.")
-                            .caption1(font: "SUIT", color: .cheekTextAlternative, bold: true)
+                        VStack {
+                            Spacer()
+                            
+                            Text("\(time)초 후에 프로필 설정 창으로 전환됩니다.")
+                                .caption1(font: "SUIT", color: .cheekTextAlternative, bold: true)
+                                .padding(.bottom, 32)
+                        }
                     }
-                    
-                    VStack {
-                        Spacer()
-                        
-                        Text("\(time)초 후에 프로필 설정 창으로 전환됩니다.")
-                            .caption1(font: "SUIT", color: .cheekTextAlternative, bold: true)
-                            .padding(.bottom, 32)
-                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(.cheekBackgroundTeritory)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.cheekBackgroundTeritory)
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
