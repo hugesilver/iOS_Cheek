@@ -32,21 +32,26 @@ class VerifyEmailMentorViewModel: ObservableObject {
         print(domain)
         
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        let url = URL(string: "http://\(ip)/email/domain/validate")!
+        var components = URLComponents(string: "http://\(ip)/email/verify-domain")!
+        
+        components.queryItems = [
+            URLQueryItem(name:"domain", value: domain)
+        ]
+        
+        guard let url = components.url else {
+            print("validateDomain 함수 내 URL 추출 실패")
+            completion(false)
+            return
+        }
         
         // Header 세팅
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("text/plain; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        
-        // Body 세팅
-        let bodyData: String = domain
-        
-        request.httpBody = bodyData.data(using: .utf8)
+        request.httpMethod = "GET"
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("도메인 유효성 검증 중 오류: \(error)")
+                completion(false)
             } else if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
                     let response = (dataString as NSString).boolValue
@@ -71,17 +76,21 @@ class VerifyEmailMentorViewModel: ObservableObject {
         print(domain)
         
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        let url = URL(string: "http://\(ip)/email/register-domain")!
+        var components = URLComponents(string: "http://\(ip)/email/register-domain")!
+        
+        components.queryItems = [
+            URLQueryItem(name:"domain", value: domain)
+        ]
+        
+        guard let url = components.url else {
+            print("registerDomain 함수 내 URL 추출 실패")
+            completion(nil)
+            return
+        }
         
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("text/plain; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        
-        // Body 세팅
-        let bodyData: String = domain
-        
-        request.httpBody = bodyData.data(using: .utf8)
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {

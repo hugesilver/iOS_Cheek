@@ -127,17 +127,21 @@ class KakaoAuthViewModel: ObservableObject {
     // 프로필 조회
     func getProfileFromKakao(token: OAuthToken, completion: @escaping (ProfileModel?) -> Void) {
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        let url = URL(string: "http://\(ip)/member/login")!
+        var components = URLComponents(string: "http://\(ip)/member/info")!
+        
+        components.queryItems = [
+            URLQueryItem(name:"accessToken", value: token.accessToken)
+        ]
+        
+        guard let url = components.url else {
+            print("getProfileFromKakao 함수 내 URL 추출 실패")
+            completion(nil)
+            return
+        }
         
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("text/plain; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        
-        // Body 세팅
-        let bodyData: String = token.accessToken
-        
-        request.httpBody = bodyData.data(using: .utf8)
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {

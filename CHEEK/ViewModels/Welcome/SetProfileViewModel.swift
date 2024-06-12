@@ -23,17 +23,21 @@ class SetProfileViewModel: ObservableObject {
     
     func checkUniqueNickname(nickname: String, completion: @escaping (Bool) -> Void) {
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        let url = URL(string: "http://\(ip)/email/register-domain")!
+        var components = URLComponents(string: "http://\(ip)/member/check-nickname")!
+        
+        components.queryItems = [
+            URLQueryItem(name:"nickname", value: nickname)
+        ]
+        
+        guard let url = components.url else {
+            print("checkUniqueNickname 함수 내 URL 추출 실패")
+            completion(false)
+            return
+        }
         
         // Header 세팅
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        // Body 세팅
-        let bodyData: String = nickname
-        
-        request.httpBody = try? JSONSerialization.data(withJSONObject: bodyData)
+        request.httpMethod = "GET"
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
