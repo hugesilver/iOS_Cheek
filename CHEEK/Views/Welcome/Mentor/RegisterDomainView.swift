@@ -101,11 +101,12 @@ struct RegisterDomainView: View {
                                 isLoading = true
                                 if viewModel.validateEmail(email: email) {
                                     viewModel.registerDomain(email: email) { response in
-                                        if response != nil && response == "ok" {
+                                        if response {
                                             isLoading = false
                                             
                                             isSent = true
                                             timeRunning = true
+                                            isLoading = false
                                             
                                         } else {
                                             alertMessage = "오류가 발생하였습니다.\n다시 시도해주세요."
@@ -151,9 +152,9 @@ struct RegisterDomainView: View {
                             if timeRunning {
                                 if time > 0 {
                                     time -= 1
+                                } else {
+                                    isDone = true
                                 }
-                            } else {
-                                isDone = true
                             }
                         }
                     }
