@@ -201,12 +201,15 @@ struct VerifyEmailMentorView: View {
                                 hideKeyboard()
                                 
                                 if !verificationCodes.isEmpty{
+                                    isLoading = true
                                     viewModel.verifyEmailCode(email: email, verificationCode: verificationCodes) { response in
                                         if response != nil && response == "ok" {
                                             isDone = true
+                                            isLoading = false
                                         } else {
                                             alertMessage = "인증번호를 다시 확인해주세요."
                                             showAlert = true
+                                            isLoading = false
                                         }
                                     }
                                 }
