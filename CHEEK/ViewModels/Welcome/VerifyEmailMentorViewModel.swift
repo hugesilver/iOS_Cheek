@@ -67,8 +67,9 @@ class VerifyEmailMentorViewModel: ObservableObject {
         task.resume()
     }
     
-    func registerDomain(email: String, completion: @escaping (String?) -> Void) {
+    func registerDomain(email: String, completion: @escaping (Bool) -> Void) {
         guard let domain = splitDomain(email: email) else {
+            completion(false)
             return
         }
         
@@ -84,7 +85,7 @@ class VerifyEmailMentorViewModel: ObservableObject {
         
         guard let url = components.url else {
             print("registerDomain 함수 내 URL 추출 실패")
-            completion(nil)
+            completion(false)
             return
         }
         
@@ -95,14 +96,32 @@ class VerifyEmailMentorViewModel: ObservableObject {
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("도메인 등록 중 오류: \(error)")
-                completion(nil)
+                completion(false)
             } else if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
                     print("도메인 등록 응답: \(dataString)")
-                    completion(dataString)
+                    if dataString == "ok" {
+                        completion(true)
+                        return
+                    }
                 } else {
                     print("도메인 등록 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
-                    completion(nil)
+                }
+                
+                do {
+                    let model = try JSONDecoder().decode(RegisterDomainModel.self, from: data)
+                    
+                    if model.errorCode == "E-006" {
+                        print("registerDomain: 이미 요청된 도메인")
+                        completion(true)
+                        return
+                    } else {
+                        print("registerDomain 응답 오류 메시지: \(model.errorCode)")
+                        completion(false)
+                    }
+                } catch {
+                    print("도메인 등록 응답 데이터를 JSON 모델로 변환하는 데 실패했습니다.")
+                    completion(false)
                 }
             }
         }
