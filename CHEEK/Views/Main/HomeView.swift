@@ -44,6 +44,8 @@ struct HomeView: View {
         TopUsers(name: "이름", job: "직무 한줄소개", introduction: "한줄소개", profile: ""),
     ]
     
+    @State private var isPresented: Bool = false
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -98,6 +100,9 @@ struct HomeView: View {
                                     .caption1(font: "SUIT", color: .cheekTextStrong, bold: true)
                             }
                             .frame(width: 72)
+                            .onTapGesture {
+                                isPresented = true
+                            }
                         }
                     }
                     .padding(.bottom, 32)
@@ -166,6 +171,9 @@ struct HomeView: View {
         .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
+        .navigationDestination(isPresented: $isPresented, destination: {
+            FeedView()
+        })
     }
 }
 
