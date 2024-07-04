@@ -138,7 +138,7 @@ struct TextPaletteView: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            Slider(value: $viewModel.stackItems[viewModel.currentIndex].fontSize, in: 15...30, step: 0.1)
+            Slider(value: viewModel.editTextObject ? $viewModel.tempTextObject.fontSize : $viewModel.stackItems[viewModel.currentIndex].fontSize, in: 15...30, step: 0.1)
                 .frame(width: (20 * CGFloat(colors.count)) + (10 * (CGFloat(colors.count) - 1)))
             
             HStack(spacing: 10) {
@@ -147,7 +147,11 @@ struct TextPaletteView: View {
                         .frame(width: 20, height: 20)
                         .foregroundColor(color)
                         .onTapGesture {
-                            viewModel.stackItems[viewModel.currentIndex].textColor = color
+                            if viewModel.editTextObject {
+                                viewModel.tempTextObject.textColor = color
+                            } else {
+                                viewModel.stackItems[viewModel.currentIndex].textColor = color
+                            }
                         }
                 }
             }
