@@ -39,7 +39,7 @@ class AddAnswerViewModel: ObservableObject {
     @Published var tempTextObject: AnswerStackModel = AnswerStackModel(type: "text")
     
     // 배경색
-    @Published var frameBackgroundColor: Color = .cheekBackgroundPrimary
+    @Published var frameBackgroundColor: Color = .cheekWhite
     
     // 텍스트 추가 및 수정 닫기
     func cancelTextView() {

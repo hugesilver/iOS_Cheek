@@ -16,8 +16,8 @@ struct CHEEKApp: App {
     
     init() {
         // Kakao SDK 초기화
-        KakaoSDK.initSDK(appKey: appKeyKakao)
-        kakaoAuth.checkToken() { isHasToken in}
+        //        KakaoSDK.initSDK(appKey: appKeyKakao)
+        //        kakaoAuth.checkToken() { isHasToken in}
     }
     
     var body: some Scene {
@@ -27,6 +27,10 @@ struct CHEEKApp: App {
                     if (AuthApi.isKakaoTalkLoginUrl(url)) {
                         _ = AuthController.handleOpenUrl(url: url)
                     }
+                    
+                }
+                .onAppear {
+                    
                 }
         }
     }

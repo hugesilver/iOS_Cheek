@@ -9,125 +9,206 @@ import SwiftUI
 import PhotosUI
 
 struct AddAnswerView: View {
-    @Environment(\.presentationMode) var presentationMode
-    
     @StateObject var viewModel = AddAnswerViewModel()
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                HStack {
-                    Text("취소")
-                        .label2(font: "SUIT", color: .cheekTextStrong, bold: true)
-                        .padding(.leading, 24)
-                        .onTapGesture {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    
-                    Spacer()
-                }
-                
-                ZStack {
+            ZStack {
+                ZStack(alignment: .top) {
                     // 캔버스
                     AnswerDrawingView(viewModel: viewModel)
+                        .aspectRatio(9 / 16, contentMode: .fit)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(Rectangle())
+                    
                     
                     // 메뉴
                     AddAnswerMenusView(viewModel: viewModel)
-                        .frame(
-                            maxWidth: .infinity,
-                            maxHeight: .infinity,
-                            alignment: .topTrailing)
-                    
-                    // 그리기 팔레트
-                    if viewModel.userInteractState == .draw {
-                        DrawPaletteView(viewModel: viewModel)
-                            .frame(maxHeight: .infinity, alignment: .bottom)
-                    }
-                    
-                    // 배경색 팔레트
-                    if viewModel.userInteractState == .backgroundColor {
-                        BackgroundColorPaletteView(viewModel: viewModel)
-                            .frame(maxHeight: .infinity, alignment: .bottom)
-                    }
-                    
-                    // 텍스트 추가
-                    if viewModel.addTextObject {
-                        AddTextObjectView(viewModel: viewModel)
-                    }
-                    
-                    // 텍스트 수정
-                    if viewModel.editTextObject {
-                        EditTextObjectView(viewModel: viewModel)
-                    }
+                        .frame(maxHeight: .infinity, alignment: .top)
+                        .offset(y: 16)
                 }
-                .onChange(of: viewModel.userInteractState) { value in
-                    if viewModel.userInteractState == .draw {
-                        viewModel.canvas.isUserInteractionEnabled = true
-                    } else {
-                        viewModel.canvas.isUserInteractionEnabled = false
-                    }
+                
+                
+                // 그리기 팔레트
+                if viewModel.userInteractState == .draw {
+                    DrawPaletteView(viewModel: viewModel)
+                        .frame(maxHeight: .infinity, alignment: .bottom)
                 }
-                .frame(
-                    width: UIScreen.main.bounds.size.width,
-                    height: ((UIScreen.main.bounds.size.width / 9) * 16)
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .onAppear {
-                    // 질문 오브젝트 추가
-                    viewModel.stackItems.append(
-                        AnswerStackModel(
-                            type: "question",
-                            view:
-                                AnyView(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .foregroundColor(.cheekTextAssitive)
-                                        .frame(width: 264, height: 202)
-                                        .overlay(
-                                            VStack(spacing: 0) {
-                                                VStack {
-                                                    Text("질문")
-                                                        .label2(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                                        .padding(.bottom, 15)
-                                                    
-                                                    Text("Test")
-                                                        .font(
-                                                            Font.custom("SUIT", size: 8.5)
-                                                                .weight(.bold)
-                                                        )
-                                                        .multilineTextAlignment(.center)
-                                                        .foregroundColor(.cheekTextStrong)
-                                                        .padding(.horizontal, 10)
-                                                        .frame(height: 69)
-                                                        .frame(maxWidth: .infinity)
-                                                        .background(
-                                                            RoundedRectangle(cornerRadius: 5)
-                                                                .foregroundColor(.cheekBackgroundTeritory)
-                                                        )
-                                                        .padding(.horizontal, 20)
-                                                    
-                                                }
-                                                .frame(maxHeight: .infinity)
-                                                .padding(.top, 44)
-                                            }
-                                        )
-                                        .overlay(
-                                            Circle()
-                                                .foregroundColor(.cheekTextAlternative)
-                                                .frame(width: 62, height: 62)
-                                                .alignmentGuide(.top) { $0[VerticalAlignment.center] }
-                                            , alignment: .top
-                                        )
-                                    
-                                )
-                        )
-                    )
+                
+                // 배경색 팔레트
+                if viewModel.userInteractState == .backgroundColor {
+                    BackgroundColorPaletteView(viewModel: viewModel)
+                        .frame(maxHeight: .infinity, alignment: .bottom)
+                }
+                
+                // 텍스트 추가
+                if viewModel.addTextObject {
+                    AddTextObjectView(viewModel: viewModel)
+                }
+                
+                // 텍스트 수정
+                if viewModel.editTextObject {
+                    EditTextObjectView(viewModel: viewModel)
                 }
             }
+            .onChange(of: viewModel.userInteractState) { value in
+                if viewModel.userInteractState == .draw {
+                    viewModel.canvas.isUserInteractionEnabled = true
+                } else {
+                    viewModel.canvas.isUserInteractionEnabled = false
+                }
+            }
+            .onAppear {
+                // 질문 오브젝트 추가
+                viewModel.stackItems.append(
+                    AnswerStackModel(
+                        type: "question",
+                        view:
+                            AnyView(
+                                AnswerQuestionBlock()
+                            )
+                    )
+                )
+            }
+            .background(.cheekTextNormal)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
+    }
+}
+
+struct AddAnswerMenu: View {
+    var image: String
+    
+    var body: some View {
+        Image(image)
+            .resizable()
+            .frame(width: 32, height: 32)
+            .foregroundColor(.cheekWhite)
+            .padding(8)
+            .background(
+                Circle()
+                    .foregroundColor(Color(red: 0.29, green: 0.29, blue: 0.29).opacity(0.6))
+            )
+    }
+}
+
+// 메뉴
+struct AddAnswerMenusView: View {
+    @Environment(\.presentationMode) var presentationMode
+    
+    @ObservedObject var viewModel: AddAnswerViewModel
+    @State private var photosPickerItem: PhotosPickerItem?
+    @State private var showPhotosPicker: Bool = false
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            // 뒤로가기
+            AddAnswerMenu(image: "IconX")
+                .onTapGesture {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            
+            Spacer()
+            
+            // 텍스트
+            AddAnswerMenu(image: "IconFont")
+                .onTapGesture {
+                    viewModel.userInteractState = .text
+                    viewModel.addTextObject = true
+                    
+                    viewModel.canvas.resignFirstResponder()
+                    
+                    viewModel.stackItems.append(
+                        AnswerStackModel(type: "text")
+                    )
+                    viewModel.currentIndex = viewModel.stackItems.count - 1
+                }
+            
+            // 그리기
+            AddAnswerMenu(image: "IconDraw")
+                .onTapGesture {
+                    viewModel.userInteractState = .draw
+                }
+            
+            // 사진
+            AddAnswerMenu(image: "IconPic")
+                .onTapGesture {
+                    showPhotosPicker = true
+                    viewModel.userInteractState = .image
+                }
+                .photosPicker(isPresented: $showPhotosPicker, selection: $photosPickerItem)
+                .onChange(of: photosPickerItem) { image in
+                    Task {
+                        guard let data = try? await image?.loadTransferable(type: Data.self) else { return }
+                        
+                        viewModel.stackItems.append(
+                            AnswerStackModel(
+                                type: "image",
+                                view:
+                                    AnyView(
+                                        Image(uiImage: UIImage(data: data)!)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: (UIScreen.main.bounds.size.width) / 2)
+                                    )
+                            )
+                        )
+                    }
+                    
+                    photosPickerItem = nil
+                }
+            
+            // 배경색
+            AddAnswerMenu(image: "IconColor")
+                .onTapGesture {
+                    viewModel.userInteractState = .backgroundColor
+                }
+            
+            // 저장(임시)
+            EmptyView()
+                .onTapGesture {
+                    viewModel.userInteractState = .save
+                    
+                    viewModel.saveCanvasImage() {
+                        AnswerDrawingView(viewModel: viewModel)
+                    }
+                }
+        }
+        .padding(.horizontal, 16)
+    }
+}
+
+
+// 질문 View
+struct AnswerQuestionBlock: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                ProfileXS(url: "")
+                
+                Text("최대8자의닉네임")
+                    .body2(font: "SUIT", color: .cheekTextStrong, bold: true)
+                
+                Spacer()
+            }
+            
+            Text("test")
+                .label2(font: "SUIT", color: .cheekTextStrong, bold: false)
+                .multilineTextAlignment(.leading)
+        }
+        .frame(maxWidth: 207)
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .foregroundColor(.cheekWhite)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.cheekTextAlternative, lineWidth: 1)
+                )
+            
+        )
     }
 }
 
@@ -209,141 +290,10 @@ struct BackgroundColorPaletteView: View {
     }
 }
 
-// 메뉴
-struct AddAnswerMenusView: View {
-    @ObservedObject var viewModel: AddAnswerViewModel
-    @State private var photosPickerItem: PhotosPickerItem?
-    @State private var showPhotosPicker: Bool = false
-    
-    var body: some View {
-        VStack(spacing: 16) {
-            // 텍스트
-            Circle()
-                .foregroundColor(.cheekTextAssitive)
-                .frame(width: 42, height: 42)
-                .overlay(
-                    Text("텍스트")
-                        .font(
-                            Font.custom("SUIT", size: 10)
-                                .weight(.bold)
-                        )
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.cheekTextStrong)
-                )
-                .onTapGesture {
-                    viewModel.userInteractState = .text
-                    viewModel.addTextObject = true
-                    
-                    viewModel.canvas.resignFirstResponder()
-                    
-                    viewModel.stackItems.append(
-                        AnswerStackModel(type: "text")
-                    )
-                    viewModel.currentIndex = viewModel.stackItems.count - 1
-                }
-            
-            // 그리기
-            Circle()
-                .foregroundColor(.cheekTextAssitive)
-                .frame(width: 42, height: 42)
-                .overlay(
-                    Text("그리기")
-                        .font(
-                            Font.custom("SUIT", size: 10)
-                                .weight(.bold)
-                        )
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.cheekTextStrong)
-                )
-                .onTapGesture {
-                    viewModel.userInteractState = .draw
-                }
-            
-            // 사진
-            Circle()
-                .foregroundColor(.cheekTextAssitive)
-                .frame(width: 42, height: 42)
-                .overlay(
-                    Text("사진")
-                        .font(
-                            Font.custom("SUIT", size: 10)
-                                .weight(.bold)
-                        )
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.cheekTextStrong)
-                )
-                .onTapGesture {
-                    showPhotosPicker = true
-                    viewModel.userInteractState = .image
-                }
-                .photosPicker(isPresented: $showPhotosPicker, selection: $photosPickerItem)
-                .onChange(of: photosPickerItem) { image in
-                    Task {
-                        guard let data = try? await image?.loadTransferable(type: Data.self) else { return }
-                        
-                        viewModel.stackItems.append(
-                            AnswerStackModel(
-                                type: "image",
-                                view:
-                                    AnyView(
-                                        Image(uiImage: UIImage(data: data)!)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: (UIScreen.main.bounds.size.width) / 2)
-                                    )
-                            )
-                        )
-                    }
-                    
-                    photosPickerItem = nil
-                }
-            
-            // 배경색
-            Circle()
-                .foregroundColor(.cheekTextAssitive)
-                .frame(width: 42, height: 42).overlay(
-                    Text("배경색")
-                        .font(
-                            Font.custom("SUIT", size: 10)
-                                .weight(.bold)
-                        )
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.cheekTextStrong)
-                )
-                .onTapGesture {
-                    viewModel.userInteractState = .backgroundColor
-                }
-            
-            // 저장(임시)
-            Circle()
-                .foregroundColor(.cheekTextAssitive)
-                .frame(width: 42, height: 42).overlay(
-                    Text("저장")
-                        .font(
-                            Font.custom("SUIT", size: 10)
-                                .weight(.bold)
-                        )
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.cheekTextStrong)
-                )
-                .onTapGesture {
-                    viewModel.userInteractState = .save
-                    
-                    viewModel.saveCanvasImage() {
-                        AnswerDrawingView(viewModel: viewModel)
-                    }
-                }
-        }
-        .padding(.top, 28)
-        .padding(.trailing, 16)
-    }
-}
-
 // 텍스트 추가
 struct AddTextObjectView: View {
     @ObservedObject var viewModel: AddAnswerViewModel
     @FocusState private var isFieldFocused: Bool
-    
     
     var body: some View {
         ZStack {

@@ -32,10 +32,7 @@ struct AnswerDrawingView: View {
                 }
             }
         }
-        .frame(
-            maxWidth: .infinity,
-            maxHeight: .infinity
-        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(viewModel.frameBackgroundColor)
     }
 }

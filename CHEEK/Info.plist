@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>SERVER_IP</key>
-	<string>$(SERVER_IP)</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>프로필 사진 혹은 스토리 사진 삽입하기 위해 필요합니다.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -24,6 +20,13 @@
 		<string>kakaokompassauth</string>
 		<string>kakaolink</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>SERVER_IP</key>
+	<string>$(SERVER_IP)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SUIT-Bold.otf</string>
@@ -36,11 +39,6 @@
 		<string>CheekWhite</string>
 		<key>UIImageName</key>
 		<string>LogoCheekColor</string>
-	</dict>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
 	</dict>
 </dict>
 </plist>
