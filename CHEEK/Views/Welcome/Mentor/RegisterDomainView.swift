@@ -9,15 +9,15 @@ import SwiftUI
 
 struct RegisterDomainView: View {
     @Environment(\.presentationMode) var presentationMode
+    @StateObject private var viewModel = VerifyEmailMentorViewModel()
     
-    @Binding var socialProvider: String
     @State private var isMentor: Bool = false
     
     @State private var email: String = ""
-    @State private var isLoading: Bool = false
-    
-    @StateObject private var viewModel = VerifyEmailMentorViewModel()
+    @State var statusEmail: TextFieldForm.statuses = .normal
     @State private var isEmailValidated: Bool = false
+    @FocusState var isEmailFocused: Bool
+    @State private var isLoading: Bool = false
     
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
@@ -26,7 +26,7 @@ struct RegisterDomainView: View {
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
-    @State private var time = 3
+    @State private var time: Int = 3
     @State private var timeRunning: Bool = false
     
     @State private var isDone: Bool = false
@@ -36,118 +36,76 @@ struct RegisterDomainView: View {
             ZStack {
                 VStack(alignment: .leading, spacing: 0) {
                     HStack {
-                        Image("IconArrowLeft")
-                            .frame(width: 24, height: 24)
+                        Image("IconChevronLeft")
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 40, height: 40)
                             .onTapGesture {
                                 presentationMode.wrappedValue.dismiss()
                             }
+                            .padding(4)
                         
                         Spacer()
                     }
-                    .padding(.bottom, 24)
+                    .padding(.top, 12)
                     
-                    Text("사내 이메일 도메인 등록을\n신청해주세요.")
-                        .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                        .padding(.bottom, 4)
+                    Text("사내 이메일 등록을 신청합니다.")
+                        .headline1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                        .padding(.top, 24)
                     
-                    Text("인증을 위한 용도로만 사용되며,\n관리자 확인 후 멘토 회원으로 전환됩니다.")
-                        .caption1(font: "SUIT", color: .cheekTextAlternative, bold: true)
-                        .padding(.bottom, 48)
-                    
-                    
-                    Text("이메일")
-                        .caption1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                        .padding(.bottom, 4)
+                    Text("관리자 확인 후 멘토 회원으로 전환됩니다.")
+                        .label1(font: "SUIT", color: .cheekTextAlternative, bold: true)
+                        .padding(.top, 4)
                     
                     // 이메일 입력칸
-                    TextField(
-                        "",
-                        text: $email,
-                        prompt:
-                            Text(verbatim: "예 > cheek@cheek.com")
-                            .foregroundColor(.cheekTextAlternative)
-                    )
-                    .keyboardType(.emailAddress)
-                    .disabled(isLoading)
-                    .caption1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                    .foregroundColor(.cheekTextStrong)
-                    .frame(height: 32)
-                    .padding(.leading, 10)
-                    .background(
-                        RoundedRectangle(cornerRadius: 5)
-                            .stroke(.cheekTextStrong, lineWidth: 1)
-                    )
-                    .padding(.bottom, 12)
-                    .onChange(of: email) { _ in
-                        isEmailValidated = viewModel.validateEmail(email: email)
-                    }
-                    
-                    // 인증번호 받기
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(isEmailValidated ? .cheekTextStrong : .cheekTextAssitive, lineWidth: 1)
-                        .foregroundColor(.cheekBackgroundTeritory)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 32)
-                        .overlay(
-                            Text("등록 신청하기")
-                                .caption1(font: "SUIT", color: isEmailValidated ? .cheekTextStrong : .cheekTextAssitive, bold: true)
-                        )
-                        .padding(.bottom, 24)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            hideKeyboard()
-                            
-                            if !isLoading {
-                                isLoading = true
-                                if viewModel.validateEmail(email: email) {
-                                    viewModel.registerDomain(email: email) { response in
-                                        if response {
-                                            isLoading = false
-                                            
-                                            isSent = true
-                                            timeRunning = true
-                                            isLoading = false
-                                            
-                                        } else {
-                                            alertMessage = "오류가 발생하였습니다.\n다시 시도해주세요."
-                                            showAlert = true
-                                            isLoading = false
-                                        }
-                                        
-                                    }
-                                } else {
-                                    alertMessage = "이메일을 다시 확인해주세요."
-                                    showAlert = true
-                                    isLoading = false
-                                }
-                            }
+                    TextFieldForm(name: "이메일", placeholder: "예 > cheek@cheek.com", keyboardType: .emailAddress, text: $email, information: "", status: $statusEmail, isFocused: $isEmailFocused)
+                        .onChange(of: email) { _ in
+                            isEmailValidated = viewModel.validateEmail(email: email)
                         }
+                        .padding(.top, 16)
                     
                     Spacer()
+                    
+                    // 인증번호 받기
+                    if isEmailValidated {
+                        ButtonActive(text: "등록 신청하기")
+                            .onTapGesture {
+                                hideKeyboard()
+                                
+                                if !isLoading {
+                                    isLoading = true
+                                    if viewModel.validateEmail(email: email) {
+                                        viewModel.registerDomain(email: email) { response in
+                                            if response {
+                                                isLoading = false
+                                                
+                                                isSent = true
+                                                timeRunning = true
+                                                isLoading = false
+                                                
+                                            } else {
+                                                alertMessage = "오류가 발생하였습니다.\n다시 시도해주세요."
+                                                showAlert = true
+                                                isLoading = false
+                                            }
+                                            
+                                        }
+                                    } else {
+                                        alertMessage = "이메일을 다시 확인해주세요."
+                                        showAlert = true
+                                        isLoading = false
+                                    }
+                                }
+                            }
+                    } else {
+                        ButtonDisabled(text: "등록 신청하기")
+                    }
                 }
-                .padding(.top, 48)
-                .padding(.bottom, 40)
-                .padding(.horizontal, 23)
+                .padding(.horizontal, 16)
+                .padding(.bottom, isEmailFocused ? 24 : 31)
                 .background(.cheekBackgroundTeritory)
                 
                 if isSent {
-                    ZStack {
-                        VStack(spacing: 0) {
-                            Text("멘토 신청이 완료되었습니다.")
-                                .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                .padding(.bottom, 8)
-                            
-                            Text("관리자가 확인 후 유효한 이메일 도메인일 시\n멘토 회원으로 전환되며, 알림을 보내드려요.")
-                                .caption1(font: "SUIT", color: .cheekTextAlternative, bold: true)
-                        }
-                        
-                        VStack {
-                            Spacer()
-                            
-                            Text("\(time)초 후에 프로필 설정 창으로 전환됩니다.")
-                                .caption1(font: "SUIT", color: .cheekTextAlternative, bold: true)
-                                .padding(.bottom, 32)
-                        }
+                    EmailregisterDoneView(time: time)
                         .onReceive(timer) { _ in
                             if timeRunning {
                                 if time > 0 {
@@ -157,21 +115,21 @@ struct RegisterDomainView: View {
                                 }
                             }
                         }
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.cheekBackgroundTeritory)
                 }
                 
+                if isLoading {
+                    LoadingView()
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $isDone, destination: {
-            SetProfileView(socialProvider: $socialProvider, isMentor: $isMentor)
+            SetProfileView(isMentor: $isMentor)
         })
         .alert(isPresented: $showAlert) {
-                Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
+            Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
         }
     }
     
@@ -181,6 +139,29 @@ struct RegisterDomainView: View {
     }
 }
 
+struct EmailregisterDoneView: View {
+    @State var time: Int
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            Image("IconChecked")
+                .resizable()
+                .frame(width: 160, height: 160)
+            
+            VStack(spacing: 4) {
+                Text("멘토 신청이 완료되었습니다.")
+                    .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                
+                Text("멘토 회원으로 확인되면 메일을 전송드릴게요!")
+                    .label1(font: "SUIT", color: .cheekTextAlternative, bold: false)
+            }
+            
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.cheekBackgroundTeritory)
+    }
+}
+
 #Preview {
-    RegisterDomainView(socialProvider: .constant("Kakao"))
+    RegisterDomainView()
 }

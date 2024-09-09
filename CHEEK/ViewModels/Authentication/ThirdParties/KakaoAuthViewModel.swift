@@ -23,7 +23,7 @@ class KakaoAuthViewModel: ObservableObject {
                     }
                     else {
                         //기타 에러
-                        print("checkToken 함수 실행 중 오류")
+                        print("카카오 checkToken 함수 실행 중 오류")
                         completion(false)
                     }
                 }
@@ -40,12 +40,12 @@ class KakaoAuthViewModel: ObservableObject {
     }
     
     // 카카오 로그인
-    func kakaoAuth(completion: @escaping (Bool?) -> Void) {
+    func kakaoAuth(completion: @escaping (Bool) -> Void) {
         if (UserApi.isKakaoTalkLoginAvailable()) {
             UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
                 if let error = error {
                     print("카카오톡 앱을 통하여 로그인 중 오류: \(error)")
-                    completion(nil)
+                    completion(false)
                 }
                 
                 if oauthToken != nil{
@@ -60,7 +60,7 @@ class KakaoAuthViewModel: ObservableObject {
             UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
                 if let error = error {
                     print("카카오톡 웹사이트를 통하여 로그인 중 오류: \(error)")
-                    completion(nil)
+                    completion(false)
                 }
                 
                 if oauthToken != nil{
@@ -75,7 +75,7 @@ class KakaoAuthViewModel: ObservableObject {
     }
     
     // 토큰 전송
-    func sendToken(token: OAuthToken, completion: @escaping (Bool?) -> Void) {
+    func sendToken(token: OAuthToken, completion: @escaping (Bool) -> Void) {
         print("전송 시도 중")
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
         let url = URL(string: "http://\(ip)/member/login")!
@@ -101,22 +101,22 @@ class KakaoAuthViewModel: ObservableObject {
             request.httpBody = try JSONEncoder().encode(bodyData)
         } catch {
             print("카카오 토큰 JSON 변환 중 오류: \(error)")
-            completion(nil)
+            completion(false)
             return
         }
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("카카오 토큰 전송 중 오류: \(error)")
-                completion(nil)
+                completion(false)
             } else if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
                     let response = (dataString as NSString).boolValue
                     print("카카오 토큰 전송 응답: \(response)")
-                    completion(response)
+                    completion(true)
                 } else {
                     print("카카오 토큰 전송 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
-                    completion(nil)
+                    completion(false)
                 }
             }
         }

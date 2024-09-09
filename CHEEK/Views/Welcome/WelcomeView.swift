@@ -9,99 +9,108 @@ import SwiftUI
 
 
 struct WelcomeView: View {
-    @State private var socialProvider: String = ""
     @State private var isLoginSuccess: Bool = false
-    @State private var isProfileSet: Bool = false
     
     @StateObject private var kakaoAuthViewModel = KakaoAuthViewModel()
     
     var body: some View {
         NavigationStack {
-            ZStack {
+            VStack(spacing: 0) {
                 // 로고와 슬로건
-                VStack(spacing: 0) {
-                    Image("LogoCheekColor")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 115)
-                        .padding(.bottom, 5)
-                    
-                    Text("CHEEK!")
-                        .font(.custom("SUIT", size: 40))
-                        .fontWeight(.bold)
-                    
-                    Text("삐약이 주니어를 위한\n커리어 Q&A 플랫폼")
-                        .font(.custom("SUIT", size: 14))
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.bottom, 65)
-                
-                // 로그인 버튼
-                VStack(spacing: 8) {
-                    Spacer()
-                    
-                    // 카카오 로그인
-                    HStack(spacing: 11) {
-                        Image("LogoKakao")
+                VStack(spacing: 24) {
+                    VStack(spacing: 16) {
+                        Image("LogoCheekColor")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 24, height: 24)
+                            .frame(height: 104)
                         
-                        Text("카카오 계정으로 로그인하기")
-                            .label1(font: "SUIT", color: .kakaoLabel, bold: false)
+                        Image("LogoCheekLetters")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 132)
                     }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 45)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(.kakaoYellow)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(.kakaoYellow, lineWidth: 1)
+                    
+                    Text("삐약이 주니어를 위한\n커리어 Q&A 플랫폼")
+                        .title1(font: "SUIT", color: .cheekBlack, bold: true)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.top, 156)
+                
+                Spacer()
+                
+                // 로그인 버튼
+                VStack(spacing: 16) {
+                    // 카카오 로그인
+                    WelcomeViewSocialButton(
+                        text: "카카오로 시작하기",
+                        textColor: .kakaoLabel,
+                        isSystemImage: false,
+                        image: "LogoKakao",
+                        bgColor: .kakaoYellow
                     )
                     .onTapGesture {
-                        socialProvider = "Kakao"
                         kakaoAuthViewModel.kakaoAuth() { success in
-                            isLoginSuccess = success != nil
-                            if success != nil {
-                                isProfileSet = success!
-                            }
+                            isLoginSuccess = success
                         }
                     }
                     
-                    /*
-                    // 구글 로그인
-                    HStack(spacing: 11) {
-                        Image("LogoGoogle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 24, height: 24)
-                        Text("Google 계정으로 로그인하기")
-                            .label1(font: "SUIT", color: .cheekTextStrong, bold: false)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 45)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(.cheekTextAlternative, lineWidth: 1)
+                    // 애플 로그인
+                    WelcomeViewSocialButton(
+                        text: "애플로 시작하기",
+                        textColor: .appleWhite,
+                        isSystemImage: true,
+                        image: "apple.logo",
+                        systemImageColor: .appleWhite,
+                        bgColor: .appleBlack
                     )
                     .onTapGesture {
-                     
                     }
-                     */
                 }
-                .padding(.bottom, 40)
+                .padding(.bottom, 31)
             }
-            .padding(.horizontal, 44)
+            .padding(.horizontal, 16)
             .background(.cheekBackgroundTeritory)
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
             .navigationDestination(isPresented: $isLoginSuccess, destination: {
-                SelectMentorMenteeView(socialProvider: $socialProvider)
+                MentorMenteeView()
             })
         }
+    }
+}
+
+struct WelcomeViewSocialButton: View {
+    var text: String
+    var textColor: Color
+    var isSystemImage: Bool
+    var image: String
+    var systemImageColor: Color?
+    var bgColor: Color
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            if isSystemImage {
+                Image(systemName: image)                
+                    .resizable()
+                    .foregroundColor(systemImageColor)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 18)
+            } else {
+                Image(image)                
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 20)
+            }
+            
+            Text(text)
+                .label1(font: "SUIT", color: textColor, bold: true)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 56)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(bgColor)
+        )
     }
 }
 

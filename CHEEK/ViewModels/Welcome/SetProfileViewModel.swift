@@ -9,7 +9,8 @@ import Foundation
 import PhotosUI
 
 class SetProfileViewModel: ObservableObject {
-    func getEmail(socialProvider: String, completion: @escaping (String?) -> Void) {
+    func getEmail(completion: @escaping (String?) -> Void) {
+        /*
         if socialProvider == "Kakao" {
             KakaoAuthViewModel().checkToken() { isHasToken in
                 if isHasToken {
@@ -19,6 +20,7 @@ class SetProfileViewModel: ObservableObject {
                 }
             }
         }
+         */
     }
     
     func checkUniqueNickname(nickname: String, completion: @escaping (Bool) -> Void) {
@@ -58,8 +60,8 @@ class SetProfileViewModel: ObservableObject {
         task.resume()
     }
     
-    func setProfile(socialProvider: String, nickname: String?, information: String?, isMentor: Bool, profilePicture: UIImage?, completion: @escaping (Bool) -> Void) {
-        getEmail(socialProvider: socialProvider) { email in
+    func setProfile(nickname: String?, information: String?, isMentor: Bool, profilePicture: UIImage?, completion: @escaping (Bool) -> Void) {
+        getEmail() { email in
             guard let email = email else {
                 print("오류: 멘티 프로필 설정 중 이메일 없음")
                 completion(false)
