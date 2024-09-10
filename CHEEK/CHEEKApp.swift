@@ -11,13 +11,14 @@ import KakaoSDKAuth
 
 @main
 struct CHEEKApp: App {
-    @StateObject private var kakaoAuth = KakaoAuthViewModel()
     let appKeyKakao = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as! String
     
     init() {
         // Kakao SDK 초기화
-        //        KakaoSDK.initSDK(appKey: appKeyKakao)
-        //        kakaoAuth.checkToken() { isHasToken in}
+        KakaoSDK.initSDK(appKey: appKeyKakao)
+        AuthenticationViewModel().autoSignIn() { success in
+            print(success)
+        }
     }
     
     var body: some Scene {
@@ -27,7 +28,6 @@ struct CHEEKApp: App {
                     if (AuthApi.isKakaoTalkLoginUrl(url)) {
                         _ = AuthController.handleOpenUrl(url: url)
                     }
-                    
                 }
                 .onAppear {
                     

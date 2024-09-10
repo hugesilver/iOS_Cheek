@@ -10,10 +10,16 @@ import Foundation
 class Keychain: ObservableObject {
     // Keychain 생성
     func create(key: String, value: String) {
+        // Data 타입으로 변환
+        guard let valueData = value.data(using: .utf8) else {
+            print("String을 Data로 변환 실패")
+            return
+        }
+        
         let query: NSDictionary = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: key, // 저장할 Account Key
-            kSecValueData as String: value, // 저장할 value
+            kSecValueData as String: valueData, // 저장할 value
         ]
         
         SecItemDelete(query) // 중복 Keychain 삭제
@@ -40,20 +46,23 @@ class Keychain: ObservableObject {
         var item: CFTypeRef?
         let status = SecItemCopyMatching(query as CFDictionary, &item)
         
-        guard status == errSecSuccess || status != errSecItemNotFound else {
-            print("Keychain 조회 실패(status)")
+        guard status == errSecSuccess else {
+            if status == errSecItemNotFound {
+                print("Keychain에 \(key) 키가 존재하지 않습니다.")
+            } else {
+                print("Keychain 조회 실패: \(status)")
+            }
             return nil
         }
         
-        guard let existingItem = item as? [String: Any],
-              let account = existingItem[kSecAttrAccount as String] as? String,
-              let valueData = existingItem[kSecValueData as String] as? String
-        else {
-            print("Keychain 조회 실패(item 오류)")
+        // 반환된 값을 Data로 변환
+        guard let data = item as? Data,
+              let value = String(data: data, encoding: .utf8) else {
+            print("Keychain에서 데이터를 String으로 변환하는 데 실패했습니다.")
             return nil
         }
         
-        return valueData
+        return value
     }
     
     // Keychain 삭제

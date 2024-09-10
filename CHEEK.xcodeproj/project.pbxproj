@@ -66,6 +66,7 @@
 		E2A626312C137D84005B28BE /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A626302C137D84005B28BE /* ProfileModel.swift */; };
 		E2A626362C1787A1005B28BE /* VerifyCodesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A626352C1787A1005B28BE /* VerifyCodesModel.swift */; };
 		E2B1F8D72C8774B900B5743A /* SelectStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B1F8D62C8774B900B5743A /* SelectStoriesView.swift */; };
+		E2B1F8E02C8F127B00B5743A /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B1F8DF2C8F127B00B5743A /* AuthenticationViewModel.swift */; };
 		E2BD4D9E2C294B5B00E1B783 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */; };
 		E2E740E32C00B289003B510B /* CHEEKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E740E22C00B289003B510B /* CHEEKApp.swift */; };
 		E2E740E72C00B28B003B510B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2E740E62C00B28B003B510B /* Assets.xcassets */; };
@@ -140,6 +141,7 @@
 		E2A626302C137D84005B28BE /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		E2A626352C1787A1005B28BE /* VerifyCodesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodesModel.swift; sourceTree = "<group>"; };
 		E2B1F8D62C8774B900B5743A /* SelectStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectStoriesView.swift; sourceTree = "<group>"; };
+		E2B1F8DF2C8F127B00B5743A /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		E2E740DF2C00B289003B510B /* CHEEK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CHEEK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2E740E22C00B289003B510B /* CHEEKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEEKApp.swift; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 		E2460E0E2C010D6000424739 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E2F376112C1A1D9000A727C7 /* ProfileViewModel.swift */,
 				E2BD4D9C2C29499D00E1B783 /* Authentication */,
 				E2F376102C1A1D8200A727C7 /* Main */,
 				E28365272C034EF0002D4624 /* Welcome */,
@@ -268,10 +271,10 @@
 		E28365222C01D836002D4624 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
-				E28365372C04B263002D4624 /* SetProfileView.swift */,
+				E2BF98332C9037A300213043 /* Select */,
+				E2BF98322C90379600213043 /* Profile */,
 				E28365252C01D854002D4624 /* Mentor */,
 				E28365232C01D84F002D4624 /* WelcomeView.swift */,
-				E28365292C034FCD002D4624 /* MentorMenteeView.swift */,
 			);
 			path = Welcome;
 			sourceTree = "<group>";
@@ -364,8 +367,25 @@
 			children = (
 				E28365282C034F4E002D4624 /* ThirdParties */,
 				E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */,
+				E2B1F8DF2C8F127B00B5743A /* AuthenticationViewModel.swift */,
 			);
 			path = Authentication;
+			sourceTree = "<group>";
+		};
+		E2BF98322C90379600213043 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				E28365372C04B263002D4624 /* SetProfileView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		E2BF98332C9037A300213043 /* Select */ = {
+			isa = PBXGroup;
+			children = (
+				E28365292C034FCD002D4624 /* MentorMenteeView.swift */,
+			);
+			path = Select;
 			sourceTree = "<group>";
 		};
 		E2E740D62C00B289003B510B = {
@@ -415,7 +435,6 @@
 			isa = PBXGroup;
 			children = (
 				E2FA488F2C2D81B10098137F /* AddAnswerViewModel.swift */,
-				E2F376112C1A1D9000A727C7 /* ProfileViewModel.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -586,6 +605,7 @@
 				E2417C402C71E70800A7A2A0 /* Chip.swift in Sources */,
 				E27EF5802C7E0C310047E6EC /* ProfileView.swift in Sources */,
 				E283653D2C059DD8002D4624 /* KakaoAuthViewModel.swift in Sources */,
+				E2B1F8E02C8F127B00B5743A /* AuthenticationViewModel.swift in Sources */,
 				E29CF8282C5A2B6800929437 /* SelectableCard.swift in Sources */,
 				E283652A2C034FCD002D4624 /* MentorMenteeView.swift in Sources */,
 				E27EF5782C7CC2910047E6EC /* SearchResultProfileView.swift in Sources */,

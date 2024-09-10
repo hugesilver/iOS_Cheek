@@ -150,7 +150,7 @@ struct SetProfileView: View {
                     Spacer()
                     
                     // 다음 버튼
-                    if !isLoading && !nickname.isEmpty && isUniqueNickname {
+                    if !isLoading && !nickname.isEmpty && isUniqueNickname && !information.isEmpty {
                         ButtonActive(text: "다음")
                             .onTapGesture {
                                 hideKeyboard()
@@ -179,17 +179,20 @@ struct SetProfileView: View {
                         ButtonDisabled(text: "다음")
                     }
                 }
-                .padding(.bottom, 
+                .padding(.bottom,
                          isNicknameFocused || isInformationFocused ? 24 : 31)
                 .padding(.horizontal, 16)
+                .background(.cheekBackgroundTeritory)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
                 if isLoading {
                     LoadingView()
                 }
             }
-        }
-        .onTapGesture {
-            hideKeyboard()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onTapGesture {
+                hideKeyboard()
+            }
         }
         .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)

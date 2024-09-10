@@ -15,24 +15,7 @@ class KakaoAuthViewModel: ObservableObject {
     // 토큰 확인
     func checkToken(completion: @escaping (Bool) -> Void) {
         if (AuthApi.hasToken()) {
-            UserApi.shared.accessTokenInfo { (accessTokenInfo, error) in
-                if let error = error {
-                    if let sdkError = error as? SdkError, sdkError.isInvalidTokenError() == true  {
-                        print("카카오 토큰 유효하지 않음(sdk error)")
-                        completion(false)
-                    }
-                    else {
-                        //기타 에러
-                        print("카카오 checkToken 함수 실행 중 오류")
-                        completion(false)
-                    }
-                }
-                else {
-                    //토큰 유효성 체크 성공(필요 시 토큰 갱신됨)
-                    print("카카오 토큰 유효: \(String(describing: accessTokenInfo))")
-                    completion(true)
-                }
-            }
+            completion(true)
         } else {
             print("카카오 토큰 유효하지 않음")
             completion(false)
@@ -74,6 +57,12 @@ class KakaoAuthViewModel: ObservableObject {
         }
     }
     
+    // 토큰 저장
+    func saveTokenInKeychain(token: OAuthToken) {
+        Keychain().create(key: "ACCESS_TOKEN", value: token.accessToken)
+        Keychain().create(key: "REFRESH_TOKEN", value: token.refreshToken)
+    }
+    
     // 토큰 전송
     func sendToken(token: OAuthToken, completion: @escaping (Bool) -> Void) {
         print("전송 시도 중")
@@ -101,61 +90,23 @@ class KakaoAuthViewModel: ObservableObject {
             request.httpBody = try JSONEncoder().encode(bodyData)
         } catch {
             print("카카오 토큰 JSON 변환 중 오류: \(error)")
-            completion(false)
             return
         }
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("카카오 토큰 전송 중 오류: \(error)")
-                completion(false)
+                return
             } else if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
                     let response = (dataString as NSString).boolValue
                     print("카카오 토큰 전송 응답: \(response)")
-                    completion(true)
+                    Keychain().create(key: "SOCIAL_MEDIA", value: "KAKAO")
+                    self.saveTokenInKeychain(token: token)
+                    completion(response)
                 } else {
                     print("카카오 토큰 전송 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
-                    completion(false)
-                }
-            }
-        }
-        
-        task.resume()
-    }
-    
-    // 프로필 조회
-    func getProfileFromKakao(token: OAuthToken, completion: @escaping (ProfileModel?) -> Void) {
-        let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        var components = URLComponents(string: "http://\(ip)/member/info")!
-        
-        components.queryItems = [
-            URLQueryItem(name:"accessToken", value: token.accessToken)
-        ]
-        
-        guard let url = components.url else {
-            print("getProfileFromKakao 함수 내 URL 추출 실패")
-            completion(nil)
-            return
-        }
-        
-        // Header 세팅
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("카카오 프로필 조회 중 오류: \(error)")
-                completion(nil)
-            } else if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    let response = try decoder.decode(ProfileModel.self, from: data)
-                    print("카카오 기반 유저 프로필 조회 성공: \(response)")
-                    completion(response)
-                } catch {
-                    print("카카오 기반 유저 프로필 조회 JSON 변환중 오류: \(error)")
-                    completion(nil)
+                    return
                 }
             }
         }

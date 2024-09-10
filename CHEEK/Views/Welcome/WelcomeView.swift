@@ -10,6 +10,7 @@ import SwiftUI
 
 struct WelcomeView: View {
     @State private var isLoginSuccess: Bool = false
+    @State private var isSetProfile: Bool = false
     
     @StateObject private var kakaoAuthViewModel = KakaoAuthViewModel()
     
@@ -49,11 +50,13 @@ struct WelcomeView: View {
                         bgColor: .kakaoYellow
                     )
                     .onTapGesture {
-                        kakaoAuthViewModel.kakaoAuth() { success in
-                            isLoginSuccess = success
+                        kakaoAuthViewModel.kakaoAuth() { isSet in
+                            isSetProfile = isSet
+                            isLoginSuccess = true
                         }
                     }
                     
+                    /*
                     // 애플 로그인
                     WelcomeViewSocialButton(
                         text: "애플로 시작하기",
@@ -65,6 +68,7 @@ struct WelcomeView: View {
                     )
                     .onTapGesture {
                     }
+                     */
                 }
                 .padding(.bottom, 31)
             }
@@ -73,7 +77,11 @@ struct WelcomeView: View {
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
             .navigationDestination(isPresented: $isLoginSuccess, destination: {
-                MentorMenteeView()
+                if isSetProfile {
+                    MainView()
+                } else {
+                    MentorMenteeView()
+                }
             })
         }
     }

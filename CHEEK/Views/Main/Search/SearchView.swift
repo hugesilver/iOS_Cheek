@@ -130,7 +130,17 @@ struct SearchView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
+            .onTapGesture {
+                hideKeyboard()
+            }
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
+    }
+    
+    // 키보드 숨기기
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
     func ChipOnClose() {
