@@ -23,18 +23,18 @@ class KakaoAuthViewModel: ObservableObject {
     }
     
     // 카카오 로그인
-    func kakaoAuth(completion: @escaping (Bool) -> Void) {
+    func kakaoAuth(completion: @escaping (Bool?) -> Void) {
         if (UserApi.isKakaoTalkLoginAvailable()) {
             UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
                 if let error = error {
                     print("카카오톡 앱을 통하여 로그인 중 오류: \(error)")
-                    completion(false)
+                    completion(nil)
                 }
                 
-                if oauthToken != nil{
+                if oauthToken != nil {
                     print("카카오톡 앱을 통하여 로그인 성공: \(String(describing: oauthToken))")
-                    self.sendToken(token: oauthToken!) { success in
-                        completion(success)
+                    self.sendToken(token: oauthToken!) { isSet in
+                        completion(isSet)
                     }
                     return
                 }
@@ -43,13 +43,13 @@ class KakaoAuthViewModel: ObservableObject {
             UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
                 if let error = error {
                     print("카카오톡 웹사이트를 통하여 로그인 중 오류: \(error)")
-                    completion(false)
+                    completion(nil)
                 }
                 
-                if oauthToken != nil{
+                if oauthToken != nil {
                     print("카카오톡 웹사이트를 통하여 로그인 성공: \(String(describing: oauthToken))")
-                    self.sendToken(token: oauthToken!) { success in
-                        completion(success)
+                    self.sendToken(token: oauthToken!) { isSet in
+                        completion(isSet)
                     }
                     return
                 }
@@ -64,10 +64,10 @@ class KakaoAuthViewModel: ObservableObject {
     }
     
     // 토큰 전송
-    func sendToken(token: OAuthToken, completion: @escaping (Bool) -> Void) {
+    func sendToken(token: OAuthToken, completion: @escaping (Bool?) -> Void) {
         print("전송 시도 중")
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        let url = URL(string: "http://\(ip)/member/login")!
+        let url = URL(string: "\(ip)/member/login")!
         
         // Header 세팅
         var request = URLRequest(url: url)
@@ -90,14 +90,18 @@ class KakaoAuthViewModel: ObservableObject {
             request.httpBody = try JSONEncoder().encode(bodyData)
         } catch {
             print("카카오 토큰 JSON 변환 중 오류: \(error)")
+            completion(nil)
             return
         }
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("카카오 토큰 전송 중 오류: \(error)")
+                completion(nil)
                 return
-            } else if let data = data {
+            }
+            
+            if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
                     let response = (dataString as NSString).boolValue
                     print("카카오 토큰 전송 응답: \(response)")
@@ -106,8 +110,13 @@ class KakaoAuthViewModel: ObservableObject {
                     completion(response)
                 } else {
                     print("카카오 토큰 전송 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
+                    completion(nil)
                     return
                 }
+            }
+            
+            if let response = response as? HTTPURLResponse {
+                print("카카오 로그인 응답 코드: \(response.statusCode)")
             }
         }
         

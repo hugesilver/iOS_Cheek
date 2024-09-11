@@ -32,7 +32,7 @@ class VerifyEmailMentorViewModel: ObservableObject {
         print(domain)
         
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        var components = URLComponents(string: "http://\(ip)/email/verify-domain")!
+        var components = URLComponents(string: "\(ip)/email/verify-domain")!
         
         components.queryItems = [
             URLQueryItem(name:"domain", value: domain)
@@ -77,7 +77,7 @@ class VerifyEmailMentorViewModel: ObservableObject {
         print(domain)
         
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        var components = URLComponents(string: "http://\(ip)/email/register-domain")!
+        var components = URLComponents(string: "\(ip)/email/register-domain")!
         
         components.queryItems = [
             URLQueryItem(name:"domain", value: domain)
@@ -131,7 +131,7 @@ class VerifyEmailMentorViewModel: ObservableObject {
     
     func sendEmail(email: String, completion: @escaping (String?) -> Void) {
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        let url = URL(string: "http://\(ip)/email/send")!
+        let url = URL(string: "\(ip)/email/send")!
         
         // Header 세팅
         var request = URLRequest(url: url)
@@ -169,7 +169,7 @@ class VerifyEmailMentorViewModel: ObservableObject {
     
     func verifyEmailCode(email: String, verificationCode: String, completion: @escaping (String?) -> Void) {
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        let url = URL(string: "http://\(ip)/email/send")!
+        let url = URL(string: "\(ip)/email/send")!
         
         // Header 세팅
         var request = URLRequest(url: url)

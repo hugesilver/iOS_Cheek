@@ -13,7 +13,7 @@ struct CaptionCard: View {
     var body: some View {
         VStack(spacing: 6) {
             HStack(spacing: 8) {
-                ProfileS(url: data.profilePicture)
+                ProfileS(url: data.profilePicture ?? "")
                 
                 VStack(alignment: .leading) {
                     Text(data.nickname)
@@ -22,7 +22,7 @@ struct CaptionCard: View {
                     
                     Spacer()
                     
-                    Text(data.description)
+                    Text(data.description ?? "")
                         .caption1(font: "SUIT", color: .cheekTextAlternative, bold: false)
                         .lineLimit(1)
                 }
@@ -46,7 +46,7 @@ struct RankingCard: View {
             HStack(spacing: 8) {
                 Ranking(rank: rank)
                 
-                ProfileS(url: data.profilePicture)
+                ProfileS(url: data.profilePicture ?? "")
                 
                 VStack(alignment: .leading) {
                     Text(data.nickname)
@@ -55,7 +55,7 @@ struct RankingCard: View {
                     
                     Spacer()
                     
-                    Text(data.description)
+                    Text(data.description ?? "")
                         .caption1(font: "SUIT", color: .cheekTextAlternative, bold: false)
                         .lineLimit(1)
                 }
@@ -85,7 +85,7 @@ struct UserFollowCard: View {
         HStack(spacing: 0) {
             VStack(spacing: 6) {
                 HStack(spacing: 8) {
-                    ProfileS(url: data.profilePicture)
+                    ProfileS(url: data.profilePicture ?? "")
                     
                     VStack(alignment: .leading) {
                         Text(data.nickname)
@@ -124,7 +124,7 @@ struct UserCardLarge: View {
     
     var body: some View {
         HStack(spacing: 8) {
-            ProfileM(url: data.profilePicture)
+            ProfileM(url: data.profilePicture ?? "")
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
@@ -188,7 +188,7 @@ struct UserAnswerCard: View {
                             Color.cheekMainNormal
                         }
                         // .aspectRatio(9/16, contentMode: .fit)
-                        .frame(width: 190)
+                        .frame(width: 160)
                         .frame(height: 240)
                         .clipped()
                         .cornerRadius(16)
