@@ -17,6 +17,7 @@ struct SetProfileView: View {
     
     @Binding var isMentor: Bool
     
+    @StateObject var profileViewModel = ProfileViewModel()
     @StateObject private var viewModel = SetProfileViewModel()
     
     // 사진
@@ -159,8 +160,11 @@ struct SetProfileView: View {
                                 viewModel.checkUniqueNickname(nickname: nickname) {
                                     response in
                                     if response {
-                                        viewModel.setProfile(nickname: nickname, information: information, isMentor: isMentor, profilePicture: selectImage) { success in
+                                        viewModel.setProfile(
+                                            profilePicture: selectImage,
+                                            nickname: nickname, information: information, isMentor: isMentor) { success in
                                             if success {
+                                                profileViewModel.getProfile()
                                                 isDone = success
                                             } else {
                                                 activeAlert = .isError
@@ -182,8 +186,8 @@ struct SetProfileView: View {
                 .padding(.bottom,
                          isNicknameFocused || isInformationFocused ? 24 : 31)
                 .padding(.horizontal, 16)
-                .background(.cheekBackgroundTeritory)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.cheekBackgroundTeritory)
                 
                 if isLoading {
                     LoadingView()
@@ -198,7 +202,7 @@ struct SetProfileView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $isDone, destination: {
-            MainView()
+            MainView(profileViewModel: profileViewModel)
         })
         .alert(isPresented: $showAlert) {
             switch activeAlert {

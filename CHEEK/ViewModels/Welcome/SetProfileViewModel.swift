@@ -37,7 +37,7 @@ class SetProfileViewModel: ObservableObject {
         }
         
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        var components = URLComponents(string: "http://\(ip)/member/check-nickname")!
+        var components = URLComponents(string: "\(ip)/member/check-nickname")!
         
         components.queryItems = [
             URLQueryItem(name: "nickname", value: nickname)
@@ -58,7 +58,8 @@ class SetProfileViewModel: ObservableObject {
             if let error = error {
                 print("닉네임 중복 확인 중 오류: \(error)")
                 completion(false)
-            } else if let data = data {
+            }
+            if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
                     let response = (dataString as NSString).boolValue
                     print("닉네임 중복 확인 응답: \(response)")
@@ -73,7 +74,7 @@ class SetProfileViewModel: ObservableObject {
         task.resume()
     }
     
-    func setProfile(nickname: String, information: String, isMentor: Bool, profilePicture: UIImage?, completion: @escaping (Bool) -> Void) {
+    func setProfile(profilePicture: UIImage?, nickname: String, information: String, isMentor: Bool, completion: @escaping (Bool) -> Void) {
         guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
             completion(false)
             return
@@ -87,31 +88,29 @@ class SetProfileViewModel: ObservableObject {
             }
             
             let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-            let url = URL(string: "http://\(ip)/member/profile")!
+            let url = URL(string: "\(ip)/member/profile")!
             
-            // Header 세팅
+            // Boundary 설정
+            let boundary = UUID().uuidString
+            
+            // Header 설정
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
+            request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
             request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
             
-            // Body 세팅
-            let profileDto = [
+            // Body 설정
+            var httpBody = Data()
+            
+            // profileDto
+            let profileDto: [String: Any] = [
                 "email": email,
                 "nickname": nickname,
                 "information": information,
                 "role": isMentor ? "MENTOR" : "MENTEE"
             ]
             
-            var httpBody = Data()
-            
-            let boundary = UUID().uuidString
-            
-            if profilePicture != nil {
-                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            }
-            
-            let jsonEncoder = JSONEncoder()
-            if let jsonData = try? jsonEncoder.encode(profileDto) {
+            if let jsonData = try? JSONSerialization.data(withJSONObject: profileDto, options: .prettyPrinted) {
                 httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
                 httpBody.append("Content-Disposition: form-data; name=\"profileDto\"\r\n".data(using: .utf8)!)
                 httpBody.append("Content-Type: application/json\r\n\r\n".data(using: .utf8)!)
@@ -119,35 +118,44 @@ class SetProfileViewModel: ObservableObject {
                 httpBody.append("\r\n".data(using: .utf8)!)
             }
             
-            if profilePicture != nil {
-                // 이미지 데이터 생성
-                let profilePictureData = profilePicture?.jpegData(compressionQuality: 1.0)
-                
-                // 이미지 데이터 추가
-                httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
-                httpBody.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"profile.jpg\"\r\n".data(using: .utf8)!)
-                httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
-                httpBody.append(profilePictureData!)
-                httpBody.append("\r\n".data(using: .utf8)!)
+            httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
+            httpBody.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"profile.jpg\"\r\n".data(using: .utf8)!)
+            httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+            
+            if let profilePicture {
+                let profilePictureData = profilePicture.jpegData(compressionQuality: 1.0)!
+                httpBody.append(profilePictureData)
             }
             
-            // 마지막 경계 추가
+            httpBody.append("\r\n".data(using: .utf8)!)
+            
+            
+            // Boundary 끝 추가
             httpBody.append("--\(boundary)--\r\n".data(using: .utf8)!)
             
-            // HTTP 본문 설정
             request.httpBody = httpBody
             
+            // 서버에 요청 보내기
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 if let error = error {
-                    print("프로필 정보 전송 중 오류: \(error)")
+                    print("프로필 설정 중 오류: \(error)")
                     completion(false)
-                } else if let data = data {
+                    return
+                }
+                
+                if let data = data {
                     // 응답 처리
-                    let responseJSON = try? JSONSerialization.jsonObject(with: data, options: [])
-                    if let responseJSON = responseJSON as? [String: Any] {
-                        print("프로필 설정 전송 응답: \(responseJSON)")
+                    if let responseString = String(data: data, encoding: .utf8) {
+                        print("프로필 설정 응답: \(responseString)")
+                        completion(responseString == "ok")
+                    } else {
+                        print("프로필 설정 응답 String 변환 중 오류 발생")
+                        completion(false)
                     }
-                    completion(true)
+                }
+                
+                if let response = response as? HTTPURLResponse {
+                    print("프로필 설정 응답 코드: \(response.statusCode)")
                 }
             }
             

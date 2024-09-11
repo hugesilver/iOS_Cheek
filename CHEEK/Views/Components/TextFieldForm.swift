@@ -45,7 +45,7 @@ struct TextFieldForm: View {
                 color: status == .disabled ? .cheekTextAlternative : .cheekTextStrong,
                 bold: false)
             .focused($isFocused)
-            .padding(status == .normal || status == .disabled ? 14 : 12)
+            .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(
