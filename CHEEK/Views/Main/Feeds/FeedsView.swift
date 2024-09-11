@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct FeedsView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Binding var selectedCategory: Int
+    @Binding var isPresented: Bool
+    @Binding var path: MainView.PATHS
     
     var categories: [CategoryModel]
-    
-    @Binding var selectedCategory: Int
     
     @State var selectedTab: Int = 0
     
     var body: some View {
-        NavigationStack {
+        ZStack {
             VStack {
                 HStack {
                     Menu {
@@ -46,6 +46,10 @@ struct FeedsView: View {
                         .frame(width: 32, height: 32)
                         .padding(8)
                         .foregroundColor(.cheekTextNormal)
+                        .onTapGesture {
+                            path = .search
+                            isPresented = true
+                        }
                 }
                 .padding(.top, 8)
                 .padding(.horizontal, 16)
@@ -63,23 +67,41 @@ struct FeedsView: View {
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            VStack {
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    
+                    FAB()
+                        .onTapGesture {
+                            path = .question
+                            isPresented = true
+                        }
+                }
+                .padding(24)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 #Preview {
-    FeedsView(categories: [
-        CategoryModel(id: 0, image: "IconJobDevelop", name: "개발"),
-        CategoryModel(id: 1, image: "IconJobManage", name: "기획"),
-        CategoryModel(id: 2, image: "IconJobDesign", name: "디자인"),
-        CategoryModel(id: 3, image: "IconJobFinance", name: "재무/회계"),
-        CategoryModel(id: 4, image: "IconJobSales", name: "영업"),
-        CategoryModel(id: 5, image: "IconJobMed", name: "의료"),
-        CategoryModel(id: 6, image: "IconJobEdu", name: "교육"),
-        CategoryModel(id: 7, image: "IconJobLaw", name: "법"),
-    ], selectedCategory: .constant(0))
+    FeedsView(
+        selectedCategory: .constant(0),
+        isPresented: .constant(false), path: .constant(.search),
+        categories: [
+            CategoryModel(id: 0, image: "IconJobDevelop", name: "개발"),
+            CategoryModel(id: 1, image: "IconJobManage", name: "기획"),
+            CategoryModel(id: 2, image: "IconJobDesign", name: "디자인"),
+            CategoryModel(id: 3, image: "IconJobFinance", name: "재무/회계"),
+            CategoryModel(id: 4, image: "IconJobSales", name: "영업"),
+            CategoryModel(id: 5, image: "IconJobMed", name: "의료"),
+            CategoryModel(id: 6, image: "IconJobEdu", name: "교육"),
+            CategoryModel(id: 7, image: "IconJobLaw", name: "법"),
+        ])
 }

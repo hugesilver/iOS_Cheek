@@ -9,6 +9,8 @@ import SwiftUI
 
 struct HomeView: View {
     @Binding var currentMainIndex: Int
+    @Binding var isPresented: Bool
+    @Binding var path: MainView.PATHS
     
     @State var banners: [String] = ["ImageBannerSample1", "ImageBannerSample1"]
     
@@ -22,8 +24,6 @@ struct HomeView: View {
     
     var topUsers: [ProfileModel] = [
     ]
-    
-    @State private var isPresented: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -46,7 +46,8 @@ struct HomeView: View {
                                 .fill(.cheekLineAlternative)
                         )
                         .onTapGesture {
-                            
+                            path = .search
+                            isPresented = true
                         }
                         
                         Image("IconBell")
@@ -73,8 +74,6 @@ struct HomeView: View {
                             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                             .frame(maxWidth: .infinity)
                             .frame(height: (UIScreen.main.bounds.width - (16 * 2)) * 0.4432133)
-                            .padding(.horizontal, 16)
-                            .padding(.top, 24)
                             .onChange(of: currentIndex) { newIndex in
                                 /*
                                 if newIndex == 0  {
@@ -90,6 +89,13 @@ struct HomeView: View {
                                 }
                                  */
                             }
+                            .overlay(
+                                BannerList(currentIndex: currentIndex, maxLength: banners.count)
+                                    .padding(.trailing, 21)
+                                    .padding(.bottom, 16), alignment: .bottomTrailing
+                            )
+                            .padding(.horizontal, 16)
+                            .padding(.top, 24)
                             
                             LazyVGrid(columns: categoriesColumns, spacing: 24) {
                                 ForEach(categories) { data in
@@ -127,7 +133,7 @@ struct HomeView: View {
                         
                         ScrollView(.horizontal) {
                             HStack(spacing: 16) {
-                                RankingCard(rank: 1, data: ProfileModel(memberId: 0, email: "", nickname: "최대8자의닉네임", description: "대기업 출신 2년차 프로그래머 입니다.", information: "2년차 프론트엔드 개발자입니다. 혼자 성장하는 것이 아니라 함께 성장하는 이 이상부터 3줄이 될 것 같기 때문에 테스트용 입니다", profilePicture: "", role: "", status: "")!)
+                                RankingCard(rank: 1, data: ProfileModel(memberId: 0, email: "", nickname: "최대8자의닉네임", description: "대기업 출신 2년차 프로그래머 입니다.", information: "2년차 프론트엔드 개발자입니다. 혼자 성장하는 것이 아니라 함께 성장하는 이 이상부터 3줄이 될 것 같기 때문에 테스트용 입니다", profilePicture: "", role: "", status: ""))
                             }
                             .padding(.leading, 16)
                         }
@@ -150,7 +156,7 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(currentMainIndex: .constant(0), categories: [
+    HomeView(currentMainIndex: .constant(0), isPresented: .constant(false), path: .constant(.search), categories: [
         CategoryModel(id: 0, image: "IconJobDevelop", name: "개발"),
         CategoryModel(id: 1, image: "IconJobManage", name: "기획"),
         CategoryModel(id: 2, image: "IconJobDesign", name: "디자인"),

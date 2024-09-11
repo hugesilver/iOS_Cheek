@@ -10,7 +10,7 @@ import SwiftUI
 struct ProfileView: View {
     @Environment(\.presentationMode) var presentationMode
     
-    @State var profileModel: ProfileModel
+    @ObservedObject var profileViewModel: ProfileViewModel
     
     @State private var selectedTab: Int = 0
     
@@ -84,7 +84,7 @@ struct ProfileView: View {
                         .padding(.horizontal, 16)
                         
                         HStack(spacing: 8) {
-                            Text(profileModel.nickname)
+                            Text(profileViewModel.profile?.nickname ?? "불러오는 중...")
                                 .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
                             
                             Circle()
@@ -96,17 +96,19 @@ struct ProfileView: View {
                         .padding(.top, 16)
                         .padding(.horizontal, 16)
                         
-                        Text(profileModel.description)
+                        Text(profileViewModel.profile?.information ?? "불러오는 중...")
                             .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.top, 4)
                             .padding(.horizontal, 16)
                         
-                        Text(profileModel.information)
-                            .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.top, 8)
-                            .padding(.horizontal, 16)
+                        if profileViewModel.profile?.description != nil && ((profileViewModel.profile?.description!.isEmpty) == nil) {
+                            Text(profileViewModel.profile!.description!)
+                                .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.top, 8)
+                                .padding(.horizontal, 16)
+                        }
                         
                         ButtonNarrowFill(text: "팔로우")
                             .padding(.top, 24)
@@ -163,5 +165,5 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView(profileModel: ProfileModel(memberId: 0, email: "", nickname: "최대8자의닉네임", description: "대기업 출신 2년차 프로그래머 입니다.", information: "2년차 프론트엔드 개발자입니다. 혼자 성장하는 것이 아니라 함께 성장하는 이 이상부터 3줄이 될 것 같기 때문에 테스트용 입니다", profilePicture: "", role: "", status: "")!)
+    ProfileView(profileViewModel: ProfileViewModel())
 }

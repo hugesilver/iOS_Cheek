@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SelectStoriesView: View {
+struct SetHighlightView: View {
     @Environment(\.presentationMode) var presentationMode
     
     var categoriesColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
@@ -142,10 +142,12 @@ struct SelectStoriesView: View {
                 .padding(.top, 27)
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
     }
 }
 
 
 #Preview {
-    SelectStoriesView()
+    SetHighlightView()
 }

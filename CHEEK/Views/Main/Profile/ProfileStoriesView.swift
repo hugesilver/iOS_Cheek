@@ -15,14 +15,16 @@ struct ProfileStoriesView: View {
             LazyVGrid(columns: gridColumns) {
                 Rectangle()
                     .frame(height: 156)
-                
+                    .foregroundColor(.cheekMainNormal)
                 
                 Rectangle()
                     .frame(height: 156)
+                    .foregroundColor(.cheekMainNormal)
             
             
                 Rectangle()
                     .frame(height: 156)
+                    .foregroundColor(.cheekMainNormal)
             }
             
             Spacer()

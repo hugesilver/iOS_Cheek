@@ -65,7 +65,7 @@
 		E2A6262F2C106504005B28BE /* VefiryEmailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A6262E2C106504005B28BE /* VefiryEmailModel.swift */; };
 		E2A626312C137D84005B28BE /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A626302C137D84005B28BE /* ProfileModel.swift */; };
 		E2A626362C1787A1005B28BE /* VerifyCodesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A626352C1787A1005B28BE /* VerifyCodesModel.swift */; };
-		E2B1F8D72C8774B900B5743A /* SelectStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B1F8D62C8774B900B5743A /* SelectStoriesView.swift */; };
+		E2B1F8D72C8774B900B5743A /* SetHightLightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B1F8D62C8774B900B5743A /* SetHightLightView.swift */; };
 		E2B1F8E02C8F127B00B5743A /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B1F8DF2C8F127B00B5743A /* AuthenticationViewModel.swift */; };
 		E2BD4D9E2C294B5B00E1B783 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */; };
 		E2E740E32C00B289003B510B /* CHEEKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E740E22C00B289003B510B /* CHEEKApp.swift */; };
@@ -140,7 +140,7 @@
 		E2A6262E2C106504005B28BE /* VefiryEmailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VefiryEmailModel.swift; sourceTree = "<group>"; };
 		E2A626302C137D84005B28BE /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		E2A626352C1787A1005B28BE /* VerifyCodesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyCodesModel.swift; sourceTree = "<group>"; };
-		E2B1F8D62C8774B900B5743A /* SelectStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectStoriesView.swift; sourceTree = "<group>"; };
+		E2B1F8D62C8774B900B5743A /* SetHightLightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetHightLightView.swift; sourceTree = "<group>"; };
 		E2B1F8DF2C8F127B00B5743A /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		E2E740DF2C00B289003B510B /* CHEEK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CHEEK.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -263,7 +263,7 @@
 				E27EF57B2C7E054C0047E6EC /* ProfileStoriesView.swift */,
 				E27EF57D2C7E06BC0047E6EC /* ProfileQuestionsView.swift */,
 				E27EF57F2C7E0C310047E6EC /* ProfileView.swift */,
-				E2B1F8D62C8774B900B5743A /* SelectStoriesView.swift */,
+				E2B1F8D62C8774B900B5743A /* SetHightLightView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -613,7 +613,7 @@
 				E2417C352C71C12D00A7A2A0 /* LoadingView.swift in Sources */,
 				E2417C462C726C9400A7A2A0 /* Tabs.swift in Sources */,
 				E27EF57A2C7CC2D70047E6EC /* SearchResultQuestionView.swift in Sources */,
-				E2B1F8D72C8774B900B5743A /* SelectStoriesView.swift in Sources */,
+				E2B1F8D72C8774B900B5743A /* SetHightLightView.swift in Sources */,
 				E2A626362C1787A1005B28BE /* VerifyCodesModel.swift in Sources */,
 				E2417C442C72141100A7A2A0 /* FAB.swift in Sources */,
 				E27EF56B2C7B84A50047E6EC /* Category.swift in Sources */,
