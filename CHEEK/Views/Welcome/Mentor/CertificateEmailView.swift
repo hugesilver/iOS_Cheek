@@ -31,9 +31,11 @@ struct CertificateEmailView: View {
     
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
-    @State private var resendTime = 60
+    @State private var resendTime: Int = 60
     
-    @State private var codeExpireTime = 180
+    @State private var isSendable: Bool = true
+    
+    @State private var codeExpireTime: Int = 180
     @State private var codeExpireTimerRunning: Bool = false
     
     @State private var isVerificationCodeChecked: Bool = false
@@ -77,13 +79,13 @@ struct CertificateEmailView: View {
                                 }
                             }
                         
-                        if isEmailValidated {
-                            if resendTime == 60 {
+                        if isEmailValidated && !isVerificationCodeChecked {
+                            if isSendable {
                                 ButtonActive(text: "인증번호 전송")
                                     .onTapGesture {
                                         hideKeyboard()
                                         
-                                        if !isLoading && resendTime == 60 {
+                                        if !isLoading {
                                             isLoading = true
                                             if viewModel.validateEmail(email: email) {
                                                 viewModel.validateDomain(email: email) { result in
@@ -91,7 +93,7 @@ struct CertificateEmailView: View {
                                                         viewModel.sendEmail(email: email) { response in
                                                             if response != nil && response == "ok" {
                                                                 isSent = true
-                                                                resendTime = 60
+                                                                isSendable = false
                                                                 codeExpireTime = 180
                                                                 codeExpireTimerRunning = true
                                                                 
@@ -121,11 +123,12 @@ struct CertificateEmailView: View {
                                             resendTime -= 1
                                         } else {
                                             resendTime = 60
+                                            isSendable = true
                                         }
                                     }
                             }
                         } else {
-                            ButtonDisabled(text: "다음")
+                            ButtonDisabled(text: "인증번호 전송")
                         }
                         
                         if isSent && codeExpireTimerRunning {
@@ -163,7 +166,7 @@ struct CertificateEmailView: View {
                                     }
                                 
                                 // 인증하기
-                                if !verificationCode.isEmpty {
+                                if !verificationCode.isEmpty && !isVerificationCodeChecked {
                                     ButtonHugActive(text: "인증하기")
                                         .onTapGesture {
                                             if !isVerificationCodeChecked {

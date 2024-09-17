@@ -23,6 +23,11 @@ class VerifyEmailMentorViewModel: ObservableObject {
     }
     
     func validateDomain(email: String, completion: @escaping (Bool) -> Void) {
+        guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
+            completion(false)
+            return
+        }
+        
         guard let domain = splitDomain(email: email) else {
             completion(false)
             return
@@ -35,7 +40,7 @@ class VerifyEmailMentorViewModel: ObservableObject {
         var components = URLComponents(string: "\(ip)/email/verify-domain")!
         
         components.queryItems = [
-            URLQueryItem(name:"domain", value: domain)
+            URLQueryItem(name: "domain", value: domain)
         ]
         
         guard let url = components.url else {
@@ -44,15 +49,20 @@ class VerifyEmailMentorViewModel: ObservableObject {
             return
         }
         
+        print(url)
+        
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("도메인 유효성 검증 중 오류: \(error)")
                 completion(false)
-            } else if let data = data {
+            }
+            
+            if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
                     let response = (dataString as NSString).boolValue
                     print("도메인 유효성 검증 응답: \(response)")
@@ -68,6 +78,11 @@ class VerifyEmailMentorViewModel: ObservableObject {
     }
     
     func registerDomain(email: String, completion: @escaping (Bool) -> Void) {
+        guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
+            completion(false)
+            return
+        }
+        
         guard let domain = splitDomain(email: email) else {
             completion(false)
             return
@@ -92,6 +107,7 @@ class VerifyEmailMentorViewModel: ObservableObject {
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
@@ -130,13 +146,19 @@ class VerifyEmailMentorViewModel: ObservableObject {
     }
     
     func sendEmail(email: String, completion: @escaping (String?) -> Void) {
+        guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
+            completion(nil)
+            return
+        }
+        
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
         let url = URL(string: "\(ip)/email/send")!
         
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         // Body 세팅
         let bodyData: VefiryEmailModel = VefiryEmailModel(email: email)!
@@ -153,7 +175,9 @@ class VerifyEmailMentorViewModel: ObservableObject {
             if let error = error {
                 print("이메일 코드 전송 중 오류: \(error)")
                 completion(nil)
-            } else if let data = data {
+            }
+            
+            if let data = data {
                 if let dataString = String(data: data, encoding: .utf8) {
                     print("이메일 코드 전송 응답: \(dataString)")
                     completion(dataString)
@@ -168,13 +192,19 @@ class VerifyEmailMentorViewModel: ObservableObject {
     }
     
     func verifyEmailCode(email: String, verificationCode: String, completion: @escaping (String?) -> Void) {
+        guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
+            completion(nil)
+            return
+        }
+        
         let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
         let url = URL(string: "\(ip)/email/send")!
         
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         // Body 세팅
         let bodyData: VefiryCodesModel = VefiryCodesModel(email: email, verificationCode: verificationCode)!
