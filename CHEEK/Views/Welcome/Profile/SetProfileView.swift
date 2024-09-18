@@ -138,6 +138,10 @@ struct SetProfileView: View {
                         
                         // 직무 한줄소개
                         TextFieldForm(name: "직무 한줄소개", placeholder: "예 > 당근 프론트엔드 개발자", text: $information, information: infoInformationForm, status: $statusInformation, isFocused: $isInformationFocused)
+                            .onChange(of: information) { text in
+                                information = String(text.prefix(20))
+                                
+                            }
                             .onChange(of: isInformationFocused) { _ in
                                 if isInformationFocused {
                                     statusInformation = .focused

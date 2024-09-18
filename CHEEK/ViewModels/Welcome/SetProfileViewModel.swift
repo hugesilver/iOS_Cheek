@@ -10,7 +10,10 @@ import PhotosUI
 
 class SetProfileViewModel: ObservableObject {
     func getEmail(completion: @escaping (String?) -> Void) {
-        let socialMedia: String? = UserDefaults.standard.string(forKey: "SOCIAL_MEDIA")
+        guard let socialMedia: String = Keychain().read(key: "SOCIAL_MEDIA") else {
+            completion(nil)
+            return
+        }
         
         switch socialMedia {
         case "KAKAO":
@@ -123,12 +126,10 @@ class SetProfileViewModel: ObservableObject {
             httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
             
             if let profilePicture {
-                let profilePictureData = profilePicture.jpegData(compressionQuality: 1.0)!
-                httpBody.append(profilePictureData)
+                httpBody.append(profilePicture.jpegData(compressionQuality: 0.5)!)
             }
             
             httpBody.append("\r\n".data(using: .utf8)!)
-            
             
             // Boundary 끝 추가
             httpBody.append("--\(boundary)--\r\n".data(using: .utf8)!)
