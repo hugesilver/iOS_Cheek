@@ -11,7 +11,7 @@ struct CertificateEmailView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var isMentor: Bool = true
     
-    @StateObject private var viewModel = VerifyEmailMentorViewModel()
+    @StateObject private var viewModel = CertificateEmailMentorViewModel()
     
     @State private var isLoading: Bool = false
     
