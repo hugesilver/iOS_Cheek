@@ -7,40 +7,25 @@
 
 import SwiftUI
 
+
 struct CertificateEmailView: View {
     @Environment(\.presentationMode) var presentationMode
-    @State private var isMentor: Bool = true
+    var isMentor: Bool
     
     @StateObject private var viewModel = CertificateEmailMentorViewModel()
     
-    @State private var isLoading: Bool = false
-    
+    // 이메일 폼
     @State private var email: String = ""
     @State var statusEmail: TextFieldForm.statuses = .normal
-    @State private var isEmailValidated: Bool = false
     @FocusState var isEmailFocused: Bool
+    @State private var isEmailValidated: Bool = false
     
+    // 인증번호 폼
     @State private var verificationCode: String = ""
     @State var statusVerificationCode: TextFieldForm.statuses = .normal
     @FocusState var isVerificationCodeFocused: Bool
     
-    @State private var showAlert: Bool = false
-    @State private var alertMessage: String = ""
-    
-    @State private var isSent: Bool = false
-    
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
-    @State private var resendTime: Int = 60
-    
-    @State private var isSendable: Bool = true
-    
-    @State private var codeExpireTime: Int = 180
-    @State private var codeExpireTimerRunning: Bool = false
-    
-    @State private var isVerificationCodeChecked: Bool = false
-    
-    @State private var showPopup: Bool = false
+    // destination of navigation
     @State private var isDone: Bool = false
     
     var body: some View {
@@ -69,119 +54,70 @@ struct CertificateEmailView: View {
                         .padding(.top, 4)
                     
                     VStack(spacing: 16) {
-                        TextFieldForm(name: "이메일", placeholder: "예 > cheek@cheek.com", keyboardType: .emailAddress, text: $email, information: "", status: $statusEmail, isFocused: $isEmailFocused)
+                        TextFieldForm(
+                            name: "이메일",
+                            placeholder: "예 > cheek@cheek.com",
+                            keyboardType: .emailAddress,
+                            text: $email,
+                            information: .constant(""),
+                            status: $statusEmail,
+                            isFocused: $isEmailFocused)
                             .onChange(of: email) { _ in
-                            isEmailValidated = viewModel.validateEmail(email: email)
-                        }
-                            .onChange(of: isSent) { _ in
+                                isEmailValidated = viewModel.validateEmail(email: email)
+                            }
+                            .onChange(of: viewModel.isSent) { isSent in
                                 if isSent {
                                     statusEmail = .disabled
                                 }
                             }
                         
-                        if isEmailValidated && !isVerificationCodeChecked {
-                            if isSendable {
+                        if isEmailValidated && !viewModel.isVerificationCodeChecked {
+                            if viewModel.isSendable {
                                 ButtonActive(text: "인증번호 전송")
                                     .onTapGesture {
-                                        hideKeyboard()
-                                        
-                                        if !isLoading {
-                                            isLoading = true
-                                            if viewModel.validateEmail(email: email) {
-                                                viewModel.validateDomain(email: email) { result in
-                                                    if result {
-                                                        viewModel.sendEmail(email: email) { response in
-                                                            if response != nil && response == "ok" {
-                                                                isSent = true
-                                                                isSendable = false
-                                                                codeExpireTime = 180
-                                                                codeExpireTimerRunning = true
-                                                                
-                                                                isLoading = false
-                                                            } else {
-                                                                alertMessage = "오류가 발생하였습니다.\n다시 시도해주세요."
-                                                                showAlert = true
-                                                                isLoading = false
-                                                            }
-                                                        }
-                                                    } else {
-                                                        showPopup = true
-                                                        isLoading = false
-                                                    }
-                                                }
-                                            } else {
-                                                alertMessage = "이메일을 다시 확인해주세요."
-                                                showAlert = true
-                                                isLoading = false
-                                            }
-                                        }
+                                        sendCode()
                                     }
                             } else {
-                                ButtonLine(text: "인증번호 재전송(\(String(format: "%02d:%02d", resendTime / 60, resendTime % 60)))")
-                                    .onReceive(timer) { _ in
-                                        if resendTime > 0 {
-                                            resendTime -= 1
-                                        } else {
-                                            resendTime = 60
-                                            isSendable = true
-                                        }
+                                ButtonLine(text: "인증번호 재전송(\(String(format: "%02d:%02d", viewModel.resendTime / 60, viewModel.resendTime % 60)))")
+                                    .onAppear {
+                                        viewModel.timerResendTime()
                                     }
                             }
                         } else {
                             ButtonDisabled(text: "인증번호 전송")
                         }
                         
-                        if isSent && codeExpireTimerRunning {
+                        if viewModel.isSent {
                             HStack(spacing: 8) {
                                 // 인증번호 입력칸
                                 TextFieldForm(
                                     name: "",
-                                    placeholder: "인증번호 입력(\(String(format: "%02d:%02d", codeExpireTime / 60, codeExpireTime % 60)))", 
+                                    placeholder: "인증번호 입력(\(String(format: "%02d:%02d", viewModel.codeExpireTime / 60, viewModel.codeExpireTime % 60)))",
                                     keyboardType: .numberPad,
                                     text: $verificationCode,
-                                    information: "",
+                                    information: .constant(""),
                                     status: $statusVerificationCode,
                                     isFocused: $isVerificationCodeFocused)
-                                    .onChange(of: verificationCode) { text in
-                                        if text.count > 6 {
-                                            verificationCode = String(text.prefix(6))
-                                        }
+                                .onAppear {
+                                    verificationCode = ""
+                                    viewModel.timerCodeExpireTime()
+                                }
+                                .onChange(of: verificationCode) { text in
+                                    if text.count > 6 {
+                                        verificationCode = String(text.prefix(6))
                                     }
-                                    .onChange(of: isVerificationCodeChecked) { _ in
-                                        if isSent {
-                                            statusVerificationCode = .disabled
-                                        }
+                                }
+                                .onChange(of: viewModel.isVerificationCodeChecked) { isVerificationCodeChecked in
+                                    if isVerificationCodeChecked && viewModel.isSent {
+                                        statusVerificationCode = .disabled
                                     }
-                                    .onReceive(timer) { _ in
-                                        if codeExpireTimerRunning {
-                                            if codeExpireTime > 0 {
-                                                codeExpireTime -= 1
-                                            } else {
-                                                codeExpireTime = 180
-                                                verificationCode = ""
-                                                isSent = false
-                                                codeExpireTimerRunning = false
-                                            }
-                                        }
-                                    }
+                                }
                                 
                                 // 인증하기
-                                if !verificationCode.isEmpty && !isVerificationCodeChecked {
+                                if verificationCode.count == 6 && !viewModel.isVerificationCodeChecked {
                                     ButtonHugActive(text: "인증하기")
                                         .onTapGesture {
-                                            if !isVerificationCodeChecked {
-                                                isLoading = true
-                                                viewModel.verifyEmailCode(email: email, verificationCode: verificationCode) { response in
-                                                    if response != nil && response == "ok" {
-                                                        isVerificationCodeChecked = true
-                                                        isLoading = false
-                                                    } else {
-                                                        alertMessage = "인증번호를 다시 확인해주세요."
-                                                        showAlert = true
-                                                        isLoading = false
-                                                    }
-                                                }
-                                            }
+                                            verifyCode()
                                         }
                                 } else {
                                     ButtonHugDisabled(text: "인증하기")
@@ -194,8 +130,8 @@ struct CertificateEmailView: View {
                     Spacer()
                     
                     // 다음
-                    if isSent {
-                        if isVerificationCodeChecked {
+                    if viewModel.isSent {
+                        if viewModel.isVerificationCodeChecked {
                             ButtonActive(text: "다음")
                                 .onTapGesture {
                                     isDone = true
@@ -210,11 +146,11 @@ struct CertificateEmailView: View {
                          isEmailFocused || isVerificationCodeFocused ? 24 : 31)
                 .background(.cheekBackgroundTeritory)
                 
-                if showPopup {
-                    EmailPopupView(showPopup: $showPopup, isDone: $isDone)
+                if viewModel.showPopup {
+                    EmailPopupView(showPopup: $viewModel.showPopup, isDone: $isDone)
                 }
                 
-                if isLoading {
+                if viewModel.isLoading {
                     LoadingView()
                 }
             }
@@ -226,20 +162,40 @@ struct CertificateEmailView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $isDone, destination: {
-            if isSent {
-                SetProfileView(isMentor: $isMentor)
+            if viewModel.isSent {
+                SetProfileView(isMentor: isMentor)
             } else {
-                RegisterDomainView()
+                RegisterDomainView(isMentor: isMentor)
             }
         })
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(title: Text("오류"), message: Text("실행 중 오류가 발생하였습니다."), dismissButton: .default(Text("확인")))
         }
     }
     
     // 키보드 숨기기
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+    // 인증번호 전송
+    func sendCode() {
+        // 키보드 숨기기
+        hideKeyboard()
+        
+        // 이메잃 확인 후 전송
+        if viewModel.validateEmail(email: email) {
+            // 도메인 검증 후 코드 전송
+            viewModel.validateDomain(email: email)
+        }
+    }
+    
+    // 인증번호 확인
+    func verifyCode() {
+        hideKeyboard()
+        
+        // 인증번호 확인
+        viewModel.verifyEmailCode(email: email, verificationCode: verificationCode)
     }
 }
 
@@ -286,5 +242,5 @@ struct EmailPopupView: View {
 }
 
 #Preview {
-    CertificateEmailView()
+    CertificateEmailView(isMentor: true)
 }

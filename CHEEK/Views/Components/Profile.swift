@@ -14,12 +14,24 @@ struct ProfileBtnnav: View {
         AsyncImage(url: URL(string: url)) { image in
             image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
         } placeholder: {
             Color.cheekMainNormal
         }
         .frame(width: 25, height: 25)
         .clipShape(Circle())
+    }
+}
+
+struct ProfileXSDummy: View {
+    var url: String
+    
+    var body: some View {
+        Image(url)
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 32, height: 32)
+            .clipShape(Circle())
     }
 }
 
@@ -30,7 +42,7 @@ struct ProfileXS: View {
         AsyncImage(url: URL(string: url)) { image in
             image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
         } placeholder: {
             Color.cheekMainNormal
         }
@@ -46,7 +58,7 @@ struct ProfileS: View {
         AsyncImage(url: URL(string: url)) { image in
             image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
         } placeholder: {
             Color.cheekMainNormal
         }
@@ -62,7 +74,7 @@ struct ProfileM: View {
         AsyncImage(url: URL(string: url)) { image in
             image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
         } placeholder: {
             Color.cheekMainNormal
         }
@@ -78,7 +90,7 @@ struct ProfileL: View {
         AsyncImage(url: URL(string: url)) { image in
             image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
         } placeholder: {
             Color.cheekMainNormal
         }
@@ -94,7 +106,7 @@ struct ProfileXL: View {
         AsyncImage(url: URL(string: url)) { image in
             image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
         } placeholder: {
             Color.cheekMainNormal
         }

@@ -6,9 +6,32 @@
 //
 
 import Foundation
+import Combine
 import PhotosUI
 
 class SetProfileViewModel: ObservableObject {
+    let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
+    var cancellables = Set<AnyCancellable>()
+    
+    // 이메일
+    @Published private var email: String = ""
+    
+    // 로딩 중
+    @Published var isLoading: Bool = false
+    
+    // 알림창
+    @Published var showAlert: Bool = false
+    @Published var alertMessage: String = ""
+    
+    // 거부됨
+    func showError(message: String) {
+        DispatchQueue.main.async {
+            self.alertMessage = message
+            self.showAlert = true
+            self.isLoading = false
+        }
+    }
+    
     func getEmail(completion: @escaping (String?) -> Void) {
         guard let socialMedia: String = Keychain().read(key: "SOCIAL_MEDIA") else {
             completion(nil)
@@ -34,12 +57,6 @@ class SetProfileViewModel: ObservableObject {
     }
     
     func checkUniqueNickname(nickname: String, completion: @escaping (Bool) -> Void) {
-        guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
-            completion(false)
-            return
-        }
-        
-        let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
         var components = URLComponents(string: "\(ip)/member/check-nickname")!
         
         components.queryItems = [
@@ -55,34 +72,23 @@ class SetProfileViewModel: ObservableObject {
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("닉네임 중복 확인 중 오류: \(error)")
-                completion(false)
-            }
-            if let data = data {
-                if let dataString = String(data: data, encoding: .utf8) {
-                    let response = (dataString as NSString).boolValue
-                    print("닉네임 중복 확인 응답: \(response)")
-                    completion(response)
-                } else {
-                    print("닉네임 중복 확인 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
-                    completion(false)
+        return CombinePublishers().urlSessionToString(req: request)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("checkUniqueNickname 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("checkUniqueNickname 함수 실행 중 요청 실패: \(error)")
                 }
-            }
-        }
-        
-        task.resume()
+            }, receiveValue: { data in
+                print(data)
+                completion(data == "true")
+            })
+            .store(in: &cancellables)
     }
     
     func setProfile(profilePicture: UIImage?, nickname: String, information: String, isMentor: Bool, completion: @escaping (Bool) -> Void) {
-        guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
-            completion(false)
-            return
-        }
-        
         getEmail() { email in
             guard let email = email else {
                 print("오류: 프로필 설정 중 이메일 없음")
@@ -100,7 +106,6 @@ class SetProfileViewModel: ObservableObject {
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
             
             // Body 설정
             var httpBody = Data()
@@ -137,30 +142,26 @@ class SetProfileViewModel: ObservableObject {
             request.httpBody = httpBody
             
             // 서버에 요청 보내기
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    print("프로필 설정 중 오류: \(error)")
-                    completion(false)
-                    return
-                }
-                
-                if let data = data {
-                    // 응답 처리
-                    if let responseString = String(data: data, encoding: .utf8) {
-                        print("프로필 설정 응답: \(responseString)")
-                        completion(responseString == "ok")
-                    } else {
-                        print("프로필 설정 응답 String 변환 중 오류 발생")
-                        completion(false)
+            CombinePublishers().urlSessionToString(req: request)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        print("validateDomain 함수 실행 중 요청 성공")
+                    case .failure(let error):
+                        print("validateDomain 함수 실행 중 요청 실패: \(error)")
+                        self.showError(message: "요청 중 오류가 발생하였습니다.")
                     }
-                }
-                
-                if let response = response as? HTTPURLResponse {
-                    print("프로필 설정 응답 코드: \(response.statusCode)")
-                }
-            }
-            
-            task.resume()
+                }, receiveValue: { data in
+                    DispatchQueue.main.async {
+                        self.isLoading = false
+                        
+                        if data != "ok" {
+                            self.showError(message: "등록 중 오류가 발생하였습니다.")
+                        }
+                    }
+                    completion(data == "ok")
+                })
+                .store(in: &self.cancellables)
         }
     }
 }

@@ -17,10 +17,8 @@ struct TextFieldForm: View {
     var keyboardType: UIKeyboardType?
     
     @Binding var text: String
-    @State var information: String
-    
+    @Binding var information: String
     @Binding var status: statuses
-    
     @FocusState.Binding var isFocused: Bool
     
     var body: some View {

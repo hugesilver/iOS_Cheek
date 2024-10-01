@@ -11,7 +11,6 @@ struct MentorMenteeView: View {
     @Environment(\.presentationMode) var presentationMode
     
     @State var isMentor: Bool? = nil
-    @State var hiddenIsMentor: Bool = true
     @State var isDone: Bool = false
     
     var body: some View {
@@ -40,13 +39,11 @@ struct MentorMenteeView: View {
                     SelectableCard(isSelect: isMentor ?? false, title: "멘토", description: "직장 혹은 개인 명함을 인증하고\n멘티의 질문에 답변을 할 수 있어요.")
                         .onTapGesture {
                             isMentor = true
-                            hiddenIsMentor = true
                         }
                     
                     SelectableCard(isSelect: isMentor != nil ? !isMentor! : false, title: "멘티", description: "멘토들에게 질문을 하고\n도움이 되는 답변을 얻어갈 수 있어요.")
                         .onTapGesture {
                             isMentor = false
-                            hiddenIsMentor = false
                         }
                 }
                 .padding(.top, 52)
@@ -70,11 +67,11 @@ struct MentorMenteeView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $isDone, destination: {
-            if isMentor != nil {
-                if isMentor! {
-                    CertificateEmailView()
+            if let isMentor {
+                if isMentor {
+                    CertificateEmailView(isMentor: isMentor)
                 } else {
-                    SetProfileView(isMentor: $hiddenIsMentor)
+                    SetProfileView(isMentor: isMentor)
                 }
             }
         })

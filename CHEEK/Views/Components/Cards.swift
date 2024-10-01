@@ -155,46 +155,49 @@ struct QuestionCard: View {
 }
 
 struct UserQuestionCard: View {
-    var question: String
-    var data: ProfileModel
+    var data: QuestionModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            UserCardLarge(data: data, title: "\(data.nickname)님의 질문입니다!", date: "\(10)일 전")
+            UserCardLarge(data: data.memberDto, title: "\(data.memberDto.nickname)님의 질문입니다!", date: "\(10)일 전")
             
-            QuestionCard(question: question)
+            QuestionCard(question: data.content)
         }
     }
 }
 
 
 
-struct UserAnswerCard: View {
-    var answerImages: [String]
-    var data: ProfileModel
+struct AnswerCards: View {
+    var models: [AnswerCardModel]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            UserCardLarge(data: data, title: "\(data.nickname)님의 질문입니다!", date: "\(10)일 전")
-            
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(answerImages, id: \.self) { url in
-                        AsyncImage(url: URL(string: url)) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        } placeholder: {
-                            Color.cheekMainNormal
-                        }
-                        // .aspectRatio(9/16, contentMode: .fit)
-                        .frame(width: 160)
-                        .frame(height: 240)
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                ForEach(models) { model in
+                    /*
+                     AsyncImage(url: URL(string: url)) { image in
+                     image
+                     .resizable()
+                     .aspectRatio(contentMode: .fit)
+                     } placeholder: {
+                     Color.cheekMainNormal
+                     }
+                     */
+                    
+                    Image(model.storyImage)
+                        .resizable()
+                        .frame(width: 160, height: 240)
                         .clipped()
                         .cornerRadius(16)
-                    }
+                        .overlay(
+                            ProfileXSDummy(url: model.profileImage)
+                                .padding(16)
+                            , alignment: .topLeading
+                        )
                 }
             }
+            .padding(.horizontal, 16)
         }
     }
 }

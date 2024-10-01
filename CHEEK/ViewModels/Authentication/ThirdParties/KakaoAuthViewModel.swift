@@ -10,8 +10,11 @@ import Foundation
 import KakaoSDKCommon
 import KakaoSDKAuth
 import KakaoSDKUser
+import Combine
 
 class KakaoAuthViewModel: ObservableObject {
+    var cancellables = Set<AnyCancellable>()
+    
     // 토큰 확인
     func checkToken(completion: @escaping (Bool) -> Void) {
         if (AuthApi.hasToken()) {
@@ -94,33 +97,44 @@ class KakaoAuthViewModel: ObservableObject {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("카카오 토큰 전송 중 오류: \(error)")
-                completion(nil)
-                return
-            }
-            
-            if let data = data {
+        URLSession.shared.dataTaskPublisher(for: request)
+            .tryMap() { data, response in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    print("sendToken 응답 코드: \(response)")
+                    throw URLError(.badServerResponse)
+                }
+                
                 if let dataString = String(data: data, encoding: .utf8) {
-                    let response = (dataString as NSString).boolValue
-                    print("카카오 토큰 전송 응답: \(response)")
-                    Keychain().create(key: "SOCIAL_MEDIA", value: "KAKAO")
-                    self.saveTokenInKeychain(token: token)
-                    completion(response)
+                    return dataString
                 } else {
-                    print("카카오 토큰 전송 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
-                    completion(nil)
-                    return
+                    print("data를 String으로 변환 중 오류 발생")
+                    throw URLError(.cannotDecodeContentData)
                 }
             }
-            
-            if let response = response as? HTTPURLResponse {
-                print("카카오 로그인 응답 코드: \(response.statusCode)")
-            }
-        }
-        
-        task.resume()
+            .retry(1)
+            .eraseToAnyPublisher()
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("sendToken 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("sendToken 함수 실행 중 요청 실패: \(error)")
+                }
+            }, receiveValue: { data in
+                print("카카오 토큰 전송 응답: \(data)")
+                DispatchQueue.main.async {
+                    if data == "true" {
+                        Keychain().create(key: "SOCIAL_MEDIA", value: "KAKAO")
+                        self.saveTokenInKeychain(token: token)
+                        completion(true)
+                    } else {
+                        print("카카오 토큰 전송 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
+                        completion(nil)
+                        return
+                    }
+                }
+            })
+            .store(in: &cancellables)
     }
     
     // 카카오 이메일 확인

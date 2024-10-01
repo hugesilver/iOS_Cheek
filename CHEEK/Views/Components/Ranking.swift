@@ -16,7 +16,9 @@ struct Ranking: View {
             .frame(width: 24, height: 24)
             .overlay(
                 Text("\(rank)")
-                    .caption1(font: "SUIT", color: .cheekWhite, bold: true)
+                    .font(.custom("SUIT", size: 12))
+                    .foregroundColor(.cheekWhite)
+                    .fontWeight(.black)
             )
     }
 }

@@ -9,27 +9,15 @@ import SwiftUI
 
 struct RegisterDomainView: View {
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var viewModel = VerifyEmailMentorViewModel()
+    var isMentor: Bool
     
-    @State private var isMentor: Bool = false
+    @StateObject private var viewModel = RegisterDomainViewModel()
     
+    // 이메일 폼
     @State private var email: String = ""
     @State var statusEmail: TextFieldForm.statuses = .normal
-    @State private var isEmailValidated: Bool = false
     @FocusState var isEmailFocused: Bool
-    @State private var isLoading: Bool = false
-    
-    @State private var showAlert: Bool = false
-    @State private var alertMessage: String = ""
-    
-    @State private var isSent: Bool = false
-    
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
-    @State private var time: Int = 3
-    @State private var timeRunning: Bool = false
-    
-    @State private var isDone: Bool = false
+    @State private var isEmailValidated: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -57,7 +45,7 @@ struct RegisterDomainView: View {
                         .padding(.top, 4)
                     
                     // 이메일 입력칸
-                    TextFieldForm(name: "이메일", placeholder: "예 > cheek@cheek.com", keyboardType: .emailAddress, text: $email, information: "", status: $statusEmail, isFocused: $isEmailFocused)
+                    TextFieldForm(name: "이메일", placeholder: "예 > cheek@cheek.com", keyboardType: .emailAddress, text: $email, information: .constant(""), status: $statusEmail, isFocused: $isEmailFocused)
                         .onChange(of: email) { _ in
                             isEmailValidated = viewModel.validateEmail(email: email)
                         }
@@ -69,32 +57,7 @@ struct RegisterDomainView: View {
                     if isEmailValidated {
                         ButtonActive(text: "등록 신청하기")
                             .onTapGesture {
-                                hideKeyboard()
-                                
-                                if !isLoading {
-                                    isLoading = true
-                                    if viewModel.validateEmail(email: email) {
-                                        viewModel.registerDomain(email: email) { response in
-                                            if response {
-                                                isLoading = false
-                                                
-                                                isSent = true
-                                                timeRunning = true
-                                                isLoading = false
-                                                
-                                            } else {
-                                                alertMessage = "오류가 발생하였습니다.\n다시 시도해주세요."
-                                                showAlert = true
-                                                isLoading = false
-                                            }
-                                            
-                                        }
-                                    } else {
-                                        alertMessage = "이메일을 다시 확인해주세요."
-                                        showAlert = true
-                                        isLoading = false
-                                    }
-                                }
+                                registerDomain()
                             }
                     } else {
                         ButtonDisabled(text: "등록 신청하기")
@@ -104,20 +67,14 @@ struct RegisterDomainView: View {
                 .padding(.bottom, isEmailFocused ? 24 : 31)
                 .background(.cheekBackgroundTeritory)
                 
-                if isSent {
-                    EmailregisterDoneView(time: time)
-                        .onReceive(timer) { _ in
-                            if timeRunning {
-                                if time > 0 {
-                                    time -= 1
-                                } else {
-                                    isDone = true
-                                }
-                            }
+                if viewModel.isSent {
+                    EmailregisterDoneView(time: viewModel.time)
+                        .onAppear {
+                            viewModel.timerExit()
                         }
                 }
                 
-                if isLoading {
+                if viewModel.isLoading {
                     LoadingView()
                 }
             }
@@ -125,17 +82,28 @@ struct RegisterDomainView: View {
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-        .navigationDestination(isPresented: $isDone, destination: {
-            SetProfileView(isMentor: $isMentor)
+        .navigationDestination(isPresented: $viewModel.isDone, destination: {
+            SetProfileView(isMentor: isMentor)
         })
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("오류"), message: Text(alertMessage), dismissButton: .default(Text("확인")))
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(title: Text("오류"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")))
         }
     }
     
     // 키보드 숨기기
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+    // 도메인 전송
+    func registerDomain() {
+        hideKeyboard()
+        
+        // 이메잃 확인 후 전송
+        if viewModel.validateEmail(email: email) {
+            // 도메인 검증 후 코드 전송
+            viewModel.registerDomain(email: email)
+        }
     }
 }
 
@@ -147,6 +115,7 @@ struct EmailregisterDoneView: View {
             Image("IconChecked")
                 .resizable()
                 .frame(width: 160, height: 160)
+                .foregroundColor(.cheekMainStrong)
             
             VStack(spacing: 4) {
                 Text("멘토 신청이 완료되었습니다.")
@@ -163,5 +132,5 @@ struct EmailregisterDoneView: View {
 }
 
 #Preview {
-    RegisterDomainView()
+    RegisterDomainView(isMentor: true)
 }

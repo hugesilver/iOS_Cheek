@@ -10,14 +10,9 @@ import PhotosUI
 
 struct SetProfileView: View {
     @Environment(\.presentationMode) var presentationMode
+    var isMentor: Bool
     
-    enum alertCase {
-        case isNicknameError, isNotUniqueNickname, isError
-    }
-    
-    @Binding var isMentor: Bool
-    
-    @StateObject var profileViewModel = ProfileViewModel()
+    @StateObject private var profileViewModel = ProfileViewModel()
     @StateObject private var viewModel = SetProfileViewModel()
     
     // 사진
@@ -25,25 +20,21 @@ struct SetProfileView: View {
     @State private var photosPickerItem: PhotosPickerItem?
     
     // 닉네임
-    @State var nickname: String = ""
+    @State private var nickname: String = ""
+    @FocusState private var isNicknameFocused: Bool
+    
+    // 닉네임 상태
+    @State var isUniqueNickname: Bool = false
     @State var statusNickname: TextFieldForm.statuses = .normal
     @State var infoNicknameForm: String = ""
     
-    @FocusState var isNicknameFocused: Bool
-    @State var isUniqueNickname: Bool = false
-    
     // 직무 한줄소개
-    @State var information: String = ""
-    @State var statusInformation: TextFieldForm.statuses = .normal
-    @State var infoInformationForm: String = ""
-    
+    @State private var information: String = ""
+    @State private var statusInformation: TextFieldForm.statuses = .normal
+    @State private var infoInformationForm: String = ""
     @FocusState private var isInformationFocused: Bool
     
-    // 기타
-    @State private var showAlert: Bool = false
-    @State private var activeAlert: alertCase = .isNicknameError
-    
-    @State private var isLoading: Bool = false
+    // destination of navigation
     @State private var isDone: Bool = false
     
     var body: some View {
@@ -107,40 +98,20 @@ struct SetProfileView: View {
                     
                     VStack(spacing: 24) {
                         // 닉네임
-                        TextFieldForm(name: "닉네임", placeholder: "이름 또는 닉네임 입력", text: $nickname, information: infoNicknameForm, status: $statusNickname, isFocused: $isNicknameFocused)
+                        TextFieldForm(name: "닉네임", placeholder: "이름 또는 닉네임 입력", text: $nickname, information: $infoNicknameForm, status: $statusNickname, isFocused: $isNicknameFocused)
                             .onChange(of: nickname) { text in
                                 if text.count > 8 {
                                     nickname = String(text.prefix(8))
                                 }
                             }
                             .onChange(of: isNicknameFocused) { _ in
-                                if !isNicknameFocused {
-                                    statusNickname = .normal
-                                    
-                                    if nickname.isEmpty {
-                                        statusNickname = .wrong
-                                        infoNicknameForm = "닉네임을 입력해주세요."
-                                    } else {
-                                        viewModel.checkUniqueNickname(nickname: nickname) { response in
-                                            isUniqueNickname = response
-                                            
-                                            if response {
-                                                statusNickname = .correct
-                                                infoNicknameForm = "사용 가능한 닉네임입니다."
-                                            } else {
-                                                statusNickname = .wrong
-                                                infoNicknameForm = "중복된 닉네임입니다."
-                                            }
-                                        }
-                                    }
-                                }
+                                onChangeNicknameFocused()
                             }
                         
                         // 직무 한줄소개
-                        TextFieldForm(name: "직무 한줄소개", placeholder: "예 > 당근 프론트엔드 개발자", text: $information, information: infoInformationForm, status: $statusInformation, isFocused: $isInformationFocused)
+                        TextFieldForm(name: "직무 한줄소개", placeholder: "예 > 당근 프론트엔드 개발자", text: $information, information: $infoInformationForm, status: $statusInformation, isFocused: $isInformationFocused)
                             .onChange(of: information) { text in
                                 information = String(text.prefix(20))
-                                
                             }
                             .onChange(of: isInformationFocused) { _ in
                                 if isInformationFocused {
@@ -155,33 +126,10 @@ struct SetProfileView: View {
                     Spacer()
                     
                     // 다음 버튼
-                    if !isLoading && !nickname.isEmpty && isUniqueNickname && !information.isEmpty {
+                    if !viewModel.isLoading && !nickname.isEmpty && isUniqueNickname && !information.isEmpty {
                         ButtonActive(text: "다음")
                             .onTapGesture {
-                                hideKeyboard()
-                                
-                                isLoading = true
-                                viewModel.checkUniqueNickname(nickname: nickname) {
-                                    response in
-                                    if response {
-                                        viewModel.setProfile(
-                                            profilePicture: selectImage,
-                                            nickname: nickname, information: information, isMentor: isMentor) { success in
-                                            if success {
-                                                profileViewModel.getProfile()
-                                                isDone = success
-                                            } else {
-                                                activeAlert = .isError
-                                                showAlert = true
-                                            }
-                                            isLoading = false
-                                        }
-                                    } else {
-                                        activeAlert = .isNotUniqueNickname
-                                        showAlert = true
-                                        isLoading = false
-                                    }
-                                }
+                                setProfile()
                             }
                     } else {
                         ButtonDisabled(text: "다음")
@@ -193,7 +141,7 @@ struct SetProfileView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.cheekBackgroundTeritory)
                 
-                if isLoading {
+                if viewModel.isLoading {
                     LoadingView()
                 }
             }
@@ -208,17 +156,8 @@ struct SetProfileView: View {
         .navigationDestination(isPresented: $isDone, destination: {
             MainView(profileViewModel: profileViewModel)
         })
-        .alert(isPresented: $showAlert) {
-            switch activeAlert {
-            case .isNicknameError:
-                Alert(title: Text("오류"), message: Text("닉네임을 확인해주세요."), dismissButton: .default(Text("확인")))
-                
-            case .isNotUniqueNickname:
-                Alert(title: Text("오류"), message: Text("이미 등록된 닉네임입니다."), dismissButton: .default(Text("확인")))
-                
-            case .isError:
-                Alert(title: Text("오류"), message: Text("오류가 발생하였습니다."), dismissButton: .default(Text("확인")))
-            }
+        .alert(isPresented: $viewModel.showAlert) {
+            Alert(title: Text("오류"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")))
         }
     }
     
@@ -226,8 +165,56 @@ struct SetProfileView: View {
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
+    
+    // 닉네임 폼 중복 확인
+    func onChangeNicknameFocused() {
+        if !isNicknameFocused {
+            statusNickname = .normal
+            
+            if nickname.isEmpty {
+                statusNickname = .wrong
+                infoNicknameForm = "닉네임을 입력해주세요."
+            } else {
+                viewModel.checkUniqueNickname(nickname: nickname) { response in
+                    isUniqueNickname = response
+                                                                
+                    if response {
+                        statusNickname = .correct
+                        infoNicknameForm = "사용 가능한 닉네임입니다."
+                    } else {
+                        statusNickname = .wrong
+                        infoNicknameForm = "중복된 닉네임입니다."
+                    }
+                }
+            }
+        }
+    }
+    
+    // 프로필 설정
+    func setProfile() {
+        // 키보드 숨기기
+        hideKeyboard()
+        
+        viewModel.isLoading = true
+        
+        viewModel.checkUniqueNickname(nickname: nickname) {
+            response in
+            if response {
+                viewModel.setProfile(
+                    profilePicture: selectImage,
+                    nickname: nickname, information: information, isMentor: isMentor) { success in
+                    if success {
+                        profileViewModel.getProfile()
+                        isDone = success
+                    }
+                }
+            } else {
+                viewModel.showError(message: "이미 등록된 닉네임입니다.")
+            }
+        }
+    }
 }
 
 #Preview {
-    SetProfileView(isMentor: .constant(false))
+    SetProfileView(isMentor: false)
 }

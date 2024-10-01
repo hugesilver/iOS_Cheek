@@ -6,14 +6,57 @@
 //
 
 import Foundation
+import Combine
+
+let CODE_EXPIRE_TIME: Int = 180
+let RESEND_TIME: Int = 60
 
 class CertificateEmailMentorViewModel: ObservableObject {
+    let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
+    var cancellables = Set<AnyCancellable>()
+    
+    // 타이머
+    private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    // 로딩 중
+    @Published var isLoading: Bool = false
+    
+    // 인증번호 관련
+    @Published var isSent: Bool = false
+    
+    // 인증번호 확인
+    @Published var isSendable: Bool = true
+    @Published var isVerificationCodeChecked: Bool = false
+    
+    // 알림창
+    @Published var showAlert: Bool = false
+    @Published var alertMessage: String = ""
+    
+    // 팝업창
+    @Published var showPopup: Bool = false
+    
+    // 인증번호 관련 타이머
+    @Published var codeExpireTime: Int = CODE_EXPIRE_TIME
+    @Published var resendTime: Int = RESEND_TIME
+    
+    // 거부됨
+    func showError(message: String) {
+        DispatchQueue.main.async {
+            self.alertMessage = message
+            self.showAlert = true
+            self.isLoading = false
+        }
+    }
+    
+    // 도메인 검증
     func validateEmail(email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        
         return emailTest.evaluate(with: email)
     }
     
+    // 도메인 분할
     func splitDomain(email: String) -> String? {
         let components = email.split(separator: "@")
         guard components.count == 2 else {
@@ -22,21 +65,16 @@ class CertificateEmailMentorViewModel: ObservableObject {
         return String(components[1])
     }
     
-    func validateDomain(email: String, completion: @escaping (Bool) -> Void) {
-        guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
-            completion(false)
-            return
-        }
+    // 도메인 인증
+    func validateDomain(email: String) {
+        isLoading = true
         
         guard let domain = splitDomain(email: email) else {
-            completion(false)
+            print("validateDomain 함수 실행 중 도메인 분할 실패")
+            showError(message: "이메일을 다시 확인해주세요.")
             return
         }
         
-        // 도메인 확인
-        print(domain)
-        
-        let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
         var components = URLComponents(string: "\(ip)/email/verify-domain")!
         
         components.queryItems = [
@@ -45,120 +83,46 @@ class CertificateEmailMentorViewModel: ObservableObject {
         
         guard let url = components.url else {
             print("validateDomain 함수 내 URL 추출 실패")
-            completion(false)
+            showError(message: "오류가 발생하였습니다.")
             return
         }
-        
-        print(url)
         
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("도메인 유효성 검증 중 오류: \(error)")
-                completion(false)
-            }
-            
-            if let data = data {
-                if let dataString = String(data: data, encoding: .utf8) {
-                    let response = (dataString as NSString).boolValue
-                    print("도메인 유효성 검증 응답: \(response)")
-                    completion(response)
-                } else {
-                    print("도메인 유효성 검증 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
-                    completion(false)
+        CombinePublishers().urlSessionToString(req: request)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("validateDomain 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("validateDomain 함수 실행 중 요청 실패: \(error)")
+                    self.showError(message: "요청 중 오류가 발생하였습니다.")
                 }
-            }
-        }
-        
-        task.resume()
-    }
-    
-    func registerDomain(email: String, completion: @escaping (Bool) -> Void) {
-        guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
-            completion(false)
-            return
-        }
-        
-        guard let domain = splitDomain(email: email) else {
-            completion(false)
-            return
-        }
-        
-        // 도메인 확인
-        print(domain)
-        
-        let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        var components = URLComponents(string: "\(ip)/email/register-domain")!
-        
-        components.queryItems = [
-            URLQueryItem(name:"domain", value: domain)
-        ]
-        
-        guard let url = components.url else {
-            print("registerDomain 함수 내 URL 추출 실패")
-            completion(false)
-            return
-        }
-        
-        // Header 세팅
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("도메인 등록 중 오류: \(error)")
-                completion(false)
-            } else if let data = data {
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print("도메인 등록 응답: \(dataString)")
-                    if dataString == "ok" {
-                        completion(true)
-                        return
-                    }
-                } else {
-                    print("도메인 등록 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
-                }
-                
-                do {
-                    let model = try JSONDecoder().decode(RegisterDomainModel.self, from: data)
-                    
-                    if model.errorCode == "E-006" {
-                        print("registerDomain: 이미 요청된 도메인")
-                        completion(true)
-                        return
+            }, receiveValue: { data in
+                DispatchQueue.main.async {
+                    if data == "true" {
+                        self.sendEmail(email: email)
                     } else {
-                        print("registerDomain 응답 오류 메시지: \(model.errorCode)")
-                        completion(false)
+                        self.showPopup = true
+                        self.isLoading = false
                     }
-                } catch {
-                    print("도메인 등록 응답 데이터를 JSON 모델로 변환하는 데 실패했습니다.")
-                    completion(false)
                 }
-            }
-        }
-        
-        task.resume()
+            })
+            .store(in: &cancellables)
     }
     
-    func sendEmail(email: String, completion: @escaping (String?) -> Void) {
-        guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
-            completion(nil)
-            return
-        }
+    // 인증번호 포함된 이메일 전송
+    func sendEmail(email: String) {
+        isSent = false
         
-        let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
         let url = URL(string: "\(ip)/email/send")!
         
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         // Body 세팅
         let bodyData: VefiryEmailModel = VefiryEmailModel(email: email)!
@@ -167,44 +131,43 @@ class CertificateEmailMentorViewModel: ObservableObject {
             request.httpBody = try JSONEncoder().encode(bodyData)
         } catch {
             print("이메일 코드 전송 JSON 변환 중 오류: \(error)")
-            completion(nil)
+            showError(message: "오류가 발생하였습니다.")
             return
         }
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("이메일 코드 전송 중 오류: \(error)")
-                completion(nil)
-            }
-            
-            if let data = data {
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print("이메일 코드 전송 응답: \(dataString)")
-                    completion(dataString)
-                } else {
-                    print("이메일 코드 전송 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
-                    completion(nil)
+        CombinePublishers().urlSessionToString(req: request)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("sendEmail 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("sendEmail 함수 실행 중 요청 실패: \(error)")
+                    self.showError(message: "요청 중 오류가 발생하였습니다.")
                 }
-            }
-        }
-        
-        task.resume()
+            }, receiveValue: { data in
+                DispatchQueue.main.async {
+                    if data == "ok" {
+                        self.isSent = true
+                        self.isSendable = false
+                        self.isLoading = false
+                    } else {
+                        self.showError(message: "오류가 발생하였습니다.")
+                    }
+                }
+            })
+            .store(in: &cancellables)
     }
     
-    func verifyEmailCode(email: String, verificationCode: String, completion: @escaping (String?) -> Void) {
-        guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
-            completion(nil)
-            return
-        }
+    // 인증번호 확인
+    func verifyEmailCode(email: String, verificationCode: String) {
+        isLoading = true
         
-        let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-        let url = URL(string: "\(ip)/email/send")!
+        let url = URL(string: "\(ip)/email/verify-code")!
         
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         // Body 세팅
         let bodyData: VefiryCodesModel = VefiryCodesModel(email: email, verificationCode: verificationCode)!
@@ -213,25 +176,64 @@ class CertificateEmailMentorViewModel: ObservableObject {
             request.httpBody = try JSONEncoder().encode(bodyData)
         } catch {
             print("확인 코드 검증 JSON 변환 중 오류: \(error)")
-            completion(nil)
+            showError(message: "오류가 발생하였습니다.")
             return
         }
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("확인 코드 검증 중 오류: \(error)")
-                completion(nil)
-            } else if let data = data {
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print("확인 코드 검증 응답: \(dataString)")
-                    completion(dataString)
+        CombinePublishers().urlSessionToString(req: request)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("verifyEmailCode 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("verifyEmailCode 함수 실행 중 요청 실패: \(error)")
+                    self.showError(message: "요청 중 오류가 발생하였습니다.")
+                }
+            }, receiveValue: { data in
+                DispatchQueue.main.async {
+                    if data == "ok" {
+                        self.isVerificationCodeChecked = true
+                        self.isLoading = false
+                        
+                        // 타이머 종료
+                        self.timer.upstream.connect().cancel()
+                    } else {
+                        self.showError(message: "인증번호를 다시 확인해주세요.")
+                    }
+                }
+            })
+            .store(in: &cancellables)
+    }
+    
+    func timerResendTime() {
+        resendTime = RESEND_TIME
+        
+        timer
+            .sink { _ in
+                if self.resendTime > 0 {
+                    self.resendTime -= 1
                 } else {
-                    print("확인 코드 검증 응답 데이터를 문자열로 변환하는 데 실패했습니다.")
-                    completion(nil)
+                    self.isSendable = true
                 }
             }
-        }
-        
-        task.resume()
+            .store(in: &cancellables)
     }
+
+    func timerCodeExpireTime() {
+        codeExpireTime = CODE_EXPIRE_TIME
+        
+        timer
+            .sink { _ in
+                if self.isSent {
+                    if self.codeExpireTime > 0 {
+                        self.codeExpireTime -= 1
+                    } else {
+                        self.isSent = false
+                    }
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    
 }
