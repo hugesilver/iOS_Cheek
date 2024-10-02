@@ -92,19 +92,35 @@ class RegisterDomainViewModel: ObservableObject {
                     print("registerDomain 함수 실행 중 요청 성공")
                 case .failure(let error):
                     print("registerDomain 함수 실행 중 요청 실패: \(error)")
-                    self.showError(message: "이미 등록 신청 된 도메인이거나 요청 중 오류가 발생하였습니다.")
+                    self.showError(message: "요청 중 오류가 발생하였습니다.")
                 }
             }, receiveValue: { data in
-                DispatchQueue.main.async {
-                    if data == "ok" {
+                if data == "ok" {
+                    DispatchQueue.main.async {
                         self.isLoading = false
                         self.isSent = true
-                    } else {
-                        self.showError(message: "이미 등록 신청 된 도메인이거나 요청 중 오류가 발생하였습니다.")
                     }
+                }
+                
+                do {
+                    let errorModel = try JSONDecoder().decode(ErrorModel.self, from: data.data(using: .utf8)!)
+                    switch errorModel.errorCode {
+                    case "E-006":
+                        DispatchQueue.main.async {
+                            self.showError(message: "이미 신청된 도메인입니다.")
+                        }
+                    default:
+                        DispatchQueue.main.async {
+                            self.showError(message: "요청 중 오류가 발생하였습니다.")
+                        }
+                    }
+                } catch {
+                    print("registerDomain 함수 실행 중 ErrorModel 변환 오류: \(error)")
+                    self.showError(message: "처리 중 오류가 발생하였습니다.")
                 }
             })
             .store(in: &cancellables)
+                
     }
     
     func timerExit() {

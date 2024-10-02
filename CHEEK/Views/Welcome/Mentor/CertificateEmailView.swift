@@ -169,7 +169,10 @@ struct CertificateEmailView: View {
             }
         })
         .alert(isPresented: $viewModel.showAlert) {
-            Alert(title: Text("오류"), message: Text("실행 중 오류가 발생하였습니다."), dismissButton: .default(Text("확인")))
+            Alert(title: Text("오류"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")))
+        }
+        .onDisappear {
+            viewModel.cancelTimer()
         }
     }
     

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct VefiryCodesModel: Codable {
+struct VerifyCodesModel: Codable {
     var email: String
     var verificationCode: String
     

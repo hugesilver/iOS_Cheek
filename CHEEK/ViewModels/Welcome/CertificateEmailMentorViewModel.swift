@@ -145,14 +145,29 @@ class CertificateEmailMentorViewModel: ObservableObject {
                     self.showError(message: "요청 중 오류가 발생하였습니다.")
                 }
             }, receiveValue: { data in
-                DispatchQueue.main.async {
-                    if data == "ok" {
+                if data == "ok" {
+                    DispatchQueue.main.async {
                         self.isSent = true
                         self.isSendable = false
                         self.isLoading = false
-                    } else {
-                        self.showError(message: "오류가 발생하였습니다.")
                     }
+                }
+                
+                do {
+                    let errorModel = try JSONDecoder().decode(ErrorModel.self, from: data.data(using: .utf8)!)
+                    switch errorModel.errorCode {
+                    case "E-002":
+                        DispatchQueue.main.async {
+                            self.showError(message: "이미 등록된 이메일 입니다.")
+                        }
+                    default:
+                        DispatchQueue.main.async {
+                            self.showError(message: "요청 중 오류가 발생하였습니다.")
+                        }
+                    }
+                } catch {
+                    print("registerDomain 함수 실행 중 ErrorModel 변환 오류: \(error)")
+                    self.showError(message: "처리 중 오류가 발생하였습니다.")
                 }
             })
             .store(in: &cancellables)
@@ -170,7 +185,7 @@ class CertificateEmailMentorViewModel: ObservableObject {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         // Body 세팅
-        let bodyData: VefiryCodesModel = VefiryCodesModel(email: email, verificationCode: verificationCode)!
+        let bodyData: VerifyCodesModel = VerifyCodesModel(email: email, verificationCode: verificationCode)!
         
         do {
             request.httpBody = try JSONEncoder().encode(bodyData)
@@ -194,9 +209,6 @@ class CertificateEmailMentorViewModel: ObservableObject {
                     if data == "ok" {
                         self.isVerificationCodeChecked = true
                         self.isLoading = false
-                        
-                        // 타이머 종료
-                        self.timer.upstream.connect().cancel()
                     } else {
                         self.showError(message: "인증번호를 다시 확인해주세요.")
                     }
@@ -205,6 +217,7 @@ class CertificateEmailMentorViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    // 재전송 타이머
     func timerResendTime() {
         resendTime = RESEND_TIME
         
@@ -219,6 +232,7 @@ class CertificateEmailMentorViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    // 인증번호 타이머
     func timerCodeExpireTime() {
         codeExpireTime = CODE_EXPIRE_TIME
         
@@ -235,5 +249,8 @@ class CertificateEmailMentorViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    
+    // 타이머 종료
+    func cancelTimer() {
+        self.timer.upstream.connect().cancel()
+    }
 }

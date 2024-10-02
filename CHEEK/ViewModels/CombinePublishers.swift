@@ -23,9 +23,8 @@ class CombinePublishers: ObservableObject {
         
         return URLSession.shared.dataTaskPublisher(for: request)
             .tryMap() { data, response in
-                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
                     print("응답 코드: \(response)")
-                    throw URLError(.badServerResponse)
                 }
                 
                 if let dataString = String(data: data, encoding: .utf8) {

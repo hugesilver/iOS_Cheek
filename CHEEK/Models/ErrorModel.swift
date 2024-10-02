@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RegisterDomainModel: Codable {
+struct ErrorModel: Codable {
     let errorCode: String
     let errorMessage: String
 }
