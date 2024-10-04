@@ -172,6 +172,7 @@ struct CertificateEmailView: View {
             Alert(title: Text("오류"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")))
         }
         .onDisappear {
+            // 타이머 종료
             viewModel.cancelTimer()
         }
     }

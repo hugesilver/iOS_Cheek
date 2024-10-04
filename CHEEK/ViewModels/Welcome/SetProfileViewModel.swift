@@ -73,7 +73,7 @@ class SetProfileViewModel: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        return CombinePublishers().urlSessionToString(req: request)
+        return CombinePublishers().urlSession(req: request)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -82,8 +82,8 @@ class SetProfileViewModel: ObservableObject {
                     print("checkUniqueNickname 함수 실행 중 요청 실패: \(error)")
                 }
             }, receiveValue: { data in
-                print(data)
-                completion(data == "true")
+                let dataString = String(data: data, encoding: .utf8)
+                completion(dataString == "true")
             })
             .store(in: &cancellables)
     }
@@ -142,7 +142,7 @@ class SetProfileViewModel: ObservableObject {
             request.httpBody = httpBody
             
             // 서버에 요청 보내기
-            CombinePublishers().urlSessionToString(req: request)
+            CombinePublishers().urlSession(req: request)
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
@@ -152,14 +152,17 @@ class SetProfileViewModel: ObservableObject {
                         self.showError(message: "요청 중 오류가 발생하였습니다.")
                     }
                 }, receiveValue: { data in
+                    let dataString = String(data: data, encoding: .utf8)
+                    
                     DispatchQueue.main.async {
                         self.isLoading = false
                         
-                        if data != "ok" {
+                        if dataString != "ok" {
                             self.showError(message: "등록 중 오류가 발생하였습니다.")
                         }
                     }
-                    completion(data == "ok")
+                    
+                    completion(dataString == "ok")
                 })
                 .store(in: &self.cancellables)
         }

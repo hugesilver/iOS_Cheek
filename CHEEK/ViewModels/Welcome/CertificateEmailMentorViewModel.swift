@@ -91,7 +91,7 @@ class CertificateEmailMentorViewModel: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        CombinePublishers().urlSessionToString(req: request)
+        CombinePublishers().urlSession(req: request)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -101,8 +101,10 @@ class CertificateEmailMentorViewModel: ObservableObject {
                     self.showError(message: "요청 중 오류가 발생하였습니다.")
                 }
             }, receiveValue: { data in
+                let dataString = String(data: data, encoding: .utf8)
+                
                 DispatchQueue.main.async {
-                    if data == "true" {
+                    if dataString == "true" {
                         self.sendEmail(email: email)
                     } else {
                         self.showPopup = true
@@ -135,7 +137,7 @@ class CertificateEmailMentorViewModel: ObservableObject {
             return
         }
         
-        CombinePublishers().urlSessionToString(req: request)
+        CombinePublishers().urlSession(req: request)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -145,7 +147,9 @@ class CertificateEmailMentorViewModel: ObservableObject {
                     self.showError(message: "요청 중 오류가 발생하였습니다.")
                 }
             }, receiveValue: { data in
-                if data == "ok" {
+                let dataString = String(data: data, encoding: .utf8)
+                
+                if dataString == "ok" {
                     DispatchQueue.main.async {
                         self.isSent = true
                         self.isSendable = false
@@ -154,7 +158,7 @@ class CertificateEmailMentorViewModel: ObservableObject {
                 }
                 
                 do {
-                    let errorModel = try JSONDecoder().decode(ErrorModel.self, from: data.data(using: .utf8)!)
+                    let errorModel = try JSONDecoder().decode(ErrorModel.self, from: data)
                     switch errorModel.errorCode {
                     case "E-002":
                         DispatchQueue.main.async {
@@ -195,7 +199,7 @@ class CertificateEmailMentorViewModel: ObservableObject {
             return
         }
         
-        CombinePublishers().urlSessionToString(req: request)
+        CombinePublishers().urlSession(req: request)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -205,8 +209,10 @@ class CertificateEmailMentorViewModel: ObservableObject {
                     self.showError(message: "요청 중 오류가 발생하였습니다.")
                 }
             }, receiveValue: { data in
+                let dataString = String(data: data, encoding: .utf8)
+                
                 DispatchQueue.main.async {
-                    if data == "ok" {
+                    if dataString == "ok" {
                         self.isVerificationCodeChecked = true
                         self.isLoading = false
                     } else {

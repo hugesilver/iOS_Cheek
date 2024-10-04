@@ -85,7 +85,7 @@ class RegisterDomainViewModel: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
-        CombinePublishers().urlSessionToString(req: request)
+        CombinePublishers().urlSession(req: request)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -95,7 +95,9 @@ class RegisterDomainViewModel: ObservableObject {
                     self.showError(message: "요청 중 오류가 발생하였습니다.")
                 }
             }, receiveValue: { data in
-                if data == "ok" {
+                let dataString = String(data: data, encoding: .utf8)
+                
+                if dataString == "ok" {
                     DispatchQueue.main.async {
                         self.isLoading = false
                         self.isSent = true
@@ -103,7 +105,7 @@ class RegisterDomainViewModel: ObservableObject {
                 }
                 
                 do {
-                    let errorModel = try JSONDecoder().decode(ErrorModel.self, from: data.data(using: .utf8)!)
+                    let errorModel = try JSONDecoder().decode(ErrorModel.self, from: data)
                     switch errorModel.errorCode {
                     case "E-006":
                         DispatchQueue.main.async {
@@ -123,6 +125,7 @@ class RegisterDomainViewModel: ObservableObject {
                 
     }
     
+    // 페이지 넘김 타이머
     func timerExit() {
         time = EXIT_TIME
         
@@ -133,11 +136,13 @@ class RegisterDomainViewModel: ObservableObject {
                 } else {
                     self.isDone = true
                     self.isSent = false
-                    
-                    // 타이머 종료
-                    self.timer.upstream.connect().cancel()
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    // 타이머 종료
+    func cancelTimer() {
+        self.timer.upstream.connect().cancel()
     }
 }
