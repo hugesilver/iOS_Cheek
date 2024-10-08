@@ -102,15 +102,11 @@ struct WelcomeView: View {
             .navigationBarBackButtonHidden(true)
             .navigationBarHidden(true)
             .navigationDestination(isPresented: $isLoginSuccess, destination: {
-                /*
                 if isSetProfile {
                     MainView(profileViewModel: profileViewModel)
                 } else {
                     MentorMenteeView()
                 }
-                 */
-                
-                MentorMenteeView()
             })
         }
         .alert(isPresented: $showAlert) {
