@@ -13,7 +13,7 @@ class ProfileViewModel: ObservableObject {
     var cancellables = Set<AnyCancellable>()
     
     // 프로필 model
-    @Published var profile: ProfileModel? = nil
+    @Published var profile: UserProfileModel? = nil
     
     func getProfile() {
         guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
@@ -38,7 +38,7 @@ class ProfileViewModel: ObservableObject {
         request.httpMethod = "GET"
         
         CombinePublishers().urlSession(req: request)
-            .decode(type: ProfileModel.self, decoder: JSONDecoder())
+            .decode(type: UserProfileModel.self, decoder: JSONDecoder())
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
