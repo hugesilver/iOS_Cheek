@@ -7,24 +7,42 @@
 
 import SwiftUI
 
+let vGridSpacing: CGFloat = 4
+
 struct ProfileStoriesView: View {
-    var gridColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
+    @Binding var isStoryOpen: Bool
+    @Binding var selectedStories: [Int64]
+    
+    var stories: [StoryDto]
+    
+    var gridColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: vGridSpacing), count: 3)
     
     var body: some View {
         VStack(spacing: 0) {
             LazyVGrid(columns: gridColumns) {
-                Rectangle()
-                    .frame(height: 156)
-                    .foregroundColor(.cheekMainNormal)
-                
-                Rectangle()
-                    .frame(height: 156)
-                    .foregroundColor(.cheekMainNormal)
-            
-            
-                Rectangle()
-                    .frame(height: 156)
-                    .foregroundColor(.cheekMainNormal)
+                ForEach(stories) { story in
+                    AsyncImage(url: URL(string: story.storyPicture)) { image in
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(
+                                width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
+                                height: 156
+                            )
+                            .clipped()
+                    } placeholder: {
+                        Color.cheekMainNormal
+                            .frame(
+                                width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
+                                height: 156
+                            )
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectedStories = [story.storyId]
+                        isStoryOpen = true
+                    }
+                }
             }
             
             Spacer()
@@ -35,5 +53,5 @@ struct ProfileStoriesView: View {
 }
 
 #Preview {
-    ProfileStoriesView()
+    ProfileStoriesView(isStoryOpen: .constant(false), selectedStories: .constant([]), stories: [])
 }

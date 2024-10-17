@@ -113,3 +113,6 @@ iOSInjectionProject/
 *.ttf
 *.otf
 *.xcconfig
+
+### Firebase ###
+GoogleService-Info.plist

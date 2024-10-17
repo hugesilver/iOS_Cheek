@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct ProfileQuestionsView: View {
+    var questions: [QuestionDto]
+    
     var body: some View {
         VStack(spacing: 12) {
-            QuestionCard(question: "test")
-            QuestionCard(question: "test")
+            ForEach(questions) { question in
+                QuestionCard(question: question.content)
+            }
             
             Spacer()
         }
@@ -23,5 +26,5 @@ struct ProfileQuestionsView: View {
 }
 
 #Preview {
-    ProfileQuestionsView()
+    ProfileQuestionsView(questions: [])
 }

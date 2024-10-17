@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct AddQuestionView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject var profileViewModel: ProfileViewModel
     
     var categoryId: Int64
-    var memberId: Int64
     
     @StateObject private var viewModel: AddQuestionViewModel = AddQuestionViewModel()
     
@@ -82,7 +82,7 @@ struct AddQuestionView: View {
                                     .foregroundColor(Color(red: 0.29, green: 0.29, blue: 0.29).opacity(0.6))
                             )
                             .onTapGesture {
-                                presentationMode.wrappedValue.dismiss()
+                                dismiss()
                             }
                         
                         Spacer()
@@ -105,7 +105,7 @@ struct AddQuestionView: View {
         .background(.cheekTextNormal)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onTapGesture {
-            hideKeyboard()
+            Utils().hideKeyboard()
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
@@ -116,32 +116,36 @@ struct AddQuestionView: View {
                 dismissButton: .default(
                     Text("확인"),
                     action: {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }
                 )
             )
         }
     }
     
-    // 키보드 숨기기
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
+
     
     // 질문 추가
     func addQuestion() {
-        hideKeyboard()
+        guard let myId = profileViewModel.profile?.memberId else {
+            print("profileViewModel에 profile이 없음")
+            return
+        }
+        
+        Utils().hideKeyboard()
         
         if !question.isEmpty {
-            viewModel.uploadQuestion(memberId: memberId, categoryId: categoryId, content: question) { success in
-                    if success {
-                            presentationMode.wrappedValue.dismiss()
-                    }
+            viewModel.uploadQuestion(memberId: myId, categoryId: categoryId, content: question) { isSuccess in
+                if isSuccess {
+                    print(isSuccess)
                 }
+            }
+            
+            dismiss()
         }
     }
 }
 
 #Preview {
-    AddQuestionView(categoryId: 1, memberId: 1)
+    AddQuestionView(profileViewModel: ProfileViewModel(), categoryId: 1)
 }

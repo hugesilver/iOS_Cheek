@@ -7,23 +7,6 @@
 
 import SwiftUI
 
-struct Button: View {
-    enum statuses {
-        case active, disabled,line
-    }
-    
-    var text: String
-    var type: statuses
-    
-    var body: some View {
-        switch(type) {
-        case .active:  ButtonActive(text: text)
-        case .disabled:  ButtonDisabled(text: text)
-        case .line:  ButtonLine(text: text)
-        }
-    }
-}
-
 struct ButtonActive: View {
     var text: String
     
@@ -141,13 +124,12 @@ struct ButtonNarrowDisabled: View {
     
     var body: some View {
         Text(text)
-            .label1(font: "SUIT", color: .cheekLineNormal, bold: true)
+            .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
             .padding(.horizontal, 10)
             .padding(.vertical, 10)
-            .frame(maxWidth: .infinity)
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(.cheekMainNormal)
+                    .fill(.cheekTextAssitive)
             )
     }
 }
@@ -160,7 +142,6 @@ struct ButtonNarrowLine: View {
             .label1(font: "SUIT", color: .cheekTextAlternative, bold: true)
             .padding(.horizontal, 8)
             .padding(.vertical, 8)
-            .frame(maxWidth: .infinity)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(.cheekTextAssitive, lineWidth: 1)

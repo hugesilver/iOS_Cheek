@@ -8,22 +8,22 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Binding var currentMainIndex: Int
-    @Binding var isPresented: Bool
-    @Binding var path: MainView.PATHS
+    @ObservedObject var profileViewModel: ProfileViewModel
     
-    @State var banners: [String] = ["ImageBannerSample1", "ImageBannerSample1"]
+    @StateObject var viewModel: TopMembersViewModel = TopMembersViewModel()
+    
+    @Binding var currentMainIndex: Int
+    
+    var categories: [CategoryModel]
+    @Binding var selectedCategory: Int64
+    
+    @State var banners: [String] = ["ImageBannerSample1"]
     
     @State var currentIndex: Int = 0
     @State var imgIndex: Int = 0
     
     var categoriesColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 21), count: 4)
     
-    var categories: [CategoryModel]
-    @Binding var selectedCategory: Int
-    
-    var topUsers: [ProfileModel] = [
-    ]
     
     var body: some View {
         NavigationStack {
@@ -45,13 +45,10 @@ struct HomeView: View {
                             Capsule()
                                 .fill(.cheekLineAlternative)
                         )
-                        .onTapGesture {
-                            path = .search
-                            isPresented = true
-                        }
                         
                         Image("IconBell")
                             .resizable()
+                            .foregroundColor(.cheekTextNormal)
                             .frame(width: 48, height: 48)
                     }
                     .padding(.top, 24)
@@ -90,7 +87,7 @@ struct HomeView: View {
                                  */
                             }
                             .overlay(
-                                BannerList(currentIndex: currentIndex, maxLength: banners.count)
+                                BannerList(currentIndex: currentIndex + 1, maxLength: banners.count)
                                     .padding(.trailing, 21)
                                     .padding(.bottom, 16), alignment: .bottomTrailing
                             )
@@ -112,7 +109,6 @@ struct HomeView: View {
                                     .onTapGesture {
                                         currentMainIndex = 1
                                         selectedCategory = data.id
-                                        isPresented = true
                                     }
                                 }
                             }
@@ -133,9 +129,11 @@ struct HomeView: View {
                         
                         ScrollView(.horizontal) {
                             HStack(spacing: 16) {
-                                RankingCard(rank: 1, data: ProfileModel(memberId: 0, email: "", nickname: "최대8자의닉네임", description: "대기업 출신 2년차 프로그래머 입니다.", information: "2년차 프론트엔드 개발자입니다. 혼자 성장하는 것이 아니라 함께 성장하는 이 이상부터 3줄이 될 것 같기 때문에 테스트용 입니다", profilePicture: "", role: "", status: ""))
+                                ForEach(viewModel.topMembers.indices, id: \.self) { index in
+                                    RankingCard(myProfileViewModel: profileViewModel, rank: index, data: viewModel.topMembers[index])
+                                }
                             }
-                            .padding(.leading, 16)
+                            .padding(.horizontal, 16)
                         }
                         .padding(.top, 16)
                         .padding(.bottom, 18)
@@ -147,7 +145,7 @@ struct HomeView: View {
             .background(.cheekBackgroundTeritory)
         }
         .onAppear {
-            UINavigationBar.setAnimationsEnabled(false)
+            viewModel.getTopMembers()
         }
         .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)
@@ -156,7 +154,7 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(currentMainIndex: .constant(0), isPresented: .constant(false), path: .constant(.search), categories: [
+    HomeView(profileViewModel: ProfileViewModel(), currentMainIndex: .constant(0), categories: [
         CategoryModel(id: 0, image: "IconJobDevelop", name: "개발"),
         CategoryModel(id: 1, image: "IconJobManage", name: "기획"),
         CategoryModel(id: 2, image: "IconJobDesign", name: "디자인"),
@@ -165,5 +163,5 @@ struct HomeView: View {
         CategoryModel(id: 5, image: "IconJobMed", name: "의료"),
         CategoryModel(id: 6, image: "IconJobEdu", name: "교육"),
         CategoryModel(id: 7, image: "IconJobLaw", name: "법"),
-    ], selectedCategory: .constant(0))
+    ], selectedCategory: .constant(1))
 }

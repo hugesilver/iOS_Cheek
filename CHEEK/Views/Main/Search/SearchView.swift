@@ -9,11 +9,10 @@ import SwiftUI
 import WrappingHStack
 
 struct SearchView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var viewModel: SearchViewModel = SearchViewModel()
+    
     @State private var searchText: String = ""
-    
-    var test = ["test","test3", "test2323", "test2323", "test233", "test2323"]
-    
     @State private var selectedTab: Int = 0
     
     var body: some View {
@@ -25,15 +24,17 @@ struct SearchView: View {
                         .foregroundColor(.cheekTextNormal)
                         .frame(width: 32, height: 32)
                         .onTapGesture {
-                            presentationMode.wrappedValue.dismiss()
+                            dismiss()
                         }
                         .padding(8)
                     
                     ScrollViewReader { proxy in
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 9) {
-                                ChipSearch(text: "test", onTap: ChipOnClose)
-                                    .id(0)
+//                                if let keyword {
+//                                    ChipSearch(text: keyword, onTap: ChipOnClose)
+//                                        .id(0)
+//                                }
                                 
                                 TextField(
                                     "",
@@ -61,90 +62,99 @@ struct SearchView: View {
                 .padding(.top, 8)
                 .padding(.horizontal, 16)
                 
-                
                 // 검색 전
-                /*
-                 ScrollView {
-                 // 최근 검색
-                 HStack {
-                 Text("최근 검색")
-                 .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                 .padding(.vertical, 12)
-                 
-                 Spacer()
-                 
-                 Text("전체 삭제")
-                 .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                 .padding(.horizontal, 10)
-                 .padding(.vertical, 14)
-                 }
-                 .padding(.top, 16)
-                 .padding(.horizontal, 16)
-                 
-                 ScrollView(.horizontal, showsIndicators: false) {
-                 HStack(spacing: 8) {
-                 ChipDefault(text: "test")
-                 }
-                 .padding(.horizontal, 16)
-                 }
-                 .padding(.top, 8)
-                 
-                 // 트렌딩 키워드
-                 HStack {
-                 Category(title: "트렌딩 키워드", description: "지난 7일간 가장 많이 발견된 키워드에요!")
-                 
-                 Spacer()
-                 }
-                 .padding(.top, 40)
-                 .padding(.leading, 16)
-                 
-                 WrappingHStack(test, id: \.self, spacing: .constant(8), lineSpacing: 8) { data in
-                 ChipDefault(text: data)
-                 }
-                 .padding(.top, 8)
-                 .padding(.horizontal, 16)
-                 
-                 
-                 Spacer()
-                 }
-                 */
-                
-                // 검색 후
-                Group {
-                    TabsText(tabs: ["전체", "프로필", "Q&A"], selectedTab: $selectedTab)
-                        .padding(.top, 16)
-                    
-                    TabView(selection: $selectedTab) {
-                        SearchResultAllView()
-                            .tag(0)
+                if !viewModel.isSearched {
+                    ScrollView {
+                        if !viewModel.recentSearches.isEmpty {
+                            VStack(spacing: 8) {
+                                // 최근 검색
+                                HStack {
+                                    Text("최근 검색")
+                                        .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                        .padding(.vertical, 12)
+                                    
+                                    Spacer()
+                                    
+                                    Text("전체 삭제")
+                                        .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 14)
+                                        .onTapGesture {
+                                            viewModel.removeAllSearched()
+                                        }
+                                }
+                                .padding(.horizontal, 16)
+                                
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 8) {
+                                        ForEach(viewModel.recentSearches, id: \.self) { search in
+                                            ChipDefault(text: search)
+                                                .onTapGesture {
+                                                    searchText = search
+                                                }
+                                        }
+                                        
+                                    }
+                                    .padding(.horizontal, 16)
+                                }
+                            }
+                            .padding(.top, 16)
+                        }
                         
-                        SearchResultProfileView()
-                            .tag(1)
+                        // 트렌딩 키워드
+                        HStack {
+                            Category(title: "트렌딩 키워드", description: "지난 7일간 가장 많이 발견된 키워드에요!")
+                            
+                            Spacer()
+                        }
+                        .padding(.top, 40)
+                        .padding(.leading, 16)
                         
-                        SearchResultQuestionView()
-                            .tag(2)
+                        WrappingHStack(viewModel.trendingKeywords, id: \.self, spacing: .constant(8), lineSpacing: 8) { keyword in
+                            ChipDefault(text: keyword)
+                                .onTapGesture {
+                                    self.searchText = keyword
+                                }
+                        }
+                        .padding(.top, 8)
+                        .padding(.horizontal, 16)
+                        
+                        
+                        Spacer()
                     }
-                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                // 검색 후
+                else {
+                    VStack(spacing: 16) {
+                        TabsText(tabs: ["전체", "프로필", "Q&A"], selectedTab: $selectedTab)
+                        
+                        TabView(selection: $selectedTab) {
+                            SearchResultAllView()
+                                .tag(0)
+                            
+                            SearchResultProfileView()
+                                .tag(1)
+                            
+                            SearchResultQuestionView()
+                                .tag(2)
+                        }
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
             .onTapGesture {
-                hideKeyboard()
+                Utils().hideKeyboard()
             }
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-    }
-    
-    // 키보드 숨기기
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-    
-    func ChipOnClose() {
-        print("working")
+        .onAppear {
+            viewModel.getRecentSearched()
+            viewModel.getTrendingKeywords()
+        }
     }
 }
 

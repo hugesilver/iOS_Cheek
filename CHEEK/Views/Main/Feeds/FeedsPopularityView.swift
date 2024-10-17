@@ -8,22 +8,43 @@
 import SwiftUI
 
 struct FeedsPopularityView: View {
+    @ObservedObject var profileViewModel: ProfileViewModel
+    
+    var datas: [FeedModel]
+    
+    @Binding var isStoryOpen: Bool
+    @Binding var selectedStories: [Int64]
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
-                    VStack(spacing: 16) {
-                        UserQuestionCard(question: "test", data: ProfileModel(memberId: 0, email: "", nickname: "최대8자의닉네임", description: "대기업 출신 2년차 프로그래머 입니다.", information: "2년차 프론트엔드 개발자입니다. 혼자 성장하는 것이 아니라 함께 성장하는 이 이상부터 3줄이 될 것 같기 때문에 테스트용 입니다", profilePicture: "", role: "", status: ""))
-                        
-                        ButtonNarrowFill(text: "답변하기")
-                    }
-                    .padding(.horizontal, 16)
-                    
-                    DividerLarge()
-                    
-                    UserAnswerCard(answerImages: [""], data: ProfileModel(memberId: 0, email: "", nickname: "최대8자의닉네임", description: "대기업 출신 2년차 프로그래머 입니다.", information: "2년차 프론트엔드 개발자입니다. 혼자 성장하는 것이 아니라 함께 성장하는 이 이상부터 3줄이 될 것 같기 때문에 테스트용 입니다", profilePicture: "", role: "", status: ""))
+                    ForEach(Array(zip(datas.indices, datas)), id: \.0) { index, data in
+                        Group {
+                            if data.type == "STORY" {
+                                UserStoryCard(myProfileViewModel: profileViewModel, storyDto: data.storyDto!, memberDto: data.memberDto, date: data.modifiedAt, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                            }
+                            
+                            if data.type == "QUESTION" {
+                                VStack(spacing: 16) {
+                                    UserQuestionCard(myProfileViewModel: profileViewModel, questionDto: data.questionDto!, memberDto: data.memberDto, date: data.modifiedAt)
+                                    
+                                    if profileViewModel.isMentor {
+                                        NavigationLink(destination: AddAnswerView(profileViewModel: profileViewModel, questionId: data.questionDto!.questionId)) {
+                                            ButtonNarrowFill(text: "답변하기")
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         .padding(.horizontal, 16)
+                        
+                        if index < datas.count - 1 {
+                            DividerLarge()
+                        }
+                    }
                 }
+                .padding(.bottom, 27)
             }
         }
         .padding(.top, 21)
@@ -35,5 +56,5 @@ struct FeedsPopularityView: View {
 }
 
 #Preview {
-    FeedsPopularityView()
+    FeedsPopularityView(profileViewModel: ProfileViewModel(), datas: [], isStoryOpen: .constant(false), selectedStories: .constant([]))
 }

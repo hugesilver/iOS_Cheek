@@ -8,13 +8,17 @@
 import SwiftUI
 
 struct FeedsView: View {
-    @Binding var selectedCategory: Int
-    @Binding var isPresented: Bool
-    @Binding var path: MainView.PATHS
+    @ObservedObject var profileViewModel: ProfileViewModel
+    
+    @Binding var selectedCategory: Int64
     
     var categories: [CategoryModel]
     
     @State var selectedTab: Int = 0
+    @StateObject var viewModel: FeedsViewModel = FeedsViewModel()
+    
+    @State var isStoryOpen: Bool = false
+    @State var selectedStories: [Int64] = []
     
     var body: some View {
         ZStack {
@@ -29,7 +33,7 @@ struct FeedsView: View {
                         })
                     } label: {
                         HStack(spacing: 4) {
-                            Text(categories[selectedCategory].name)
+                            Text(categories[Int(selectedCategory) - 1].name)
                                 .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
                             
                             Image("IconChevronDown")
@@ -46,10 +50,6 @@ struct FeedsView: View {
                         .frame(width: 32, height: 32)
                         .padding(8)
                         .foregroundColor(.cheekTextNormal)
-                        .onTapGesture {
-                            path = .search
-                            isPresented = true
-                        }
                 }
                 .padding(.top, 8)
                 .padding(.horizontal, 16)
@@ -58,10 +58,10 @@ struct FeedsView: View {
                     .padding(.top, 16)
                 
                 TabView(selection: $selectedTab) {
-                    FeedsNewestView()
+                    FeedsNewestView(profileViewModel: profileViewModel, datas: viewModel.feedsNewest, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
                         .tag(0)
                     
-                    FeedsPopularityView()
+                    FeedsPopularityView(profileViewModel: profileViewModel, datas: viewModel.feedsNewest, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
                         .tag(1)
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -76,32 +76,52 @@ struct FeedsView: View {
                 HStack {
                     Spacer()
                     
-                    FAB()
-                        .onTapGesture {
-                            path = .question
-                            isPresented = true
-                        }
+                    NavigationLink(destination: AddQuestionView(profileViewModel: profileViewModel, categoryId: selectedCategory)) {
+                        FAB()
+                    }
                 }
                 .padding(24)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            getFeeds()
+        }
+        .onChange(of: selectedCategory) { _ in
+            getFeeds()
+        }
+        .fullScreenCover(isPresented: $isStoryOpen) {
+            if #available(iOS 16.4, *) {
+                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                    .presentationBackground(.clear)
+            } else {
+                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+            }
+        }
+    }
+    
+    func getFeeds() {
+        guard let myId = profileViewModel.profile?.memberId else {
+            print("profileViewModel에 profile이 없음")
+            return
+        }
+        
+        viewModel.getFeeds(categoryId: selectedCategory, myId: myId)
     }
 }
 
 #Preview {
     FeedsView(
-        selectedCategory: .constant(0),
-        isPresented: .constant(false), path: .constant(.search),
+        profileViewModel: ProfileViewModel(), selectedCategory: .constant(0),
         categories: [
-            CategoryModel(id: 0, image: "IconJobDevelop", name: "개발"),
-            CategoryModel(id: 1, image: "IconJobManage", name: "기획"),
-            CategoryModel(id: 2, image: "IconJobDesign", name: "디자인"),
-            CategoryModel(id: 3, image: "IconJobFinance", name: "재무/회계"),
-            CategoryModel(id: 4, image: "IconJobSales", name: "영업"),
-            CategoryModel(id: 5, image: "IconJobMed", name: "의료"),
-            CategoryModel(id: 6, image: "IconJobEdu", name: "교육"),
-            CategoryModel(id: 7, image: "IconJobLaw", name: "법"),
+            CategoryModel(id: 1, image: "IconJobDevelop", name: "개발"),
+            CategoryModel(id: 2, image: "IconJobManage", name: "기획"),
+            CategoryModel(id: 3, image: "IconJobDesign", name: "디자인"),
+            CategoryModel(id: 4, image: "IconJobFinance", name: "재무/회계"),
+            CategoryModel(id: 5, image: "IconJobSales", name: "영업"),
+            CategoryModel(id: 6, image: "IconJobMed", name: "의료"),
+            CategoryModel(id: 7, image: "IconJobEdu", name: "교육"),
+            CategoryModel(id: 8, image: "IconJobLaw", name: "법"),
         ])
 }

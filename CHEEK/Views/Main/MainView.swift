@@ -13,6 +13,7 @@ struct MainView: View {
     // 탭 인덱스
     @State var currentIndex: Int = 0
     
+    // 카테고리
     let categories: [CategoryModel] = [
         CategoryModel(id: 1, image: "IconJobDevelop", name: "개발"),
         CategoryModel(id: 2, image: "IconJobManage", name: "기획"),
@@ -26,35 +27,25 @@ struct MainView: View {
     
     @State var selectedCategory: Int64 = 1
     
-    @State var isPresented: Bool = false
-    
-    enum PATHS {
-        case search, profile, question, answer, highlight
-    }
-    
-    @State var path: PATHS = .search
-    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 Group {
                     switch currentIndex {
                     case 0:
-                        HomeView(currentMainIndex: $currentIndex, isPresented: $isPresented, path: $path, categories: categories, selectedCategory: $selectedCategory)
+                        HomeView(profileViewModel: profileViewModel, currentMainIndex: $currentIndex, categories: categories, selectedCategory: $selectedCategory)
                     case 1:
                         FeedsView(
-                            selectedCategory: $selectedCategory,
-                            isPresented: $isPresented,
-                            path: $path,
+                            profileViewModel: profileViewModel, selectedCategory: $selectedCategory,
                             categories: categories)
                     case 2:
-                        MypageView(profileViewModel: profileViewModel, isPresented: $isPresented, path: $path)
+                        MypageView(profileViewModel: profileViewModel)
                     default: EmptyView()
                     }
                 }
                 .frame(maxHeight: .infinity)
                 
-                HStack(spacing: 68) {
+                HStack(spacing: 88) {
                     // 홈
                     VStack(spacing: 2) {
                         VStack {
@@ -123,18 +114,9 @@ struct MainView: View {
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-        .navigationDestination(isPresented: $isPresented, destination: {
-            switch path {
-            case .search: SearchView()
-            case .profile: ProfileView( profileViewModel: profileViewModel)
-            case .question: 
-                if profileViewModel.profile?.memberId != nil {
-                    AddQuestionView(categoryId: selectedCategory, memberId: profileViewModel.profile!.memberId)
-                }
-            case .answer: AddAnswerView()
-            case .highlight: SetHighlightView()
-            }
-        })
+        .onAppear {
+            UINavigationBar.setAnimationsEnabled(false)
+        }
     }
 }
 

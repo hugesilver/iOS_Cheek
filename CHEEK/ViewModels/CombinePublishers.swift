@@ -27,6 +27,11 @@ class CombinePublishers: ObservableObject {
                     print("응답 코드: \(response)")
                 }
                 
+                // 디버깅
+                if let dataString = String(data: data, encoding: .utf8) {
+                    print(dataString)
+                }
+                
                 return data
             }
             .retry(1)

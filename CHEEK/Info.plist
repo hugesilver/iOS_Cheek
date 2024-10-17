@@ -33,6 +33,8 @@
 		<string>SUIT-SemiBold.otf</string>
 		<string>SUIT-Regular.otf</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array/>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

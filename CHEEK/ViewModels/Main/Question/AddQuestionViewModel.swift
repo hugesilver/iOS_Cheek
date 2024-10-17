@@ -9,8 +9,8 @@ import Foundation
 import Combine
 
 class AddQuestionViewModel: ObservableObject {
-    let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-    var cancellables = Set<AnyCancellable>()
+    private let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
+    private var cancellables = Set<AnyCancellable>()
     
     // 로딩 중
     @Published var isLoading: Bool = false

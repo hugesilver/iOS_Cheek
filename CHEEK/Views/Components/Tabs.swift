@@ -83,7 +83,8 @@ struct TabsIcon: View {
                         DividerSmall()
                         
                         Rectangle()                            .fill(.cheekMainStrong)
-                            .frame(width: tabWidth, height: 4)
+                            .frame(maxWidth: tabWidth)
+                            .frame(height: 4)
                             .offset(x: CGFloat(selectedTab) * tabWidth)
                             .animation(.easeInOut(duration: 0.3), value: selectedTab)
                     }
