@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MentorMenteeView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     
     @State var isMentor: Bool? = nil
     @State var isDone: Bool = false
@@ -21,13 +21,13 @@ struct MentorMenteeView: View {
                         .foregroundColor(.cheekTextNormal)
                         .frame(width: 40, height: 40)
                         .onTapGesture {
-                            presentationMode.wrappedValue.dismiss()
+                            dismiss()
                         }
-                        .padding(4)
+                        .padding(8)
                     
                     Spacer()
                 }
-                .padding(.top, 12)
+                .padding(.top, 8)
                 
                 Text("당신은 멘토인가요? 멘티인가요?")
                     .headline1(font: "SUIT", color: .cheekTextNormal, bold: true)

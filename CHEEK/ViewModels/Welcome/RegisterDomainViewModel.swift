@@ -72,7 +72,7 @@ class RegisterDomainViewModel: ObservableObject {
         var components = URLComponents(string: "\(ip)/email/register-domain")!
         
         components.queryItems = [
-            URLQueryItem(name:"domain", value: domain)
+            URLQueryItem(name: "domain", value: domain)
         ]
         
         guard let url = components.url else {
@@ -122,7 +122,6 @@ class RegisterDomainViewModel: ObservableObject {
                 }
             })
             .store(in: &cancellables)
-                
     }
     
     // 페이지 넘김 타이머

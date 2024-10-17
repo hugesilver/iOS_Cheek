@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct SetProfileView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     var isMentor: Bool
     
     @StateObject private var profileViewModel = ProfileViewModel()
@@ -22,8 +22,6 @@ struct SetProfileView: View {
     // 닉네임
     @State private var nickname: String = ""
     @FocusState private var isNicknameFocused: Bool
-    
-    // 닉네임 상태
     @State var isUniqueNickname: Bool = false
     @State var statusNickname: TextFieldForm.statuses = .normal
     @State var infoNicknameForm: String = ""
@@ -46,13 +44,13 @@ struct SetProfileView: View {
                             .foregroundColor(.cheekTextNormal)
                             .frame(width: 40, height: 40)
                             .onTapGesture {
-                                presentationMode.wrappedValue.dismiss()
+                                dismiss()
                             }
-                            .padding(4)
+                            .padding(8)
                         
                         Spacer()
                     }
-                    .padding(.top, 12)
+                    .padding(.top, 8)
                     
                     Text("내 프로필을 설정해주세요.")
                         .headline1(font: "SUIT", color: .cheekTextNormal, bold: true)
@@ -147,7 +145,7 @@ struct SetProfileView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onTapGesture {
-                hideKeyboard()
+                Utils().hideKeyboard()
             }
         }
         .background(.cheekBackgroundTeritory)
@@ -159,11 +157,6 @@ struct SetProfileView: View {
         .alert(isPresented: $viewModel.showAlert) {
             Alert(title: Text("오류"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")))
         }
-    }
-    
-    // 키보드 숨기기
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
     // 닉네임 폼 중복 확인
@@ -193,7 +186,7 @@ struct SetProfileView: View {
     // 프로필 설정
     func setProfile() {
         // 키보드 숨기기
-        hideKeyboard()
+        Utils().hideKeyboard()
         
         viewModel.isLoading = true
         
@@ -204,7 +197,7 @@ struct SetProfileView: View {
                     profilePicture: selectImage,
                     nickname: nickname, information: information, isMentor: isMentor) { success in
                     if success {
-                        profileViewModel.getProfile()
+                        profileViewModel.getMyProfile()
                         isDone = success
                     }
                 }

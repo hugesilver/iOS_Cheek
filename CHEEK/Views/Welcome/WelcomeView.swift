@@ -58,12 +58,12 @@ struct WelcomeView: View {
                             isLoading = true
                             kakaoAuthViewModel.kakaoAuth() { isSet in
                                 guard let isSet else {
-                                    self.showAlert = true
+                                    isLoading = false
                                     return
                                 }
                                 
                                 if isSet {
-                                    profileViewModel.getProfile()
+                                    profileViewModel.getMyProfile()
                                 }
                                 
                                 isSetProfile = isSet

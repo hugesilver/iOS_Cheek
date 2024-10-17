@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RegisterDomainView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     var isMentor: Bool
     
     @StateObject private var viewModel = RegisterDomainViewModel()
@@ -28,13 +28,13 @@ struct RegisterDomainView: View {
                             .foregroundColor(.cheekTextNormal)
                             .frame(width: 40, height: 40)
                             .onTapGesture {
-                                presentationMode.wrappedValue.dismiss()
+                                dismiss()
                             }
-                            .padding(4)
+                            .padding(8)
                         
                         Spacer()
                     }
-                    .padding(.top, 12)
+                    .padding(.top, 8)
                     
                     Text("사내 이메일 등록을 신청합니다.")
                         .headline1(font: "SUIT", color: .cheekTextNormal, bold: true)
@@ -94,14 +94,9 @@ struct RegisterDomainView: View {
         }
     }
     
-    // 키보드 숨기기
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-    
     // 도메인 전송
     func registerDomain() {
-        hideKeyboard()
+        Utils().hideKeyboard()
         
         // 이메잃 확인 후 전송
         if viewModel.validateEmail(email: email) {

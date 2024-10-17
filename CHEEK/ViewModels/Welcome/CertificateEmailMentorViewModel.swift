@@ -155,23 +155,24 @@ class CertificateEmailMentorViewModel: ObservableObject {
                         self.isSendable = false
                         self.isLoading = false
                     }
-                }
-                
-                do {
-                    let errorModel = try JSONDecoder().decode(ErrorModel.self, from: data)
-                    switch errorModel.errorCode {
-                    case "E-002":
-                        DispatchQueue.main.async {
-                            self.showError(message: "이미 등록된 이메일 입니다.")
+                } else {
+                    do {
+                        let errorModel = try JSONDecoder().decode(ErrorModel.self, from: data)
+                        switch errorModel.errorCode {
+                        case "E-002":
+                            DispatchQueue.main.async {
+                                self.showError(message: "이미 등록된 이메일 입니다.")
+                            }
+                        default:
+                            DispatchQueue.main.async {
+                                self.showError(message: "요청 중 오류가 발생하였습니다.")
+                            }
                         }
-                    default:
-                        DispatchQueue.main.async {
-                            self.showError(message: "요청 중 오류가 발생하였습니다.")
-                        }
+                    } catch {
+                        print("registerDomain 함수 실행 중 ErrorModel 변환 오류: \(error)")
+                        self.showError(message: "처리 중 오류가 발생하였습니다.")
+                        exit(0)
                     }
-                } catch {
-                    print("registerDomain 함수 실행 중 ErrorModel 변환 오류: \(error)")
-                    self.showError(message: "처리 중 오류가 발생하였습니다.")
                 }
             })
             .store(in: &cancellables)

@@ -126,16 +126,20 @@ class SetProfileViewModel: ObservableObject {
                 httpBody.append("\r\n".data(using: .utf8)!)
             }
             
-            httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
-            httpBody.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"profile.jpg\"\r\n".data(using: .utf8)!)
-            httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
-            
             if let profilePicture {
+                httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
+                httpBody.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"profile.jpg\"\r\n".data(using: .utf8)!)
+                httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
                 httpBody.append(profilePicture.jpegData(compressionQuality: 0.5)!)
+            } else {
+                httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
+                httpBody.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"\"\r\n".data(using: .utf8)!)
+                httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+                httpBody.append(Data())
             }
             
             httpBody.append("\r\n".data(using: .utf8)!)
-            
+    
             // Boundary 끝 추가
             httpBody.append("--\(boundary)--\r\n".data(using: .utf8)!)
             

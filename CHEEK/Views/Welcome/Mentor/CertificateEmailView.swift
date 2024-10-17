@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct CertificateEmailView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     var isMentor: Bool
     
     @StateObject private var viewModel = CertificateEmailMentorViewModel()
@@ -37,13 +37,13 @@ struct CertificateEmailView: View {
                             .foregroundColor(.cheekTextNormal)
                             .frame(width: 40, height: 40)
                             .onTapGesture {
-                                presentationMode.wrappedValue.dismiss()
+                                dismiss()
                             }
-                            .padding(4)
+                            .padding(8)
                         
                         Spacer()
                     }
-                    .padding(.top, 12)
+                    .padding(.top, 8)
                     
                     Text("사내 이메일을 인증해주세요.")
                         .headline1(font: "SUIT", color: .cheekTextNormal, bold: true)
@@ -156,7 +156,7 @@ struct CertificateEmailView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onTapGesture {
-                hideKeyboard()
+                Utils().hideKeyboard()
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -177,15 +177,10 @@ struct CertificateEmailView: View {
         }
     }
     
-    // 키보드 숨기기
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
-    
     // 인증번호 전송
     func sendCode() {
         // 키보드 숨기기
-        hideKeyboard()
+        Utils().hideKeyboard()
         
         // 이메잃 확인 후 전송
         if viewModel.validateEmail(email: email) {
@@ -196,7 +191,7 @@ struct CertificateEmailView: View {
     
     // 인증번호 확인
     func verifyCode() {
-        hideKeyboard()
+        Utils().hideKeyboard()
         
         // 인증번호 확인
         viewModel.verifyEmailCode(email: email, verificationCode: verificationCode)
