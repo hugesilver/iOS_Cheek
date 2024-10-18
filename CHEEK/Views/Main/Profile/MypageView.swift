@@ -120,11 +120,12 @@ struct MypageView: View {
                                 HStack(spacing: 16) {
                                     ForEach(profileViewModel.highlights) { highlight in
                                         VStack(spacing: 12) {
-                                            ProfileL(url: highlight.thhumbnailPicture)
+                                            ProfileL(url: highlight.thumbnailPicture)
                                             
                                             Text(highlight.subject)
                                                 .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
                                         }
+                                        .frame(maxWidth: 72)
                                     }
                                     
                                     NavigationLink(destination: SelectHighlightView(profileViewModel: profileViewModel)) {
