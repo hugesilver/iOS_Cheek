@@ -13,15 +13,13 @@ struct ThumbnailEditingView: View {
     
     @ObservedObject var highlightViewModel: HighlightViewModel
     
-    var selectedStories: [StoryDto]
-    
     let size: CGSize = .init(width: 320, height: 320)
     
     @State private var scale: CGFloat = 1
     @State private var lastScale: CGFloat = 1
     @State private var offset: CGSize = .zero
     @State private var lastStoredOffset: CGSize = .zero
-    @GestureState private var isInteracting: Bool = false
+    @State private var isInteracting: Bool = false
     
     @State private var photosPickerItem: PhotosPickerItem?
     @State private var showPhotosPicker: Bool = false
@@ -124,7 +122,7 @@ struct ThumbnailEditingView: View {
                                     photosPickerItem = nil
                                 }
                             
-                            ForEach(selectedStories) { story in
+                            ForEach(highlightViewModel.selectedStories) { story in
                                 AsyncImage(url: URL(string: story.storyPicture)) { image in
                                     image
                                         .resizable()
@@ -216,25 +214,29 @@ struct ThumbnailEditingView: View {
         .coordinateSpace(name: "CROPVIEW")
         .gesture(
             DragGesture()
-                .updating($isInteracting, body: { _, out, _ in
-                    out = true
-                }).onChanged({ value in
+                .onChanged({ value in
+                    isInteracting = true
                     let translation = value.translation
                     offset = CGSize(
                         width: translation.width + lastStoredOffset.width,
                         height: translation.height + lastStoredOffset.height
                     )
                 })
+                .onEnded({ _ in
+                    isInteracting = false
+                    lastStoredOffset = offset
+                })
         )
         .gesture(
             MagnificationGesture()
-                .updating($isInteracting, body: { _, out, _ in
-                    out = true
-                }).onChanged({ value in
+                .onChanged({ value in
+                    isInteracting = true
                     let updatedScale = value + lastScale
                     
                     scale = (updatedScale < 1 ? 1 : updatedScale)
-                }).onEnded({ value in
+                })
+                .onEnded({ value in
+                    isInteracting = false
                     withAnimation(.easeInOut(duration: 0.2)) {
                         if scale < 1 {
                             scale = 1
@@ -270,5 +272,5 @@ struct ThumbnailEditingView: View {
 }
 
 #Preview {
-    ThumbnailEditingView(highlightViewModel: HighlightViewModel(), selectedStories: [])
+    ThumbnailEditingView(highlightViewModel: HighlightViewModel())
 }

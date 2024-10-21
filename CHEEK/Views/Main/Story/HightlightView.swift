@@ -7,19 +7,21 @@
 
 import SwiftUI
 
-struct StoryView: View {
+struct HighlightView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @Binding var storyIds: [Int64]
+    @Binding var highlightId: Int64
+    @Binding var highlightThumbnail: String
+    @Binding var highlightSubject: String
     
     @ObservedObject var profileViewModel: ProfileViewModel
-    @StateObject private var viewModel: StoryViewModel = StoryViewModel()
+    @StateObject private var storyViewModel: StoryViewModel = StoryViewModel()
+    @StateObject private var highlightViewModel: HighlightViewModel = HighlightViewModel()
     
     @State private var offset: CGSize = .zero
-    @State private var isDismissed: Bool = false
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             GeometryReader { reader in
                 VStack(spacing: 0) {
                     // 상단
@@ -27,8 +29,8 @@ struct StoryView: View {
                         .frame(height: reader.safeAreaInsets.top, alignment: .top)
                     
                     ZStack(alignment: .top) {
-                        if !viewModel.stories.isEmpty && viewModel.isAllLoaded {
-                            AsyncImage(url: URL(string: viewModel.stories[viewModel.currentIndex].storyPicture)) { image in
+                        if !storyViewModel.stories.isEmpty && storyViewModel.isAllLoaded {
+                            AsyncImage(url: URL(string: storyViewModel.stories[storyViewModel.currentIndex].storyPicture)) { image in
                                 image
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
@@ -45,19 +47,19 @@ struct StoryView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             
                             HStack(spacing: 4) {
-                                ForEach(viewModel.stories.indices, id: \.self) { index in
-                                    ProgressView(value: index == viewModel.currentIndex ? min(max(viewModel.timerProgress, 0.0), 1.0) : (index < viewModel.currentIndex ? 1.0 : 0.0))
+                                ForEach(storyViewModel.stories.indices, id: \.self) { index in
+                                    ProgressView(value: index == storyViewModel.currentIndex ? min(max(storyViewModel.timerProgress, 0.0), 1.0) : (index < storyViewModel.currentIndex ? 1.0 : 0.0))
                                         .progressViewStyle(LinearProgressViewStyle(tint: .cheekBackgroundTeritory))
                                         .background(.cheekBackgroundTeritory.opacity(0.4))
                                         .foregroundColor(.cheekBackgroundTeritory)
                                         .frame(height: 2)
                                         .clipShape(Capsule())
-                                        .animation(viewModel.timerProgress > 0 ? .linear : nil, value: viewModel.timerProgress)
+                                        .animation(storyViewModel.timerProgress > 0 ? .linear : nil, value: storyViewModel.timerProgress)
                                 }
                             }
                             .frame(height: 2)
                             .padding(16)
-                            .onChange(of: viewModel.isTimeOver) { isTimeOver in
+                            .onChange(of: storyViewModel.isTimeOver) { isTimeOver in
                                 if isTimeOver {
                                     goNext()
                                 }
@@ -82,9 +84,7 @@ struct StoryView: View {
                             }
                             
                             HStack(spacing: 8) {
-                                ProfileXS(url: viewModel.stories[viewModel.currentIndex].memberDto.profilePicture ?? "")
-                                
-                                Text(viewModel.stories[viewModel.currentIndex].memberDto.nickname)
+                                Text(highlightSubject)
                                     .body2(font: "SUIT", color: .cheekWhite, bold: true)
                                 
                                 Spacer()
@@ -109,47 +109,28 @@ struct StoryView: View {
                         }
                     }
                     
-                    
-                    if !viewModel.stories.isEmpty && viewModel.isAllLoaded {
-                        HStack(spacing: 8) {
-                            HStack(spacing: 4) {
-                                Image("IconHeart")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundColor(viewModel.stories[viewModel.currentIndex].upvoted ? .cheekWhite : .cheekLineNormal)
-                                
-                                Text("좋아요")
-                                    .body1(font: "SUIT", color: viewModel.stories[viewModel.currentIndex].upvoted ? .cheekWhite : .cheekLineNormal, bold: true)
+                    if !storyViewModel.stories.isEmpty && storyViewModel.isAllLoaded {
+                        NavigationLink(destination: EditHighlightView(profileViewModel: profileViewModel, highlightViewModel: highlightViewModel)) {
+                            HStack(spacing: 8) {
+                                HStack() {
+                                    Text("하이라이트 수정하기")
+                                        .body1(font: "SUIT", color: .cheekTextAssitive, bold: true)
+                                }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .foregroundColor(storyViewModel.stories[storyViewModel.currentIndex].upvoted ? .cheekStatusAlert : .cheekGrey200)
+                                )
                             }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .foregroundColor(viewModel.stories[viewModel.currentIndex].upvoted ? .cheekStatusAlert : .cheekGrey200)
-                            )
-                            .onTapGesture {
-                                onTapLike()
-                            }
-                            
-                            HStack(spacing: 4) {
-                                Image("IconCollection")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundColor(.cheekLineNormal)
-                                
-                                Text("스크랩")
-                                    .body1(font: "SUIT", color: .cheekTextAssitive, bold: true)
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .foregroundColor(.cheekGrey200)
-                            )
-                            .onTapGesture {
-                                
-                            }
+                            .padding(.top, 16)
+                            .padding(.horizontal, 16)
                         }
-                        .padding(.top, 16)
-                        .padding(.horizontal, 16)
+                        .simultaneousGesture(TapGesture().onEnded{
+                            storyViewModel.stopTimer()
+                        })
+                        .onDisappear {
+                            storyViewModel.timerStory()
+                        }
                     }
                 }
                 .background(.cheekTextNormal)
@@ -176,55 +157,70 @@ struct StoryView: View {
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-        .onAppear {
-            guard let myId = profileViewModel.profile?.memberId else {
-                print("profileViewModel에 profile이 없음")
-                return
+        .onChange(of: highlightViewModel.isDone) { _ in
+            if highlightViewModel.isDone {
+                dismiss()
             }
-            
-            viewModel.getStories(memberId: myId, storyIds: storyIds)
+        }
+        .onAppear {
             UINavigationBar.setAnimationsEnabled(true)
+            
+            onInit()
+            
+            storyViewModel.timerStory()
         }
         .onDisappear {
-            viewModel.stopTimer()
+            storyViewModel.stopTimer()
             UINavigationBar.setAnimationsEnabled(false)
         }
     }
     
-    // 이전으로
-    func goPrev() {
-        viewModel.timerProgress = 0
-        
-        if viewModel.currentIndex == 0 {
-            viewModel.currentIndex = 0
-        } else {
-            viewModel.currentIndex -= 1
-        }
-    }
-    
-    // 다음으로
-    func goNext() {
-        if viewModel.currentIndex == viewModel.stories.count - 1 {
-            viewModel.stopTimer()
-            dismiss()
-        } else {
-            viewModel.timerProgress = 0
-            viewModel.currentIndex += 1
-        }
-    }
-    
-    // 좋아요
-    func onTapLike() {
+    func onInit() {
         guard let myId = profileViewModel.profile?.memberId else {
             print("profileViewModel에 profile이 없음")
             return
         }
         
-        viewModel.stories[viewModel.currentIndex].upvoted.toggle()
-        viewModel.likeStory(memberId: myId)
+        highlightViewModel.getHighlight(myId: myId, highlightId: highlightId) { isDone in
+            if isDone {
+                storyViewModel.getStories(memberId: myId, storyIds: highlightViewModel.highlightStories!.storyId)
+                highlightViewModel.setSelectedStories(storyIds: highlightViewModel.highlightStories!.storyId, stories: profileViewModel.stories)
+            }
+        }
+        
+        highlightViewModel.highlightId = highlightId
+        highlightViewModel.setThumbnail(url: highlightThumbnail)
+        highlightViewModel.convertUIImage(url: highlightThumbnail)
+        highlightViewModel.subject = highlightSubject
+        
+        if highlightViewModel.isDone {
+            dismiss()
+        }
+    }
+    
+    // 이전으로
+    func goPrev() {
+        storyViewModel.timerProgress = 0
+        
+        if storyViewModel.currentIndex == 0 {
+            storyViewModel.currentIndex = 0
+        } else {
+            storyViewModel.currentIndex -= 1
+        }
+    }
+    
+    // 다음으로
+    func goNext() {
+        if storyViewModel.currentIndex == storyViewModel.stories.count - 1 {
+            storyViewModel.stopTimer()
+            dismiss()
+        } else {
+            storyViewModel.timerProgress = 0
+            storyViewModel.currentIndex += 1
+        }
     }
 }
 
 #Preview {
-    StoryView(storyIds: .constant([1, 2]), profileViewModel: ProfileViewModel())
+    HighlightView(highlightId: .constant(0), highlightThumbnail: .constant(""), highlightSubject: .constant(""), profileViewModel: ProfileViewModel())
 }

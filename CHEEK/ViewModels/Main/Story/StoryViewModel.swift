@@ -13,6 +13,7 @@ class StoryViewModel: ObservableObject {
     
     private let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
     private var cancellables = Set<AnyCancellable>()
+    private var isPaused: Bool = false
     private var timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
     // 불러오기 카운트
@@ -43,7 +44,17 @@ class StoryViewModel: ObservableObject {
                 }
             }, receiveValue: { storiesArray in
                 DispatchQueue.main.async {
-                    self.stories = storiesArray.sorted(by: { $0.id < $1.id })
+                    // stories 순서에 맞게 정렬
+                    self.stories = storiesArray
+                        .filter { storyIds.contains($0.id) }
+                        .sorted  { first, second in
+                            guard let firstIndex = storyIds.firstIndex(of: first.id),
+                                  let secondIndex = storyIds.firstIndex(of: second.id) else {
+                                return false
+                            }
+                            return firstIndex < secondIndex
+                        }
+                    
                     self.isAllLoaded = true
                     self.timerStory()
                 }
@@ -89,7 +100,7 @@ class StoryViewModel: ObservableObject {
     }
     
     // 타이머 종료
-    func cancelTimer() {
+    func stopTimer() {
         self.timer.upstream.connect().cancel()
     }
     

@@ -13,10 +13,7 @@ struct SetHighlightView: View {
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var highlightViewModel: HighlightViewModel
     
-    var selectedStories: [StoryDto]
-    
     // 썸네일 이름
-    @State private var subject: String = ""
     @State private var statusSubject: TextFieldForm.statuses = .normal
     @State private var infoSubjectForm: String = ""
     @FocusState private var isSubjectFocused: Bool
@@ -36,12 +33,12 @@ struct SetHighlightView: View {
                     Spacer()
                     
                     HStack(spacing: 4) {
-                        Text("등록")
+                        Text(highlightViewModel.highlightId != nil ? "수정" : "등록")
                             .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
                     }
                     .padding(.horizontal, 11)
                     .onTapGesture {
-                        addHighlight()
+                        onTapDone()
                     }
                 }
                 .overlay(
@@ -67,7 +64,7 @@ struct SetHighlightView: View {
                             .clipShape(Circle())
                     }
                     
-                    NavigationLink(destination: ThumbnailEditingView(highlightViewModel: highlightViewModel, selectedStories: selectedStories)) {
+                    NavigationLink(destination: ThumbnailEditingView(highlightViewModel: highlightViewModel)) {
                         Text("썸네일 수정")
                             .label1(font: "SUIT", color: .cheekStatusCaution, bold: true)
                             .multilineTextAlignment(.center)
@@ -78,10 +75,10 @@ struct SetHighlightView: View {
                 
                 // 닉네임
                 VStack {
-                    TextFieldForm(name: "이름", placeholder: "도움말 텍스트", text: $subject, information: $infoSubjectForm, status: $statusSubject, isFocused: $isSubjectFocused)
-                        .onChange(of: subject) { text in
-                            if subject.count > 8 {
-                                subject = String(text.prefix(12))
+                    TextFieldForm(name: "이름", placeholder: "도움말 텍스트", text: $highlightViewModel.subject, information: $infoSubjectForm, status: $statusSubject, isFocused: $isSubjectFocused)
+                        .onChange(of: highlightViewModel.subject) { text in
+                            if highlightViewModel.subject.count > 8 {
+                                highlightViewModel.subject = String(text.prefix(12))
                             }
                         }
                         .onChange(of: isSubjectFocused) { _ in
@@ -117,25 +114,36 @@ struct SetHighlightView: View {
         if !isSubjectFocused {
             statusSubject = .normal
             
-            if subject.isEmpty {
+            if highlightViewModel.subject.isEmpty {
                 statusSubject = .wrong
                 infoSubjectForm = "이름을 입력해주세요."
             }
         }
     }
     
-    // 하이라이트 등록
-    func addHighlight() {
-        if highlightViewModel.thumbnail != nil && !subject.isEmpty {
+    // 하이라이트 등록 및 수정
+    func onTapDone() {
+        if highlightViewModel.thumbnail != nil && !highlightViewModel.subject.isEmpty {
             guard let myId = profileViewModel.profile?.memberId else {
                 print("profileViewModel에 profile이 없음")
                 return
             }
             
-            highlightViewModel.addHighlight(stories: selectedStories, subject: subject, memberId: myId) { isDone in
-                DispatchQueue.main.async {
-                    if isDone {
-                        dismiss()
+            // highlightViewModel.highlightId가 nil이 아니면 수정
+            if highlightViewModel.highlightId != nil {
+                highlightViewModel.editHighlight(memberId: myId) { isDone in
+                    DispatchQueue.main.async {
+                        if isDone {
+                            dismiss()
+                        }
+                    }
+                }
+            } else {
+                highlightViewModel.addHighlight(memberId: myId) { isDone in
+                    DispatchQueue.main.async {
+                        if isDone {
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -147,5 +155,5 @@ struct SetHighlightView: View {
 }
 
 #Preview {
-    SetHighlightView(profileViewModel: ProfileViewModel(), highlightViewModel: HighlightViewModel(), selectedStories: [])
+    SetHighlightView(profileViewModel: ProfileViewModel(), highlightViewModel: HighlightViewModel())
 }

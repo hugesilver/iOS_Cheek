@@ -228,7 +228,6 @@ class ProfileViewModel: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        
         CombinePublishers().urlSession(req: request)
             .decode(type: [FollowModel].self, decoder: JSONDecoder())
             .sink(receiveCompletion: { completion in

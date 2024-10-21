@@ -7,15 +7,13 @@
 
 import SwiftUI
 
-struct SelectHighlightView: View {
+struct EditHighlightView: View {
     @Environment(\.dismiss) private var dismiss
     
     @ObservedObject var profileViewModel: ProfileViewModel
-    @StateObject var highlightViewModel = HighlightViewModel()
+    @ObservedObject var highlightViewModel: HighlightViewModel
     
     var categoriesColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
-    
-    @State private var selectedStories: [StoryDto] = []
     
     @State private var showAlert: Bool = false
     
@@ -32,13 +30,13 @@ struct SelectHighlightView: View {
                 
                 Spacer()
                 
-                if selectedStories.count > 0 {
-                    NavigationLink(destination: SetHighlightView(profileViewModel: profileViewModel, highlightViewModel: highlightViewModel, selectedStories: selectedStories)) {
+                if highlightViewModel.selectedStories.count > 0 {
+                    NavigationLink(destination: SetHighlightView(profileViewModel: profileViewModel, highlightViewModel: highlightViewModel)) {
                         HStack(spacing: 4) {
                             Text("완료")
                                 .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
                             
-                            Text("\(selectedStories.count)")
+                            Text("\(highlightViewModel.selectedStories.count)")
                                 .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
                         }
                         .padding(.horizontal, 11)
@@ -64,7 +62,7 @@ struct SelectHighlightView: View {
             
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
-                    ForEach(selectedStories) { story in
+                    ForEach(highlightViewModel.selectedStories) { story in
                         AsyncImage(url: URL(string: story.storyPicture)) { image in
                             image
                                 .resizable()
@@ -103,7 +101,7 @@ struct SelectHighlightView: View {
                                 Color.cheekLineAlternative
                             }
                             
-                            if selectedStories.contains(story) {
+                            if highlightViewModel.selectedStories.contains(story) {
                                 Rectangle()
                                     .foregroundColor(.cheekMainNormal.opacity(0.2))
                                     .overlay(
@@ -113,7 +111,7 @@ struct SelectHighlightView: View {
                             }
                             
                             VStack {
-                                if selectedStories.contains(story) {
+                                if highlightViewModel.selectedStories.contains(story) {
                                     Circle()
                                         .frame(width: 24, height: 24)
                                         .foregroundColor(.cheekMainNormal)
@@ -150,10 +148,10 @@ struct SelectHighlightView: View {
                         .contentShape(Rectangle())
                         .frame(height: 156)
                         .onTapGesture {
-                            if let index = selectedStories.firstIndex(of: story) {
-                                selectedStories.remove(at: index)
+                            if let index = highlightViewModel.selectedStories.firstIndex(of: story) {
+                                highlightViewModel.selectedStories.remove(at: index)
                             } else {
-                                selectedStories.append(story)
+                                highlightViewModel.selectedStories.append(story)
                             }
                         }
                     }
@@ -169,8 +167,21 @@ struct SelectHighlightView: View {
         .background(.cheekBackgroundTeritory)
         .alert(isPresented: $showAlert) {
             Alert(
-                title: Text("오류"),
-                message: Text("스토리를 선택해주세요!")
+                title: Text("경고"),
+                message: Text("스토리를 아무것도 선택하지 않았어요.\n혹시 삭제하실 건가요?"),
+                primaryButton: .destructive(Text("삭제")) {
+                    highlightViewModel.deleteHighlight() { isDone in
+                        if isDone {
+                            DispatchQueue.main.async {
+                                profileViewModel.highlights.removeAll { $0.highlightId == highlightViewModel.highlightId }
+                                dismiss()
+                            }
+                        }
+                    }
+                },
+                secondaryButton: .cancel(Text("취소")) {
+                    
+                }
             )
         }
         .onAppear {
@@ -183,5 +194,5 @@ struct SelectHighlightView: View {
 
 
 #Preview {
-    SelectHighlightView(profileViewModel: ProfileViewModel())
+    EditHighlightView(profileViewModel: ProfileViewModel(), highlightViewModel: HighlightViewModel())
 }

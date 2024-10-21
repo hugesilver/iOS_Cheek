@@ -38,3 +38,13 @@ struct StoryDto: Identifiable, Codable, Equatable {
         storyId
     }
 }
+
+struct StoryMiniDto: Identifiable, Codable {
+    let storyId: Int64
+    let storyPicture: String
+    let modifiedAt: Int64
+    
+    var id: Int64 {
+        storyId
+    }
+}
