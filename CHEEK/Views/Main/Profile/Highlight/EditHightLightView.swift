@@ -139,7 +139,7 @@ struct EditHighlightView: View {
                             VStack {
                                 Spacer()
                                 
-                                Text("2024-12-31")
+                                Text(Utils().convertToKST(from: story.modifiedAt)!)
                                     .caption1(font: "SUIT", color: .cheekWhite, bold: true)
                                     .frame(alignment: .bottomLeading)
                                     .padding(8)

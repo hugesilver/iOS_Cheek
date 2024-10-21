@@ -34,13 +34,13 @@ class Utils {
     func timeAgo(dateString: String) -> String? {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
         
-        formatter.timeZone = TimeZone(identifier: "America/New_York")
+        guard let date = formatter.date(from: dateString) else {
+            return nil
+        }
         
-        guard let date = formatter.date(from: dateString) else { return nil }
-        
-        let kstTimeZone = TimeZone(identifier: "Asia/Seoul")
+        let kstTimeZone = TimeZone(abbreviation: "KST")
         
         let koreanDate = date.addingTimeInterval(TimeInterval(kstTimeZone!.secondsFromGMT(for: date) - TimeZone.current.secondsFromGMT(for: date)))
         
@@ -56,6 +56,22 @@ class Utils {
         } else {
             return "방금 전"
         }
+    }
+    
+    // 날짜 계산
+    func convertToKST(from dateString: String) -> String? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        guard let date = formatter.date(from: dateString) else {
+            return nil
+        }
+        
+        formatter.timeZone = TimeZone(abbreviation: "KST")
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        return formatter.string(from: date)
     }
 }
 
