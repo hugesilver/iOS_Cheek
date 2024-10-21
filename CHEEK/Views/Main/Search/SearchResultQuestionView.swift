@@ -8,34 +8,32 @@
 import SwiftUI
 
 struct SearchResultQuestionView: View {
+    @ObservedObject var myProfileViewModel: ProfileViewModel
+    @ObservedObject var searchViewModel: SearchViewModel
+    
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-//                    UserQuestionCard(
-//                        questionDto: QuestionDto(
-//                            questionId: 0,
-//                            content: "테스트 질문입니다."
-//                        ),
-//                        memberDto: MemberDto(memberId: 0, nickname: "테스트", profilePicture: ""),
-//                        date: ""
-//                    )
-//                    .padding(.horizontal, 16)
-                    
-                    DividerSmall()
-                    
-                    Spacer()
+        ScrollView {
+            VStack(spacing: 16) {
+                ForEach(Array(searchViewModel.searchResult!.questionDto.enumerated()), id: \.offset) { index, questionDto in
+                    VStack(spacing: 16) {
+                        UserQuestionModelCard(
+                            myProfileViewModel: myProfileViewModel,
+                            questionModel: questionDto)
+                        .padding(.horizontal, 16)
+                        
+                        if index < searchViewModel.searchResult!.questionDto.count - 1 {
+                            DividerSmall()
+                        }
+                    }
                 }
             }
+            .padding(.vertical, 16)
         }
-        .padding(.top, 16)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
     }
 }
 
 #Preview {
-    SearchResultQuestionView()
+    SearchResultQuestionView(myProfileViewModel: ProfileViewModel(), searchViewModel: SearchViewModel())
 }

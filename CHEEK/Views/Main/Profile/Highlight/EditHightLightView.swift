@@ -13,7 +13,7 @@ struct EditHighlightView: View {
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var highlightViewModel: HighlightViewModel
     
-    var categoriesColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
+    var storyColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
     
     @State private var showAlert: Bool = false
     
@@ -85,7 +85,7 @@ struct EditHighlightView: View {
             .padding(.top, 17)
             
             ScrollView {
-                LazyVGrid(columns: categoriesColumns, spacing: 4) {
+                LazyVGrid(columns: storyColumns, spacing: 4) {
                     ForEach(profileViewModel.stories) { story in
                         ZStack(alignment: .leading) {
                             AsyncImage(url: URL(string: story.storyPicture)) { image in
@@ -139,7 +139,7 @@ struct EditHighlightView: View {
                             VStack {
                                 Spacer()
                                 
-                                Text(Utils().convertToKST(from: story.modifiedAt)!)
+                                Text(Utils().convertToKST(from: story.modifiedAt!)!)
                                     .caption1(font: "SUIT", color: .cheekWhite, bold: true)
                                     .frame(alignment: .bottomLeading)
                                     .padding(8)

@@ -14,7 +14,6 @@ struct HomeView: View {
     
     @Binding var currentMainIndex: Int
     
-    var categories: [CategoryModel]
     @Binding var selectedCategory: Int64
     
     @State var banners: [String] = ["ImageBannerSample1"]
@@ -23,7 +22,6 @@ struct HomeView: View {
     @State var imgIndex: Int = 0
     
     var categoriesColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 21), count: 4)
-    
     
     var body: some View {
         NavigationStack {
@@ -34,17 +32,19 @@ struct HomeView: View {
                         .frame(height: reader.safeAreaInsets.top, alignment: .top)
                     
                     HStack(spacing: 0) {
-                        HStack(spacing: 0) {
-                            Text("회사, 사람 키워드로 검색")
-                                .label1(font: "SUIT", color: .cheekTextAssitive, bold: false)
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 12)
-                            Spacer()
+                        NavigationLink(destination: SearchView(profileViewModel: profileViewModel)) {
+                            HStack(spacing: 0) {
+                                Text("회사, 사람 키워드로 검색")
+                                    .label1(font: "SUIT", color: .cheekTextAssitive, bold: false)
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 12)
+                                Spacer()
+                            }
+                            .background(
+                                Capsule()
+                                    .fill(.cheekLineAlternative)
+                            )
                         }
-                        .background(
-                            Capsule()
-                                .fill(.cheekLineAlternative)
-                        )
                         
                         Image("IconBell")
                             .resizable()
@@ -95,7 +95,7 @@ struct HomeView: View {
                             .padding(.top, 24)
                             
                             LazyVGrid(columns: categoriesColumns, spacing: 24) {
-                                ForEach(categories) { data in
+                                ForEach(CategoryModels().categories) { data in
                                     VStack(spacing: 8) {
                                         Image(data.image)
                                             .resizable()
@@ -154,14 +154,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(profileViewModel: ProfileViewModel(), currentMainIndex: .constant(0), categories: [
-        CategoryModel(id: 0, image: "IconJobDevelop", name: "개발"),
-        CategoryModel(id: 1, image: "IconJobManage", name: "기획"),
-        CategoryModel(id: 2, image: "IconJobDesign", name: "디자인"),
-        CategoryModel(id: 3, image: "IconJobFinance", name: "재무/회계"),
-        CategoryModel(id: 4, image: "IconJobSales", name: "영업"),
-        CategoryModel(id: 5, image: "IconJobMed", name: "의료"),
-        CategoryModel(id: 6, image: "IconJobEdu", name: "교육"),
-        CategoryModel(id: 7, image: "IconJobLaw", name: "법"),
-    ], selectedCategory: .constant(1))
+    HomeView(profileViewModel: ProfileViewModel(), currentMainIndex: .constant(0), selectedCategory: .constant(1))
 }

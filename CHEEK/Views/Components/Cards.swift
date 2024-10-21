@@ -159,6 +159,8 @@ struct UserCardLarge: View {
                         .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
                         .lineLimit(1)
                 }
+                
+                Spacer()
             }
         }
     }
@@ -179,7 +181,7 @@ struct QuestionCard: View {
     }
 }
 
-struct UserQuestionCard: View {
+struct UserQuestionDtoCard: View {
     @ObservedObject var myProfileViewModel: ProfileViewModel
     
     var questionDto: QuestionDto
@@ -195,39 +197,49 @@ struct UserQuestionCard: View {
     }
 }
 
+struct UserQuestionModelCard: View {
+    @ObservedObject var myProfileViewModel: ProfileViewModel
+    
+    var questionModel: QuestionModel
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            UserCardLarge(myProfileViewModel: myProfileViewModel, data: questionModel.memberDto, title: "\(questionModel.memberDto.nickname)님의 질문입니다!", date: Utils().timeAgo(dateString: questionModel.modifiedAt!))
+            
+            QuestionCard(question: questionModel.content)
+        }
+    }
+}
+
 struct StoryCard: View {
-    var storyDto: StoryDto
+    var storyPicture: String
+    var storyId: Int64
     
     @Binding var isStoryOpen: Bool
     @Binding var selectedStories: [Int64]
     
     var body: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 8) {
-                AsyncImage(url: URL(string: storyDto.storyPicture)) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(
-                            width: 160,
-                            height: 240
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                } placeholder: {
-                    Color.cheekMainNormal
-                    .frame(
-                        width: 160,
-                        height: 240
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    selectedStories = [storyDto.storyId]
-                    isStoryOpen = true
-                }
-            }
-            .padding(.horizontal, 16)
+        AsyncImage(url: URL(string: storyPicture)) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(
+                    width: 160,
+                    height: 240
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+        } placeholder: {
+            Color.cheekMainNormal
+            .frame(
+                width: 160,
+                height: 240
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            selectedStories = [storyId]
+            isStoryOpen = true
         }
     }
 }
@@ -246,7 +258,11 @@ struct UserStoryCard: View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(myProfileViewModel: myProfileViewModel, data: memberDto, title: "\(memberDto.nickname)님의 답변입니다!", date: Utils().timeAgo(dateString: date))
             
-            StoryCard(storyDto: storyDto, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    StoryCard(storyPicture: storyDto.storyPicture, storyId: storyDto.storyId, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                }
+            }
         }
     }
 }

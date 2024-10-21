@@ -27,7 +27,7 @@ struct FeedsNewestView: View {
                             
                             if data.type == "QUESTION" {
                                 VStack(spacing: 16) {
-                                    UserQuestionCard(myProfileViewModel: profileViewModel, questionDto: data.questionDto!, memberDto: data.memberDto, date: data.modifiedAt)
+                                    UserQuestionDtoCard(myProfileViewModel: profileViewModel, questionDto: data.questionDto!, memberDto: data.memberDto, date: data.modifiedAt)
                                     
                                     if profileViewModel.isMentor {
                                         NavigationLink(destination: AddAnswerView(profileViewModel: profileViewModel, questionId: data.questionDto!.questionId)) {

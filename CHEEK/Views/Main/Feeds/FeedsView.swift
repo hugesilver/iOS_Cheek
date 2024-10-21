@@ -12,8 +12,6 @@ struct FeedsView: View {
     
     @Binding var selectedCategory: Int64
     
-    var categories: [CategoryModel]
-    
     @State var selectedTab: Int = 0
     @StateObject var viewModel: FeedsViewModel = FeedsViewModel()
     
@@ -26,14 +24,14 @@ struct FeedsView: View {
                 HStack {
                     Menu {
                         Picker(selection: $selectedCategory, label: EmptyView(), content: {
-                            ForEach(categories) { category in
+                            ForEach(CategoryModels().categories) { category in
                                 Text(category.name)
                                     .tag(category.id)
                             }
                         })
                     } label: {
                         HStack(spacing: 4) {
-                            Text(categories[Int(selectedCategory) - 1].name)
+                            Text(CategoryModels().categories[Int(selectedCategory) - 1].name)
                                 .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
                             
                             Image("IconChevronDown")
@@ -45,11 +43,13 @@ struct FeedsView: View {
                     
                     Spacer()
                     
-                    Image("IconSearch")
-                        .resizable()
-                        .frame(width: 32, height: 32)
-                        .padding(8)
-                        .foregroundColor(.cheekTextNormal)
+                    NavigationLink(destination: SearchView(profileViewModel: profileViewModel, catetory: CategoryModels().categories[Int(selectedCategory) - 1].id)) {
+                        Image("IconSearch")
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                            .padding(8)
+                            .foregroundColor(.cheekTextNormal)
+                    }
                 }
                 .padding(.top, 8)
                 .padding(.horizontal, 16)
@@ -112,16 +112,5 @@ struct FeedsView: View {
 }
 
 #Preview {
-    FeedsView(
-        profileViewModel: ProfileViewModel(), selectedCategory: .constant(0),
-        categories: [
-            CategoryModel(id: 1, image: "IconJobDevelop", name: "개발"),
-            CategoryModel(id: 2, image: "IconJobManage", name: "기획"),
-            CategoryModel(id: 3, image: "IconJobDesign", name: "디자인"),
-            CategoryModel(id: 4, image: "IconJobFinance", name: "재무/회계"),
-            CategoryModel(id: 5, image: "IconJobSales", name: "영업"),
-            CategoryModel(id: 6, image: "IconJobMed", name: "의료"),
-            CategoryModel(id: 7, image: "IconJobEdu", name: "교육"),
-            CategoryModel(id: 8, image: "IconJobLaw", name: "법"),
-        ])
+    FeedsView(profileViewModel: ProfileViewModel(), selectedCategory: .constant(0))
 }

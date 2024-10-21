@@ -11,6 +11,13 @@ struct MypageView: View {
     @ObservedObject var profileViewModel: ProfileViewModel
     
     @State var isStoryOpen: Bool = false
+    @State var isHighlightOpen: Bool = false
+    
+    // 하이라이트 전용
+    @State var selectedHighlightId: Int64 = 0
+    @State var selectedHighlightThumbnail: String = ""
+    @State var selectedHighlightSubject: String = ""
+    
     @State var selectedStories: [Int64] = []
     
     @State private var isInit: Bool = false
@@ -18,7 +25,7 @@ struct MypageView: View {
     @State private var menus: [String] = []
     
     @State private var selectedTab: Int = 0
-    @State private var tabViewHeight: CGFloat = 1
+    @State private var tabViewHeights: [CGFloat] = [1, 1]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -126,9 +133,16 @@ struct MypageView: View {
                                                 .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
                                         }
                                         .frame(maxWidth: 72)
+                                        .onTapGesture {
+                                            selectedHighlightId = highlight.highlightId
+                                            selectedHighlightThumbnail = highlight.thumbnailPicture
+                                            selectedHighlightSubject = highlight.subject
+                                            
+                                            isHighlightOpen = true
+                                        }
                                     }
                                     
-                                    NavigationLink(destination: SelectHighlightView(profileViewModel: profileViewModel)) {
+                                    NavigationLink(destination: AddHighlightView(profileViewModel: profileViewModel)) {
                                         VStack(spacing: 12) {
                                             Image("IconPlus")
                                                 .resizable()
@@ -171,11 +185,11 @@ struct MypageView: View {
                                         }
                                     )
                                     .onPreferenceChange(HeightPreferenceKey.self) { value in
-                                        tabViewHeight = value
+                                        tabViewHeights[0] = value
                                     }
                                     .tag(0)
                             }
-                            
+
                             ProfileQuestionsView(questions: profileViewModel.questions)
                                 .background(
                                     GeometryReader { geometry in
@@ -184,12 +198,17 @@ struct MypageView: View {
                                     }
                                 )
                                 .onPreferenceChange(HeightPreferenceKey.self) { value in
-                                    tabViewHeight = value
+                                    tabViewHeights[profileViewModel.isMentor ? 1 : 0] = value
                                 }
                                 .tag(profileViewModel.isMentor ? 1 : 0)
                         }
-                        .frame(height: tabViewHeight)
+                        .frame(height: tabViewHeights[selectedTab])
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                        .onChange(of: selectedTab) { _ in
+                            print(selectedTab)
+                            print(tabViewHeights[selectedTab])
+                            proxy.scrollTo(0, anchor: .top)
+                        }
                     }
                     .padding(.top, 24)
                 }
@@ -221,8 +240,15 @@ struct MypageView: View {
                 StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
             }
         }
+        .fullScreenCover(isPresented: $isHighlightOpen) {
+            if #available(iOS 16.4, *) {
+                HighlightView(highlightId: $selectedHighlightId, highlightThumbnail: $selectedHighlightThumbnail, highlightSubject: $selectedHighlightSubject, profileViewModel: profileViewModel)
+                    .presentationBackground(.clear)
+            } else {
+                HighlightView(highlightId: $selectedHighlightId, highlightThumbnail: $selectedHighlightThumbnail, highlightSubject: $selectedHighlightSubject, profileViewModel: profileViewModel)
+            }
+        }
     }
-    
     
     // 메뉴 초기화
     func initMenu() {

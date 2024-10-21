@@ -6,3 +6,12 @@
 //
 
 import Foundation
+
+struct SearchModel: Codable {
+    var memberResCnt: Int64
+    var storyResCnt: Int64
+    var questionResCnt: Int64
+    var memberDto: [FollowModel]
+    var storyDto: [StoryMiniDto]
+    var questionDto: [QuestionModel]
+}

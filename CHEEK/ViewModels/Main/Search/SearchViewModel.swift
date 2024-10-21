@@ -17,7 +17,7 @@ class SearchViewModel: ObservableObject {
     @Published var recentSearches: [String] = []
     @Published var trendingKeywords: [String] = []
     @Published var isSearched: Bool = false
-    @Published var searchResult = []
+    @Published var searchResult: SearchModel?
     
     func getTrendingKeywords() {
         let url = URL(string: "\(ip)/search/trending-keyword")!
@@ -61,5 +61,40 @@ class SearchViewModel: ObservableObject {
     // 최근 검색 전체 삭제
     func removeAllSearched() {
         defaults.removeObject(forKey: recentSearchedKey)
+    }
+    
+    // 검색 조회
+    func getSearchResult(categoryId: Int64, keyword: String, myId: Int64) {
+        var components = URLComponents(string: "\(ip)/search/all/\(categoryId)")!
+        
+        components.queryItems = [
+            URLQueryItem(name: "keyword", value: "\(keyword)"),
+            URLQueryItem(name: "loginMemberId", value: "\(myId)")
+        ]
+        
+        guard let url = components.url else {
+            print("getSearchResult 함수 내 URL 추출 실패")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        CombinePublishers().urlSession(req: request)
+            .decode(type: SearchModel.self, decoder: JSONDecoder())
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("getSearchResult 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("getSearchResult 함수 실행 중 요청 실패: \(error)")
+                }
+            }, receiveValue: { data in
+                DispatchQueue.main.async {
+                    self.isSearched = true
+                    self.searchResult = data
+                }
+            })
+            .store(in: &cancellables)
     }
 }

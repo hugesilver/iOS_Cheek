@@ -30,6 +30,7 @@ struct StoryModel: Identifiable, Codable {
 struct StoryDto: Identifiable, Codable, Equatable {
     let storyId: Int64
     let storyPicture: String
+    let modifiedAt: String?
     var upvoted: Bool
     let upvoteCount: Int
     let categoryId: Int64?
@@ -42,7 +43,7 @@ struct StoryDto: Identifiable, Codable, Equatable {
 struct StoryMiniDto: Identifiable, Codable {
     let storyId: Int64
     let storyPicture: String
-    let modifiedAt: Int64
+    let modifiedAt: String
     
     var id: Int64 {
         storyId
