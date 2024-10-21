@@ -7,20 +7,20 @@
 
 import SwiftUI
 
-struct FeedsView: View {
+struct FeedView: View {
     @ObservedObject var profileViewModel: ProfileViewModel
     
     @Binding var selectedCategory: Int64
     
     @State var selectedTab: Int = 0
-    @StateObject var viewModel: FeedsViewModel = FeedsViewModel()
+    @StateObject var viewModel: FeedViewModel = FeedViewModel()
     
     @State var isStoryOpen: Bool = false
     @State var selectedStories: [Int64] = []
     
     var body: some View {
         ZStack {
-            VStack {
+            VStack(spacing: 0) {
                 HStack {
                     Menu {
                         Picker(selection: $selectedCategory, label: EmptyView(), content: {
@@ -58,10 +58,10 @@ struct FeedsView: View {
                     .padding(.top, 16)
                 
                 TabView(selection: $selectedTab) {
-                    FeedsNewestView(profileViewModel: profileViewModel, datas: viewModel.feedsNewest, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                    FeedNewestView(profileViewModel: profileViewModel, feedViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, onRefresh: { getFeed() })
                         .tag(0)
                     
-                    FeedsPopularityView(profileViewModel: profileViewModel, datas: viewModel.feedsNewest, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                    FeedPopularityView(profileViewModel: profileViewModel, feedViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, onRefresh: { getFeed() })
                         .tag(1)
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -86,10 +86,10 @@ struct FeedsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
-            getFeeds()
+            getFeed()
         }
         .onChange(of: selectedCategory) { _ in
-            getFeeds()
+            getFeed()
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
@@ -101,16 +101,16 @@ struct FeedsView: View {
         }
     }
     
-    func getFeeds() {
+    func getFeed() {
         guard let myId = profileViewModel.profile?.memberId else {
             print("profileViewModel에 profile이 없음")
             return
         }
         
-        viewModel.getFeeds(categoryId: selectedCategory, myId: myId)
+        viewModel.getFeed(categoryId: selectedCategory, myId: myId)
     }
 }
 
 #Preview {
-    FeedsView(profileViewModel: ProfileViewModel(), selectedCategory: .constant(0))
+    FeedView(profileViewModel: ProfileViewModel(), selectedCategory: .constant(0))
 }
