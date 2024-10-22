@@ -124,13 +124,13 @@ struct HighlightView: View {
                             }
                             .padding(.top, 16)
                             .padding(.horizontal, 16)
+                            .onAppear {
+                                storyViewModel.timerStory()
+                            }
                         }
                         .simultaneousGesture(TapGesture().onEnded{
                             storyViewModel.stopTimer()
                         })
-                        .onDisappear {
-                            storyViewModel.timerStory()
-                        }
                     }
                 }
                 .background(.cheekTextNormal)

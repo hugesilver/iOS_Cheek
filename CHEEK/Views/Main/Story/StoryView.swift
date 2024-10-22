@@ -103,9 +103,6 @@ struct StoryView: View {
                             }
                             .padding(.top, 27)
                             .padding(.horizontal, 16)
-                            
-                            
-                            
                         } else {
                             LoadingView()
                         }
@@ -146,6 +143,13 @@ struct StoryView: View {
                                 RoundedRectangle(cornerRadius: 8)
                                     .foregroundColor(.cheekGrey200)
                             )
+                            .onChange(of: isScrapOpen) { _ in
+                                if isScrapOpen {
+                                    viewModel.stopTimer()
+                                } else {
+                                    viewModel.timerStory()
+                                }
+                            }
                             .onTapGesture {
                                 isScrapOpen = true
                             }
