@@ -55,12 +55,13 @@ class AddQuestionViewModel: ObservableObject {
         }
         
         CombinePublishers().urlSession(req: request)
-            .sink(receiveCompletion: { completion in
-                switch completion {
+            .sink(receiveCompletion: { isCompletion in
+                switch isCompletion {
                 case .finished:
                     print("uploadQuestion 함수 실행 중 요청 성공")
                 case .failure(let error):
                     print("uploadQuestion 함수 실행 중 요청 실패: \(error)")
+                    completion(false)
                     self.showError(message: "질문 등록 중 발생하였습니다.")
                 }
             }, receiveValue: { data in

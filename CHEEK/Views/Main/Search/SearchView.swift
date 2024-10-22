@@ -52,6 +52,7 @@ struct SearchView: View {
                                         prompt: Text("회사, 사람, 키워드로 검색")
                                             .foregroundColor(.cheekTextAlternative)
                                     )
+                                    .submitLabel(.search)
                                     .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
                                     .foregroundColor(.cheekTextStrong)
                                     .id(1)

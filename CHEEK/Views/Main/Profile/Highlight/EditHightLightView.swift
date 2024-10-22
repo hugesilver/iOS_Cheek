@@ -19,6 +19,7 @@ struct EditHighlightView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            // 상단바
             HStack {
                 Image("IconChevronLeft")
                     .foregroundColor(.cheekTextNormal)
@@ -42,14 +43,12 @@ struct EditHighlightView: View {
                         .padding(.horizontal, 11)
                     }
                 } else {
-                    HStack(spacing: 4) {
-                        Text("완료")
-                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                    }
-                    .padding(.horizontal, 11)
-                    .onTapGesture {
-                        showAlert = true
-                    }
+                    Text("완료")
+                        .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                        .padding(.horizontal, 18)
+                        .onTapGesture {
+                            showAlert = true
+                        }
                 }
             }
             .overlay(
@@ -60,6 +59,7 @@ struct EditHighlightView: View {
             .padding(.top, 8)
             .padding(.horizontal, 16)
             
+            // 선택한 스토리
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(highlightViewModel.selectedStories) { story in
@@ -84,6 +84,7 @@ struct EditHighlightView: View {
             }
             .padding(.top, 17)
             
+            // 내 스토리 목록
             ScrollView {
                 LazyVGrid(columns: storyColumns, spacing: 4) {
                     ForEach(profileViewModel.stories) { story in

@@ -23,7 +23,7 @@ struct MainView: View {
                     case 0:
                         HomeView(profileViewModel: profileViewModel, currentMainIndex: $currentIndex, selectedCategory: $selectedCategory)
                     case 1:
-                        FeedsView(
+                        FeedView(
                             profileViewModel: profileViewModel, selectedCategory: $selectedCategory)
                     case 2:
                         MypageView(profileViewModel: profileViewModel)
@@ -53,7 +53,7 @@ struct MainView: View {
                     // 피드
                     VStack(spacing: 2) {
                         VStack {
-                            Image("IconBtmnavFeeds")
+                            Image("IconBtmnavFeed")
                                 .resizable()
                                 .foregroundColor(currentIndex == 1 ? .cheekMainStrong : .cheekTextAssitive)
                         }

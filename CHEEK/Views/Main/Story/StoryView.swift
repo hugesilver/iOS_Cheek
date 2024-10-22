@@ -16,7 +16,9 @@ struct StoryView: View {
     @StateObject private var viewModel: StoryViewModel = StoryViewModel()
     
     @State private var offset: CGSize = .zero
-    @State private var isDismissed: Bool = false
+    
+    @State private var isScrapOpen: Bool = false
+    @State private var isScrapKeyboardUp: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -145,7 +147,7 @@ struct StoryView: View {
                                     .foregroundColor(.cheekGrey200)
                             )
                             .onTapGesture {
-                                
+                                isScrapOpen = true
                             }
                         }
                         .padding(.top, 16)
@@ -188,6 +190,14 @@ struct StoryView: View {
         .onDisappear {
             viewModel.stopTimer()
             UINavigationBar.setAnimationsEnabled(false)
+        }
+        .sheet(isPresented: $isScrapOpen) {
+            SelectScrappedFolderView(storyModel: viewModel.stories[viewModel.currentIndex], profileViewModel: profileViewModel, isScrapOpen: $isScrapOpen, isKeyboardUp: $isScrapKeyboardUp)
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.fraction((isScrapKeyboardUp ? 0.17 : 0.63))])
+                .onDisappear {
+                    isScrapKeyboardUp = false
+                }
         }
     }
     

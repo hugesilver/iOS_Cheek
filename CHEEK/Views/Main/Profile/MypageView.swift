@@ -162,13 +162,12 @@ struct MypageView: View {
                                 .padding(.horizontal, 16)
                             }
                             .padding(.top, 24)
+                        }
                             
+                        NavigationLink(destination: ScrappedFoldersView(profileViewModel: profileViewModel)) {
                             ProfileButtonNarrowLine(text: "스크랩된 스토리")
                                 .padding(.top, 24)
                                 .padding(.horizontal, 16)
-                                .onTapGesture {
-                                    
-                                }
                         }
                         
                         TabsIcon(tabs: menus, selectedTab: $selectedTab)

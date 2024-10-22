@@ -135,6 +135,10 @@ struct SetHighlightView: View {
                     DispatchQueue.main.async {
                         if isDone {
                             dismiss()
+                            
+                            profileViewModel.highlights = profileViewModel.highlights.filter {
+                                $0.highlightId != highlightViewModel.highlightId
+                            }
                         }
                     }
                 }
