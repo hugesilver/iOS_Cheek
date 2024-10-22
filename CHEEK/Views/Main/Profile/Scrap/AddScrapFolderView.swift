@@ -42,11 +42,7 @@ struct AddScrapFolderView: View {
                         .tint(.cheekMainNormal)
                         .body2(font: "SUIT", color: .cheekTextNormal, bold: true)
                         .onChange(of: isFocused) { _ in
-                            if isFocused {
-                                isKeyboardUp = true
-                            } else {
-                                isKeyboardUp = false
-                            }
+                            isKeyboardUp = isFocused
                         }
                         .onSubmit {
                             addCollection()
