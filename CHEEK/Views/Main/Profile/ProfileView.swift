@@ -15,6 +15,7 @@ struct ProfileView: View {
     
     @StateObject var profileViewModel: UserProfileViewModel = UserProfileViewModel()
     @StateObject var followViewModel: FollowViewModel = FollowViewModel()
+    @StateObject private var highlightViewModel: HighlightViewModel = HighlightViewModel()
     
     @State var isStoryOpen: Bool = false
     @State var selectedStories: [Int64] = []
@@ -46,53 +47,57 @@ struct ProfileView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 0) {
-                            HStack {
+                            HStack(spacing: 24) {
                                 ProfileXL(url: profileViewModel.profile?.profilePicture ?? "")
                                 
-                                Spacer()
-                                
-                                HStack(spacing: 0) {
-                                    VStack(spacing: 2) {
-                                        Text("\(profileViewModel.stories.count)")
-                                            .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                GeometryReader { geometry in
+                                    HStack(spacing: 0) {
+                                        if profileViewModel.isMentor {
+                                            VStack(spacing: 2) {
+                                                Text("\(profileViewModel.stories.count)")
+                                                    .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                                
+                                                Text("스토리")
+                                                    .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                            }
+                                            .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
+                                            
+                                            Divider()
+                                                .foregroundColor(Color(red: 0.85, green: 0.85, blue: 0.85))
+                                                .frame(width: 1)
+                                                .padding(.horizontal, 8)
+                                        }
                                         
-                                        Text("스토리")
-                                            .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    
-                                    Divider()
-                                        .foregroundColor(Color(red: 0.85, green: 0.85, blue: 0.85))
-                                        .frame(width: 1)
-                                        .padding(.horizontal, 8)
-                                    
-                                    NavigationLink(destination:
-                                                    FollowView(myProfileViewModel: myProfileViewModel, targetMemberId: targetMemberId, selectedTab: 0)) {
-                                        VStack(spacing: 2) {
-                                            Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followerCnt ?? 0))
-                                                .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                            
-                                            Text("팔로워")
-                                                .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                        NavigationLink(destination:
+                                                        FollowView(myProfileViewModel: myProfileViewModel, targetMemberId: targetMemberId, selectedTab: 0)) {
+                                            VStack(spacing: 2) {
+                                                Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followerCnt ?? 0))
+                                                    .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                                
+                                                Text("팔로워")
+                                                    .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                            }
+                                            .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
                                         }
-                                        .frame(maxWidth: .infinity)
-                                    }
-                                    
-                                    Divider()
-                                        .foregroundColor(Color(red: 0.85, green: 0.85, blue: 0.85))
-                                        .frame(width: 1)
-                                        .padding(.horizontal, 8)
-                                    
-                                    NavigationLink(destination:
-                                                    FollowView(myProfileViewModel: myProfileViewModel, targetMemberId: targetMemberId, selectedTab: 1)) {
-                                        VStack(spacing: 2) {
-                                            Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followingCnt ?? 0))
-                                                .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                            
-                                            Text("팔로잉")
-                                                .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                        
+                                        Divider()
+                                            .foregroundColor(Color(red: 0.85, green: 0.85, blue: 0.85))
+                                            .frame(width: 1)
+                                            .padding(.horizontal, 8)
+                                        
+                                        NavigationLink(destination:
+                                                        FollowView(myProfileViewModel: myProfileViewModel, targetMemberId: targetMemberId, selectedTab: 1)) {
+                                            VStack(spacing: 2) {
+                                                Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followingCnt ?? 0))
+                                                    .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                                
+                                                Text("팔로잉")
+                                                    .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                            }
+                                            .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
                                         }
-                                        .frame(maxWidth: .infinity)
+                                        
+                                        Spacer()
                                     }
                                 }
                             }
@@ -157,9 +162,9 @@ struct ProfileView: View {
                                                     .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
                                             }
                                             .frame(maxWidth: 72)
-                                        }
-                                        .onTapGesture {
-                                            
+                                            .onTapGesture {
+                                                onTapHighlight(highlight: highlight)
+                                            }
                                         }
                                     }
                                     .padding(.horizontal, 16)
@@ -299,6 +304,18 @@ struct ProfileView: View {
         if profileViewModel.profile != nil {
             profileViewModel.profile!.following = false
             profileViewModel.profile!.followerCnt -= 1
+        }
+    }
+    
+    func onTapHighlight(highlight: HighlightListModel) {
+        guard let myId = profileViewModel.profile?.memberId else {
+            print("profileViewModel에 profile이 없음")
+            return
+        }
+        
+        highlightViewModel.getHighlight(myId: myId, highlightId: highlight.highlightId) { isDone in
+            selectedStories = highlightViewModel.highlightStories!.storyId
+            isStoryOpen = true
         }
     }
 }
