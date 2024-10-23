@@ -189,7 +189,7 @@ struct HighlightView: View {
         }
         
         highlightViewModel.highlightId = highlightId
-        highlightViewModel.setThumbnail(url: highlightThumbnail)
+        highlightViewModel.originalThumbnail = highlightThumbnail
         highlightViewModel.convertUIImage(url: highlightThumbnail)
         highlightViewModel.subject = highlightSubject
         

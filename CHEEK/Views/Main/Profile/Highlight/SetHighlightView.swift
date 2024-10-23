@@ -50,18 +50,38 @@ struct SetHighlightView: View {
                 .padding(.horizontal, 16)
                 
                 VStack(spacing: 24) {
-                    if highlightViewModel.thumbnail != nil {
-                        Image(uiImage: highlightViewModel.thumbnail!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 128, height: 128)
-                            .clipShape(Circle())
+                    if highlightViewModel.originalThumbnail != nil {
+                        AsyncImage(url: URL(string: highlightViewModel.selectedStories.last?.storyPicture ?? "")) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        } placeholder: {
+                            Image("ImageDefaultProfile")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        }
+                        .frame(width: 128, height: 128)
+                        .clipShape(Circle())
                     } else {
-                        Image("ImageDefaultProfile")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
+                        if highlightViewModel.thumbnail != nil {
+                            Image(uiImage: highlightViewModel.thumbnail!)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 128, height: 128)
+                                .clipShape(Circle())
+                        } else {
+                            AsyncImage(url: URL(string: highlightViewModel.selectedStories.first?.storyPicture ?? "")) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                            } placeholder: {
+                                Image("ImageDefaultProfile")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                            }
                             .frame(width: 128, height: 128)
                             .clipShape(Circle())
+                        }
                     }
                     
                     NavigationLink(destination: ThumbnailEditingView(highlightViewModel: highlightViewModel)) {
@@ -123,15 +143,10 @@ struct SetHighlightView: View {
     
     // 하이라이트 등록 및 수정
     func onTapDone() {
-        if highlightViewModel.thumbnail != nil && !highlightViewModel.subject.isEmpty {
-            guard let myId = profileViewModel.profile?.memberId else {
-                print("profileViewModel에 profile이 없음")
-                return
-            }
-            
+        if !highlightViewModel.subject.isEmpty {
             // highlightViewModel.highlightId가 nil이 아니면 수정
             if highlightViewModel.highlightId != nil {
-                highlightViewModel.editHighlight(memberId: myId) { isDone in
+                highlightViewModel.editHighlight() { isDone in
                     DispatchQueue.main.async {
                         if isDone {
                             dismiss()
@@ -143,7 +158,7 @@ struct SetHighlightView: View {
                     }
                 }
             } else {
-                highlightViewModel.addHighlight(memberId: myId) { isDone in
+                highlightViewModel.addHighlight() { isDone in
                     DispatchQueue.main.async {
                         if isDone {
                             dismiss()
@@ -152,7 +167,7 @@ struct SetHighlightView: View {
                 }
             }
         } else {
-            highlightViewModel.alertMessage = "썸네일과 제목은 모두 필수입니다!"
+            highlightViewModel.alertMessage = "제목은 필수입니다!"
             highlightViewModel.showAlert = true
         }
     }

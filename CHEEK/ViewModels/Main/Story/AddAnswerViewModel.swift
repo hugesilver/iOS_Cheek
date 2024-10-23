@@ -176,7 +176,7 @@ class AddAnswerViewModel: ObservableObject {
             return
         }
         
-        let url = URL(string: "\(ip)/story/mentor")!
+        let url = URL(string: "\(ip)/story")!
         
         // Boundary 설정
         let boundary = UUID().uuidString

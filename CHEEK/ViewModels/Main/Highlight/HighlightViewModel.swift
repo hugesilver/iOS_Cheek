@@ -28,6 +28,9 @@ class HighlightViewModel: ObservableObject {
     // 선택한 스토리들
     @Published var selectedStories: [StoryDto] = []
     
+    // 수정 시 원래의 썸네일 URL
+    @Published var originalThumbnail: String? = nil
+    
     // 썸네일
     @Published var thumbnail: UIImage? = nil
     @Published var selectedImage: UIImage? = nil
@@ -162,7 +165,7 @@ class HighlightViewModel: ObservableObject {
     }
     
     // 하이라이트 추가
-    func addHighlight(memberId: Int64, completion: @escaping (Bool) -> Void) {
+    func addHighlight(completion: @escaping (Bool) -> Void) {
         isLoading = true
         
         var storyIdList: [Int64] = []
@@ -171,7 +174,7 @@ class HighlightViewModel: ObservableObject {
             storyIdList.append(story.storyId)
         }
         
-        let url = URL(string: "\(ip)/highlight/mentor")!
+        let url = URL(string: "\(ip)/highlight")!
         
         // Boundary 설정
         let boundary = UUID().uuidString
@@ -186,7 +189,6 @@ class HighlightViewModel: ObservableObject {
         
         let highlightDto: [String: Any] = [
             "storyIdList": storyIdList,
-            "memberId": memberId,
             "subject": subject
         ]
         
@@ -208,7 +210,6 @@ class HighlightViewModel: ObservableObject {
             httpBody.append(thumbnailPicture.jpegData(compressionQuality: 1.0)!)
             httpBody.append("\r\n".data(using: .utf8)!)
         } else {
-            showError(message: "등록 중 오류가 발생하였습니다.")
             print("addHighlight 함수 실행 중 썸네일 없음")
         }
         
@@ -246,7 +247,7 @@ class HighlightViewModel: ObservableObject {
     }
     
     // 하이라이트 수정
-    func editHighlight(memberId: Int64, completion: @escaping (Bool) -> Void) {
+    func editHighlight(completion: @escaping (Bool) -> Void) {
         isLoading = true
         
         var storyIdList: [Int64] = []
@@ -255,7 +256,7 @@ class HighlightViewModel: ObservableObject {
             storyIdList.append(story.storyId)
         }
         
-        let url = URL(string: "\(ip)/highlight/mentor/\(highlightId!)")!
+        let url = URL(string: "\(ip)/highlight/\(highlightId!)")!
         
         // Boundary 설정
         let boundary = UUID().uuidString
@@ -270,7 +271,6 @@ class HighlightViewModel: ObservableObject {
         
         let highlightDto: [String: Any] = [
             "storyIdList": storyIdList,
-            "memberId": memberId,
             "subject": subject
         ]
         
@@ -292,7 +292,6 @@ class HighlightViewModel: ObservableObject {
             httpBody.append(thumbnailPicture.jpegData(compressionQuality: 1.0)!)
             httpBody.append("\r\n".data(using: .utf8)!)
         } else {
-            showError(message: "등록 중 오류가 발생하였습니다.")
             print("editHighlight 함수 실행 중 썸네일 없음")
         }
         
@@ -331,7 +330,7 @@ class HighlightViewModel: ObservableObject {
     
     // 하이라이트 삭제
     func deleteHighlight(completion: @escaping (Bool) -> Void) {
-        let url = URL(string: "\(ip)/highlight/mentor/\(highlightId!)")!
+        let url = URL(string: "\(ip)/highlight/\(highlightId!)")!
         
         // Header 세팅
         var request = URLRequest(url: url)
