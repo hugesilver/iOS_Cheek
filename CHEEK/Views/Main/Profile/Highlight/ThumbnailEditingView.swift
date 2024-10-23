@@ -8,12 +8,14 @@
 import SwiftUI
 import PhotosUI
 
+fileprivate let ratio: CGFloat = 0.814
+fileprivate let size: CGSize = .init(width: UIScreen.main.bounds.width * ratio, height: UIScreen.main.bounds.width * ratio)
+fileprivate let frameVerticalPadding: CGFloat = 40
+
 struct ThumbnailEditingView: View {
     @Environment(\.dismiss) private var dismiss
     
     @ObservedObject var highlightViewModel: HighlightViewModel
-    
-    let size: CGSize = .init(width: 320, height: 320)
     
     @State private var scale: CGFloat = 1
     @State private var lastScale: CGFloat = 1
@@ -78,7 +80,7 @@ struct ThumbnailEditingView: View {
                     ZStack {
                         ThumbnailBackgroundView()
                             .frame(width: UIScreen.main.bounds.width, height: size.height)
-                            .padding(.vertical, 40)
+                            .padding(.vertical, frameVerticalPadding)
                             .blur(radius: 4)
                             .overlay(
                                 Color(red: 0.29, green: 0.29, blue: 0.29).opacity(0.6)
@@ -209,7 +211,7 @@ struct ThumbnailEditingView: View {
                     })
             }
         }
-        .scaleEffect(scale * 1.25)
+        .scaleEffect(scale * (UIScreen.main.bounds.width / (UIScreen.main.bounds.width * ratio)))
         .offset(offset)
         .coordinateSpace(name: "CROPVIEW")
         .gesture(
@@ -251,23 +253,54 @@ struct ThumbnailEditingView: View {
         .cornerRadius(size.height / 2)
     }
     
-    /// - Thumb View
+    /// - Thumbnail Background View
     @ViewBuilder
     func ThumbnailBackgroundView() -> some View {
         GeometryReader { _ in
-            if highlightViewModel.selectedImage != nil {
-                Image(uiImage: highlightViewModel.selectedImage!)
+            if let selectedImage = highlightViewModel.selectedImage {
+                Image(uiImage: selectedImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             }
         }
-        .scaleEffect(highlightViewModel.selectedImage != nil && highlightViewModel.selectedImage!.size.width > highlightViewModel.selectedImage!.size.height ? scale * 1.25 : scale)
-        .offset(
-            x: highlightViewModel.selectedImage != nil && highlightViewModel.selectedImage!.size.width > highlightViewModel.selectedImage!.size.height ? offset.width + (UIScreen.main.bounds.width - size.width) / 1.75 : offset.width,
-            y: highlightViewModel.selectedImage != nil && highlightViewModel.selectedImage!.size.width < highlightViewModel.selectedImage!.size.height
-            ? offset.height - (UIScreen.main.bounds.width - size.height) / 2.25 : offset.height
-        )
-        .coordinateSpace(name: "CROPVIEW")
+        .scaleEffect(thumbnailBackgroundScaleEffect(image: highlightViewModel.selectedImage))
+        .offset(x: thumbnailBackgroundXOffset(image: highlightViewModel.selectedImage),
+                y: thumbnailBackgroundYOffset(image: highlightViewModel.selectedImage))
+    }
+
+    // 썸네일 배경 ScaleEffect 계산
+    private func thumbnailBackgroundScaleEffect(image: UIImage?) -> CGFloat {
+        guard let image = image else { return scale }
+        
+        return image.size.width > image.size.height ? scale * (UIScreen.main.bounds.width / (UIScreen.main.bounds.width * ratio)) : scale
+    }
+
+    // 썸네일 배경 X Offset
+    private func thumbnailBackgroundXOffset(image: UIImage?) -> CGFloat {
+        guard let image = image else { return offset.width }
+        
+        let imageAspectRatio = image.size.width / image.size.height
+        let viewAspectRatio = (UIScreen.main.bounds.width + frameVerticalPadding) / UIScreen.main.bounds.width
+        
+        if imageAspectRatio > 1 {
+            return offset.width + (UIScreen.main.bounds.width - size.width) / ((1 + ratio) - (viewAspectRatio - 1))
+        }
+        
+        return offset.width
+    }
+
+    // 썸네일 배경 Y Offset
+    private func thumbnailBackgroundYOffset(image: UIImage?) -> CGFloat {
+        guard let image = image else { return offset.height }
+        
+        let imageAspectRatio = image.size.width / image.size.height
+        let viewAspectRatio = (UIScreen.main.bounds.width + frameVerticalPadding) / UIScreen.main.bounds.width
+        
+        if imageAspectRatio <= 1 {
+            return offset.height - (UIScreen.main.bounds.width - size.height) / ((viewAspectRatio + ratio) + (viewAspectRatio - 1))
+        }
+        
+        return offset.height
     }
 }
 
