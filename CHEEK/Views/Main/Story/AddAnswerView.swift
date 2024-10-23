@@ -236,7 +236,7 @@ struct AddAnswerMenusView: View {
             return
         }
         
-        viewModel.saveCanvasImage(myId: myId) {
+        viewModel.saveCanvasImage() {
             AnswerDrawingView(viewModel: viewModel)
         } completion: { isSuccess in
             if isSuccess {

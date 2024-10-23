@@ -129,7 +129,7 @@ class AddAnswerViewModel: ObservableObject {
     }
     
     // 이미지로 저장
-    func saveCanvasImage<Content: View>(myId: Int64, @ViewBuilder content: @escaping () -> Content, completion: @escaping (Bool) -> Void) {
+    func saveCanvasImage<Content: View>(@ViewBuilder content: @escaping () -> Content, completion: @escaping (Bool) -> Void) {
         isLoading = true
         
         let uiView = UIHostingController(rootView: content().padding(.top, -removeSafeArea().top))
@@ -156,7 +156,7 @@ class AddAnswerViewModel: ObservableObject {
             UIGraphicsEndImageContext()
             
             if let resizedImage = resizedImage {
-                uploadAnswerStory(myId: myId, storyPicture: resizedImage) { isSuccess in
+                uploadAnswerStory(storyPicture: resizedImage) { isSuccess in
                     completion(isSuccess)
                 }
             } else {
@@ -169,7 +169,7 @@ class AddAnswerViewModel: ObservableObject {
         }
     }
     
-    func uploadAnswerStory(myId: Int64, storyPicture: UIImage, completion: @escaping (Bool) -> Void) {
+    func uploadAnswerStory(storyPicture: UIImage, completion: @escaping (Bool) -> Void) {
         guard questionModel != nil else {
             print("questionModel 없음")
             showError(message: "오류가 발생하였습니다.")
@@ -194,7 +194,6 @@ class AddAnswerViewModel: ObservableObject {
         // storyDto
         let storyDto: [String: Any] = [
             "categoryId": questionModel!.categoryId,
-            "memberId": myId,
             "questionId": questionModel!.questionId,
             "text": texts
         ]
@@ -230,6 +229,7 @@ class AddAnswerViewModel: ObservableObject {
             }, receiveValue: { data in
                 let dataString = String(data: data, encoding: .utf8)
                 completion(dataString == "ok")
+                print(dataString)
             })
             .store(in: &self.cancellables)
     }
