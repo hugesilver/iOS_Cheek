@@ -141,14 +141,16 @@ struct UserFollowCard: View {
 struct UserCardLarge: View {
     @ObservedObject var myProfileViewModel: ProfileViewModel
     
-    var data: MemberDto
-    var title: String
-    var date: String?
+    let memberId: Int64
+    let profilePicture: String?
+    
+    let title: String
+    let date: String?
     
     var body: some View {
-        NavigationLink(destination: ProfileView(targetMemberId: data.memberId, myProfileViewModel: myProfileViewModel)) {
+        NavigationLink(destination: ProfileView(targetMemberId: memberId, myProfileViewModel: myProfileViewModel)) {
             HStack(spacing: 8) {
-                ProfileM(url: data.profilePicture ?? "")
+                ProfileM(url: profilePicture ?? "")
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
@@ -167,46 +169,96 @@ struct UserCardLarge: View {
 }
 
 struct QuestionCard: View {
-    var question: String
+    let myId: Int64
+    
+    let questionId: Int64
+    let content: String
+    let storyCnt: Int64
+    let memberId: Int64
+    
+    @State var isEditQuestionOpen: Bool = false
+    @State var showAlert: Bool = false
     
     var body: some View {
-        Text(verbatim: question)
-            .body1(font: "SUIT", color: .cheekTextNormal, bold: false)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .foregroundColor(.cheekLineAlternative)
-            )
-    }
-}
-
-struct UserQuestionDtoCard: View {
-    @ObservedObject var myProfileViewModel: ProfileViewModel
-    
-    var questionDto: QuestionDto
-    var memberDto: MemberDto
-    var date: String
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            UserCardLarge(myProfileViewModel: myProfileViewModel, data: memberDto, title: "\(memberDto.nickname)님의 질문입니다!", date: Utils().timeAgo(dateString: date))
+        VStack(spacing: 16) {
+            Text(verbatim: content)
+                .body1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
             
-            QuestionCard(question: questionDto.content)
+            HStack {
+                NavigationLink(destination: AnsweredQuestionView(questionId: questionId)) {
+                    Text("답변 \(storyCnt)")
+                        .label1(font: "SUIT", color: .cheekTextAlternative, bold: true)
+                        .overlay(
+                            Rectangle()
+                                .foregroundColor(.cheekTextAlternative)
+                                .frame(height: 1)
+                                .offset(y: 1)
+                            , alignment: .bottom
+                        )
+                }
+                
+                Spacer()
+                
+                if myId == memberId {
+                    Menu {
+                        Button(action: {
+                            isEditQuestionOpen = true
+                        }) {
+                            Text("질문 수정")
+                        }
+                        
+                        /*
+                         Button(role: .destructive, action: {
+                         
+                         }) {
+                         Text("질문 삭제")
+                         }
+                         */
+                    } label: {
+                        Image("IconMore")
+                            .resizable()
+                            .foregroundColor(.cheekTextAlternative)
+                            .frame(width: 32, height: 32)
+                    }
+                    
+                    NavigationLink(destination: EditQuestionView(questionId: questionId, content: content), isActive: $isEditQuestionOpen) {
+                        EmptyView()
+                    }
+                }
+            }
         }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .foregroundColor(.cheekLineAlternative)
+        )
     }
 }
 
-struct UserQuestionModelCard: View {
+struct UserQuestionCard: View {
     @ObservedObject var myProfileViewModel: ProfileViewModel
     
-    var questionModel: QuestionModel
+    let myId: Int64
+    
+    let questionId: Int64
+    let content: String
+    let storyCnt: Int64
+    let modifiedAt: String
+    let memberDto: MemberDto
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            UserCardLarge(myProfileViewModel: myProfileViewModel, data: questionModel.memberDto, title: "\(questionModel.memberDto.nickname)님의 질문입니다!", date: Utils().timeAgo(dateString: questionModel.modifiedAt!))
+            UserCardLarge(
+                myProfileViewModel: myProfileViewModel,
+                memberId: memberDto.memberId,
+                profilePicture: memberDto.profilePicture,
+                title: "\(memberDto.nickname)님의 질문입니다!",
+                date: Utils().timeAgo(dateString: modifiedAt)
+            )
             
-            QuestionCard(question: questionModel.content)
+            QuestionCard(myId: myId, questionId: questionId, content: content, storyCnt: storyCnt, memberId: memberDto.memberId)
         }
     }
 }
@@ -230,11 +282,11 @@ struct StoryCard: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
         } placeholder: {
             Color.cheekMainNormal
-            .frame(
-                width: 160,
-                height: 240
-            )
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+                .frame(
+                    width: 160,
+                    height: 240
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 16))
         }
         .contentShape(Rectangle())
         .onTapGesture {
@@ -256,7 +308,13 @@ struct UserStoryCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            UserCardLarge(myProfileViewModel: myProfileViewModel, data: memberDto, title: "\(memberDto.nickname)님의 답변입니다!", date: Utils().timeAgo(dateString: date))
+            UserCardLarge(
+                myProfileViewModel: myProfileViewModel,
+                memberId: memberDto.memberId,
+                profilePicture: memberDto.profilePicture,
+                title: "\(memberDto.nickname)님의 답변입니다!",
+                date: Utils().timeAgo(dateString: date)
+            )
             
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {

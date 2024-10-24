@@ -1,17 +1,17 @@
 //
-//  AddQuestion.swift
+//  EditQuestionView.swift
 //  CHEEK
 //
-//  Created by 김태은 on 6/13/24.
+//  Created by 김태은 on 10/25/24.
 //
 
 import SwiftUI
 
-struct AddQuestionView: View {
+struct EditQuestionView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var profileViewModel: ProfileViewModel
     
-    let categoryId: Int64
+    let questionId: Int64
+    var content: String
     
     @StateObject private var viewModel: QuestionViewModel = QuestionViewModel()
     
@@ -45,9 +45,9 @@ struct AddQuestionView: View {
                             question = String(text.prefix(50))
                         }
                     
-                    ButtonActive(text: "등록하기")
+                    ButtonActive(text: "수정하기")
                         .onTapGesture {
-                            addQuestion()
+                            editQuestion()
                         }
                 }
                 .padding(.top, 60)
@@ -97,13 +97,16 @@ struct AddQuestionView: View {
                 LoadingView()
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
         .background(.cheekTextNormal)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.bottom, isFocused ? 30 : 0)
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
         .onTapGesture {
             Utils().hideKeyboard()
+        }
+        .onAppear {
+            question = content
         }
         .alert(isPresented: $viewModel.showAlert) {
             Alert(
@@ -119,19 +122,12 @@ struct AddQuestionView: View {
         }
     }
     
-    
-    
     // 질문 추가
-    func addQuestion() {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
+    func editQuestion() {
         Utils().hideKeyboard()
         
         if !question.isEmpty {
-            viewModel.uploadQuestion(memberId: myId, categoryId: categoryId, content: question) { isSuccess in
+            viewModel.editQuestion(content: question, questionId: questionId) { isSuccess in
                 if isSuccess {
                     print(isSuccess)
                 }
@@ -143,5 +139,5 @@ struct AddQuestionView: View {
 }
 
 #Preview {
-    AddQuestionView(profileViewModel: ProfileViewModel(), categoryId: 1)
+    EditQuestionView(questionId: 0, content: "")
 }
