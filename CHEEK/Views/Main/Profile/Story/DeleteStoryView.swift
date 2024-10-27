@@ -15,6 +15,11 @@ struct DeleteStoryView: View {
     
     var storyColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
     
+    enum deleteModeTypes {
+        case delete, none
+    }
+    
+    @State var deleteMode: deleteModeTypes = .delete
     @State var showAlert: Bool = false
     
     var body: some View {
@@ -31,16 +36,27 @@ struct DeleteStoryView: View {
                 
                 Spacer()
                 
-                HStack(spacing: 4) {
+                if profileViewModel.selectedStoriesForDelete.count > 0 {
+                    HStack(spacing: 4) {
+                        Text("완료")
+                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                        
+                        Text("\(profileViewModel.selectedStoriesForDelete.count)")
+                            .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
+                    }
+                    .padding(.horizontal, 11)
+                    .onTapGesture {
+                        deleteMode = .delete
+                        showAlert = true
+                    }
+                } else {
                     Text("완료")
                         .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                    
-                    Text("\(profileViewModel.selectedStoriesForDelete.count)")
-                        .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
-                }
-                .padding(.horizontal, 11)
-                .onTapGesture {
-                    showAlert = true
+                        .padding(.horizontal, 18)
+                        .onTapGesture {
+                            deleteMode = .none
+                            showAlert = true
+                        }
                 }
             }
             .overlay(
@@ -52,7 +68,7 @@ struct DeleteStoryView: View {
             .padding(.horizontal, 16)
         }
         
-        // 컬렉션 모음
+        // 스토리 모음
         ScrollView {
             LazyVGrid(columns: storyColumns, spacing: 4) {
                 ForEach(profileViewModel.stories) { story in
@@ -134,14 +150,22 @@ struct DeleteStoryView: View {
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
         }
         .alert(isPresented: $showAlert) {
-            Alert(
-                title: Text("경고"),
-                message: Text("정말 이 스토리들을 지울까요?"),
-                primaryButton: .destructive(Text("삭제")) {
-                    deleteStories()
-                },
-                secondaryButton: .cancel(Text("취소"))
-            )
+            switch deleteMode {
+            case .delete:
+                Alert(
+                    title: Text("경고"),
+                    message: Text("정말 이 스토리들을 지울까요?"),
+                    primaryButton: .destructive(Text("삭제")) {
+                        deleteStories()
+                    },
+                    secondaryButton: .cancel(Text("취소"))
+                )
+            case .none:
+                Alert(
+                    title: Text("알림"),
+                    message: Text("스토리를 선택해주세요.")
+                )
+            }
         }
     }
     
