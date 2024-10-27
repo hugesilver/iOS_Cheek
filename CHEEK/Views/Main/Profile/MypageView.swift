@@ -44,9 +44,19 @@ struct MypageView: View {
                 
                 Spacer()
                 
-                Image("IconPreference")
-                    .foregroundColor(.cheekTextNormal)
-                    .frame(width: 48, height: 48)
+                HStack(spacing: 8) {
+                    NavigationLink(destination: DeleteStoryView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
+                        Image("IconPost")
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 32, height: 32)
+                            .padding(8)
+                    }
+                    
+                    Image("IconPreference")
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 32, height: 32)
+                        .padding(8)
+                }
             }
             .padding(.top, 8)
             .padding(.horizontal, 16)

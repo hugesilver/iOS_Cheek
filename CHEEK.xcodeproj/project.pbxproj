@@ -108,6 +108,7 @@
 		E2D8BE4B2CCAD7DE0064E344 /* AnsweredQuestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE4A2CCAD7DE0064E344 /* AnsweredQuestionModel.swift */; };
 		E2D8BE4D2CCADB320064E344 /* AnsweredQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE4C2CCADB320064E344 /* AnsweredQuestionView.swift */; };
 		E2D8BE4F2CCC11440064E344 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE4E2CCC11440064E344 /* ContentView.swift */; };
+		E2D8BE522CCEAFF50064E344 /* DeleteStoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE512CCEAFF50064E344 /* DeleteStoryView.swift */; };
 		E2E740E32C00B289003B510B /* CHEEKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2E740E22C00B289003B510B /* CHEEKApp.swift */; };
 		E2E740E72C00B28B003B510B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2E740E62C00B28B003B510B /* Assets.xcassets */; };
 		E2E740EA2C00B28B003B510B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2E740E92C00B28B003B510B /* Preview Assets.xcassets */; };
@@ -222,6 +223,7 @@
 		E2D8BE4A2CCAD7DE0064E344 /* AnsweredQuestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnsweredQuestionModel.swift; sourceTree = "<group>"; };
 		E2D8BE4C2CCADB320064E344 /* AnsweredQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnsweredQuestionView.swift; sourceTree = "<group>"; };
 		E2D8BE4E2CCC11440064E344 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E2D8BE512CCEAFF50064E344 /* DeleteStoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteStoryView.swift; sourceTree = "<group>"; };
 		E2E740DF2C00B289003B510B /* CHEEK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CHEEK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2E740E22C00B289003B510B /* CHEEKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHEEKApp.swift; sourceTree = "<group>"; };
 		E2E740E62C00B28B003B510B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -427,6 +429,7 @@
 		E27EF5742C7CB73C0047E6EC /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				E2D8BE502CCEAFE30064E344 /* Story */,
 				E2D8BE242CC6ACCE0064E344 /* Scrap */,
 				E2D8BE072CC0CACB0064E344 /* Follow */,
 				E2D8BE062CC0C3AA0064E344 /* Highlight */,
@@ -636,6 +639,14 @@
 				E201F1312C35D5630042AA2E /* AnswerQuestionView.swift */,
 			);
 			path = Canvas;
+			sourceTree = "<group>";
+		};
+		E2D8BE502CCEAFE30064E344 /* Story */ = {
+			isa = PBXGroup;
+			children = (
+				E2D8BE512CCEAFF50064E344 /* DeleteStoryView.swift */,
+			);
+			path = Story;
 			sourceTree = "<group>";
 		};
 		E2E740D62C00B289003B510B = {
@@ -891,6 +902,7 @@
 				E2417C422C71FC1000A7A2A0 /* Ranking.swift in Sources */,
 				E2417C392C71C52500A7A2A0 /* Images.swift in Sources */,
 				E2D8BE3F2CCA33940064E344 /* AppDelegate.swift in Sources */,
+				E2D8BE522CCEAFF50064E344 /* DeleteStoryView.swift in Sources */,
 				E201F12C2C35D34F0042AA2E /* AnswerCanvasView.swift in Sources */,
 				E2FA48902C2D81BA0098137F /* AddAnswerViewModel.swift in Sources */,
 				E27EF5762C7CB7A40047E6EC /* SearchResultAllView.swift in Sources */,
