@@ -10,7 +10,9 @@ import SwiftUI
 struct AddHighlightView: View {
     @Environment(\.dismiss) private var dismiss
     
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
+    
     @StateObject var highlightViewModel = HighlightViewModel()
     
     var storyColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
@@ -32,7 +34,10 @@ struct AddHighlightView: View {
                 Spacer()
                 
                 if highlightViewModel.selectedStories.count > 0 {
-                    NavigationLink(destination: SetHighlightView(profileViewModel: profileViewModel, highlightViewModel: highlightViewModel)) {
+                    NavigationLink(destination: SetHighlightView(
+                        authViewModel: authViewModel,
+                        profileViewModel: profileViewModel,
+                        highlightViewModel: highlightViewModel)) {
                         HStack(spacing: 4) {
                             Text("완료")
                                 .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
@@ -140,7 +145,7 @@ struct AddHighlightView: View {
                             VStack {
                                 Spacer()
                                 
-                                Text(Utils().convertToKST(from: story.modifiedAt!)!)
+                                Text(Utils().convertToKST(dateString: story.modifiedAt!)!)
                                     .caption1(font: "SUIT", color: .cheekWhite, bold: true)
                                     .frame(alignment: .bottomLeading)
                                     .padding(8)
@@ -173,6 +178,8 @@ struct AddHighlightView: View {
             )
         }
         .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            
             if highlightViewModel.isDone {
                 dismiss()
             }
@@ -182,5 +189,5 @@ struct AddHighlightView: View {
 
 
 #Preview {
-    AddHighlightView(profileViewModel: ProfileViewModel())
+    AddHighlightView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

@@ -7,31 +7,21 @@
 
 import Foundation
 
-// 자신의 프로필
-struct ProfileModel: Codable {
-    let memberId: Int64
-    let email: String
-    let nickname: String
-    let information: String
-    let description: String?
-    let profilePicture: String?
-    let role: String
-    let status: String
-    let followerCnt: Int64
-    let followingCnt: Int64
-}
-
-// 타유저의 프로필
-struct UserProfileModel: Codable, Equatable {
+// 프로필
+struct ProfileModel: Identifiable, Codable, Equatable {
     let memberId: Int64
     let nickname: String
     let information: String
     let description: String?
-    let profilePicture: String?
     let role: String
-    var followerCnt: Int64
-    let followingCnt: Int64
     var following: Bool
+    var followerCnt: Int64
+    var followingCnt: Int64
+    let profilePicture: String?
+    
+    var id: Int64 {
+        memberId
+    }
 }
 
 // 카드에 쓰이는 프로필 모델
@@ -43,6 +33,7 @@ struct MemberProfileModel: Codable {
     let profilePicture: String?
 }
 
+// 간략 프로필 정보 모델
 struct MemberDto: Codable, Equatable {
     let memberId: Int64
     let nickname: String

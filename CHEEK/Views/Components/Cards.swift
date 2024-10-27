@@ -38,14 +38,14 @@ struct CaptionCard: View {
 }
 
 struct RankingCard: View {
-    @ObservedObject var myProfileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     var rank: Int
     var data: MemberProfileModel
     
     var body: some View {
         VStack(spacing: 16) {
-            NavigationLink(destination: ProfileView(targetMemberId: data.memberId, myProfileViewModel: myProfileViewModel)) {
+            NavigationLink(destination: ProfileView(targetMemberId: data.memberId, authViewModel: authViewModel)) {
                 HStack(spacing: 8) {
                     Ranking(rank: rank)
                     
@@ -83,7 +83,7 @@ struct RankingCard: View {
 }
 
 struct UserFollowCard: View {
-    @ObservedObject var myProfileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     var data: FollowModel
     var isMe: Bool
@@ -93,7 +93,7 @@ struct UserFollowCard: View {
     var body: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 6) {
-                NavigationLink(destination: ProfileView(targetMemberId: data.memberId, myProfileViewModel: myProfileViewModel)) {
+                NavigationLink(destination: ProfileView(targetMemberId: data.memberId, authViewModel: authViewModel)) {
                     HStack(spacing: 8) {
                         ProfileS(url: data.profilePicture ?? "")
                         
@@ -139,7 +139,7 @@ struct UserFollowCard: View {
 }
 
 struct UserCardLarge: View {
-    @ObservedObject var myProfileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     let memberId: Int64
     let profilePicture: String?
@@ -148,7 +148,7 @@ struct UserCardLarge: View {
     let date: String?
     
     var body: some View {
-        NavigationLink(destination: ProfileView(targetMemberId: memberId, myProfileViewModel: myProfileViewModel)) {
+        NavigationLink(destination: ProfileView(targetMemberId: memberId, authViewModel: authViewModel)) {
             HStack(spacing: 8) {
                 ProfileM(url: profilePicture ?? "")
                 
@@ -169,6 +169,8 @@ struct UserCardLarge: View {
 }
 
 struct QuestionCard: View {
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    
     let myId: Int64
     
     let questionId: Int64
@@ -187,7 +189,7 @@ struct QuestionCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             HStack {
-                NavigationLink(destination: AnsweredQuestionView(questionId: questionId)) {
+                NavigationLink(destination: AnsweredQuestionView(authViewModel: authViewModel, questionId: questionId)) {
                     Text("답변 \(storyCnt)")
                         .label1(font: "SUIT", color: .cheekTextAlternative, bold: true)
                         .overlay(
@@ -223,7 +225,7 @@ struct QuestionCard: View {
                             .frame(width: 32, height: 32)
                     }
                     
-                    NavigationLink(destination: EditQuestionView(questionId: questionId, content: content), isActive: $isEditQuestionOpen) {
+                    NavigationLink(destination: EditQuestionView(authViewModel: authViewModel, questionId: questionId, content: content), isActive: $isEditQuestionOpen) {
                         EmptyView()
                     }
                 }
@@ -237,8 +239,31 @@ struct QuestionCard: View {
     }
 }
 
+struct QuestionCardWithoutOption: View {
+    let questionId: Int64
+    let content: String
+    let memberId: Int64
+    
+    @State var isEditQuestionOpen: Bool = false
+    @State var showAlert: Bool = false
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            Text(verbatim: content)
+                .body1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .foregroundColor(.cheekLineAlternative)
+        )
+    }
+}
+
 struct UserQuestionCard: View {
-    @ObservedObject var myProfileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     let myId: Int64
     
@@ -251,21 +276,44 @@ struct UserQuestionCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
-                myProfileViewModel: myProfileViewModel,
+                authViewModel: authViewModel,
                 memberId: memberDto.memberId,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname)님의 질문입니다!",
                 date: Utils().timeAgo(dateString: modifiedAt)
             )
             
-            QuestionCard(myId: myId, questionId: questionId, content: content, storyCnt: storyCnt, memberId: memberDto.memberId)
+            QuestionCard(authViewModel: authViewModel, myId: myId, questionId: questionId, content: content, storyCnt: storyCnt, memberId: memberDto.memberId)
+        }
+    }
+}
+
+struct UserQuestionCardWithoutOption: View {
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    
+    let questionId: Int64
+    let content: String
+    let modifiedAt: String
+    let memberDto: MemberDto
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            UserCardLarge(
+                authViewModel: authViewModel,
+                memberId: memberDto.memberId,
+                profilePicture: memberDto.profilePicture,
+                title: "\(memberDto.nickname)님의 질문입니다!",
+                date: Utils().timeAgo(dateString: modifiedAt)
+            )
+            
+            QuestionCardWithoutOption(questionId: questionId, content: content, memberId: memberDto.memberId)
         }
     }
 }
 
 struct StoryCard: View {
-    var storyPicture: String
-    var storyId: Int64
+    let storyId: Int64
+    let storyPicture: String
     
     @Binding var isStoryOpen: Bool
     @Binding var selectedStories: [Int64]
@@ -297,11 +345,12 @@ struct StoryCard: View {
 }
 
 struct UserStoryCard: View {
-    @ObservedObject var myProfileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
-    var storyDto: StoryDto
+    let storyId: Int64
+    let storyPicture: String
+    let modifiedAt: String
     var memberDto: MemberDto
-    var date: String
     
     @Binding var isStoryOpen: Bool
     @Binding var selectedStories: [Int64]
@@ -309,16 +358,16 @@ struct UserStoryCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
-                myProfileViewModel: myProfileViewModel,
+                authViewModel: authViewModel,
                 memberId: memberDto.memberId,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname)님의 답변입니다!",
-                date: Utils().timeAgo(dateString: date)
+                date: Utils().timeAgo(dateString: modifiedAt)
             )
             
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
-                    StoryCard(storyPicture: storyDto.storyPicture, storyId: storyDto.storyId, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                    StoryCard(storyId: storyId, storyPicture: storyPicture, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
                 }
             }
         }

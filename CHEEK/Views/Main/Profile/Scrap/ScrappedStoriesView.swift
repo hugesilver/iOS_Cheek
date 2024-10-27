@@ -10,10 +10,9 @@ import SwiftUI
 struct ScrappedStoriesView: View {
     @Environment(\.dismiss) private var dismiss
     
-    var folderModel: ScrapFolderModel
-    
-    @ObservedObject var profileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var scrapViewModel: ScrapViewModel
+    var folderModel: ScrapFolderModel
     
     var storyColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
     
@@ -141,7 +140,7 @@ struct ScrappedStoriesView: View {
                                     VStack {
                                         Spacer()
                                         
-                                        Text(Utils().convertToKST(from: collection.modifiedAt)!)
+                                        Text(Utils().convertToKST(dateString: collection.modifiedAt)!)
                                             .caption1(font: "SUIT", color: .cheekWhite, bold: true)
                                             .frame(alignment: .bottomLeading)
                                             .padding(8)
@@ -214,7 +213,7 @@ struct ScrappedStoriesView: View {
                                     VStack {
                                         Spacer()
                                         
-                                        Text(Utils().convertToKST(from: collection.modifiedAt)!)
+                                        Text(Utils().convertToKST(dateString: collection.modifiedAt)!)
                                             .caption1(font: "SUIT", color: .cheekWhite, bold: true)
                                             .frame(alignment: .bottomLeading)
                                             .padding(8)
@@ -237,6 +236,8 @@ struct ScrappedStoriesView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            
             scrapViewModel.getCollections(folderId: folderModel.folderId)
         }
         .onDisappear {
@@ -244,10 +245,10 @@ struct ScrappedStoriesView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
         }
         .alert(isPresented: $showAlert) {
@@ -306,5 +307,5 @@ struct ScrappedStoriesView: View {
 }
 
 #Preview {
-    ScrappedStoriesView(folderModel: ScrapFolderModel(folderId: 1, folderName: "", thumbnailPicture: ""), profileViewModel: ProfileViewModel(), scrapViewModel: ScrapViewModel())
+    ScrappedStoriesView(authViewModel: AuthenticationViewModel(), scrapViewModel: ScrapViewModel(), folderModel: ScrapFolderModel(folderId: 1, folderName: "", thumbnailPicture: ""))
 }

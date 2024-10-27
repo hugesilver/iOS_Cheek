@@ -15,7 +15,7 @@ class ProfileViewModel: ObservableObject {
     @Published var isMentor: Bool = false
     
     // 프로필 model
-    @Published var profile: ProfileModel? = nil
+    @Published var profile: ProfileModel?
     
     @Published var followers: [FollowModel] = []
     @Published var followings: [FollowModel] = []
@@ -26,10 +26,10 @@ class ProfileViewModel: ObservableObject {
     @Published var questions: [QuestionDto] = []
     
     // 프로필 조회
-    func getMyProfile() {
+    func getProfile(targetMemberId: Int64) {
         print("프로필 조회 시도")
         
-        let url = URL(string: "\(ip)/member/info")!
+        let url = URL(string: "\(ip)/member/info/\(targetMemberId)")!
         
         // Header 세팅
         var request = URLRequest(url: url)
@@ -55,21 +55,11 @@ class ProfileViewModel: ObservableObject {
     }
     
     // 하이라이트 조회
-    func getHighlights() {
+    func getHighlights(targetMemberId: Int64) {
         print("하이라이트 조회 시도")
         
-        guard profile != nil else {
-            print("프로필을 불러올 수 없음")
-            return
-        }
-        
-        let components = URLComponents(string: "\(ip)/highlight/member/\(profile!.memberId)")!
-        
-        guard let url = components.url else {
-            print("getProfile 함수 내 URL 추출 실패")
-            return
-        }
-        
+        let url = URL(string: "\(ip)/highlight/member/\(targetMemberId)")!
+
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -91,25 +81,11 @@ class ProfileViewModel: ObservableObject {
             .store(in: &self.cancellables)
     }
     
-    // 프로필 조회
-    func getStories(myId: Int64) {
+    // 스토리 조회
+    func getStories(targetMemberId: Int64) {
         print("스토리 조회 시도")
         
-        guard profile != nil else {
-            print("프로필을 불러올 수 없음")
-            return
-        }
-        
-        var components = URLComponents(string: "\(ip)/story/member/\(profile!.memberId)")!
-        
-        components.queryItems = [
-            URLQueryItem(name: "loginMemberId", value: "\(myId)")
-        ]
-        
-        guard let url = components.url else {
-            print("getProfile 함수 내 URL 추출 실패")
-            return
-        }
+        let url = URL(string: "\(ip)/story/member/\(targetMemberId)")!
         
         // Header 세팅
         var request = URLRequest(url: url)
@@ -133,15 +109,10 @@ class ProfileViewModel: ObservableObject {
     }
     
     // 질문 조회
-    func getQuestions() {
+    func getQuestions(targetMemberId: Int64) {
         print("질문 조회 시도")
         
-        guard profile != nil else {
-            print("프로필을 불러올 수 없음")
-            return
-        }
-        
-        let url = URL(string: "\(ip)/question/member/\(profile!.memberId)")!
+        let url = URL(string: "\(ip)/question/member/\(targetMemberId)")!
         
         // Header 세팅
         var request = URLRequest(url: url)
@@ -165,28 +136,14 @@ class ProfileViewModel: ObservableObject {
     }
     
     // 팔로워 조회
-    func getFollowers(myId: Int64) {
+    func getFollowers(targetMemberId: Int64) {
         print("팔로워 조회 시도")
         
-        guard profile != nil else {
-            print("프로필을 불러올 수 없음")
-            return
-        }
+        let url = URL(string: "\(ip)/member-connection/follower/\(targetMemberId)")!
         
-        var components = URLComponents(string: "\(ip)/member-connection/follower/\(profile!.memberId)")!
-        
-        components.queryItems = [
-            URLQueryItem(name: "loginMemberId", value: "\(myId)")
-        ]
-        
-        guard let url = components.url else {
-            print("getFollowers 함수 내 URL 추출 실패")
-            return
-        }
-        
+        // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        
         
         CombinePublishers().urlSession(req: request)
             .decode(type: [FollowModel].self, decoder: JSONDecoder())
@@ -206,25 +163,12 @@ class ProfileViewModel: ObservableObject {
     }
     
     // 팔로잉 조회
-    func getFollowings(myId: Int64) {
+    func getFollowings(targetMemberId: Int64) {
         print("팔로잉 조회 시도")
         
-        guard profile != nil else {
-            print("프로필을 불러올 수 없음")
-            return
-        }
+        let url = URL(string: "\(ip)/member-connection/following/\(targetMemberId)")!
         
-        var components = URLComponents(string: "\(ip)/member-connection/following/\(profile!.memberId)")!
-        
-        components.queryItems = [
-            URLQueryItem(name: "loginMemberId", value: "\(myId)")
-        ]
-        
-        guard let url = components.url else {
-            print("getFollowings 함수 내 URL 추출 실패")
-            return
-        }
-        
+        // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         

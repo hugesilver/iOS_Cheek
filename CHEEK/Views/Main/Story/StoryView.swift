@@ -10,9 +10,9 @@ import SwiftUI
 struct StoryView: View {
     @Environment(\.dismiss) private var dismiss
     
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @Binding var storyIds: [Int64]
     
-    @ObservedObject var profileViewModel: ProfileViewModel
     @StateObject private var viewModel: StoryViewModel = StoryViewModel()
     
     @State private var offset: CGSize = .zero
@@ -183,12 +183,7 @@ struct StoryView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            guard let myId = profileViewModel.profile?.memberId else {
-                print("profileViewModel에 profile이 없음")
-                return
-            }
-            
-            viewModel.getStories(memberId: myId, storyIds: storyIds)
+            viewModel.getStories(storyIds: storyIds)
             UINavigationBar.setAnimationsEnabled(true)
         }
         .onDisappear {
@@ -196,7 +191,7 @@ struct StoryView: View {
             UINavigationBar.setAnimationsEnabled(false)
         }
         .sheet(isPresented: $isScrapOpen) {
-            SelectScrappedFolderView(storyModel: viewModel.stories[viewModel.currentIndex], profileViewModel: profileViewModel, isScrapOpen: $isScrapOpen, isKeyboardUp: $isScrapKeyboardUp)
+            SelectScrappedFolderView(authViewModel: authViewModel, storyModel: viewModel.stories[viewModel.currentIndex], isScrapOpen: $isScrapOpen, isKeyboardUp: $isScrapKeyboardUp)
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.fraction((isScrapKeyboardUp ? 0.17 : 0.63))])
                 .onDisappear {
@@ -229,16 +224,11 @@ struct StoryView: View {
     
     // 좋아요
     func onTapLike() {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
         viewModel.stories[viewModel.currentIndex].upvoted.toggle()
-        viewModel.likeStory(memberId: myId)
+        viewModel.likeStory()
     }
 }
 
 #Preview {
-    StoryView(storyIds: .constant([1, 2]), profileViewModel: ProfileViewModel())
+    StoryView(authViewModel: AuthenticationViewModel(), storyIds: .constant([1, 2]))
 }

@@ -10,8 +10,11 @@ import SwiftUI
 struct ScrappedFoldersView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var profileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    
     @StateObject var viewModel: ScrapViewModel = ScrapViewModel()
+    
+    @State private var myMemberId: Int64? = nil
     
     var body: some View {
         VStack(spacing: 0) {
@@ -38,7 +41,7 @@ struct ScrappedFoldersView: View {
                 VStack(spacing: 16) {
                     ForEach(Array(viewModel.scrappedFolders.enumerated()), id: \.offset) { index, folder in
                         VStack(spacing: 16) {
-                            NavigationLink(destination: ScrappedStoriesView(folderModel: folder, profileViewModel: profileViewModel, scrapViewModel: viewModel)) {
+                            NavigationLink(destination: ScrappedStoriesView(authViewModel: authViewModel, scrapViewModel: viewModel, folderModel: folder)) {
                                 Folder(folderModel: folder)
                             }
                             
@@ -60,20 +63,17 @@ struct ScrappedFoldersView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
         .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            
             getFolders()
         }
     }
     
     func getFolders() {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
-        viewModel.getScrappedFolders(myId: myId)
+        viewModel.getScrappedFolders()
     }
 }
 
 #Preview {
-    ScrappedFoldersView(profileViewModel: ProfileViewModel())
+    ScrappedFoldersView(authViewModel: AuthenticationViewModel())
 }

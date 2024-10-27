@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct FeedPopularityView: View {
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var feedViewModel: FeedViewModel
     
     @Binding var isStoryOpen: Bool
     @Binding var selectedStories: [Int64]
+    
+    @State private var myMemberId: Int64?
     
     var onRefresh: () -> Void
     
@@ -21,25 +24,27 @@ struct FeedPopularityView: View {
             VStack(spacing: 24) {
                 ForEach(Array(feedViewModel.feedPopularity.enumerated()), id: \.offset) { index, data in
                     if data.type == "STORY" {
-                        UserStoryCard(myProfileViewModel: profileViewModel, storyDto: data.storyDto!, memberDto: data.memberDto, date: data.modifiedAt, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                        UserStoryCard(authViewModel: authViewModel, storyId: data.storyDto!.storyId, storyPicture: data.storyDto!.storyPicture, modifiedAt: data.modifiedAt, memberDto: data.memberDto, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
                         
                             .padding(.horizontal, 16)
                     }
                     
                     if data.type == "QUESTION" {
-                        VStack(spacing: 16) {
-                            UserQuestionDtoCard(myProfileViewModel: profileViewModel, questionDto: data.questionDto!, memberDto: data.memberDto, date: data.modifiedAt)
-                            
-                            if profileViewModel.isMentor {
-                                NavigationLink(destination: AddAnswerView(profileViewModel: profileViewModel, questionId: data.questionDto!.questionId)) {
-                                    ButtonNarrowFill(text: "답변하기")
+                        if myMemberId != nil {
+                            VStack(spacing: 16) {
+                                UserQuestionCard(authViewModel: authViewModel, myId: myMemberId!, questionId: data.questionDto!.questionId, content: data.questionDto!.content, storyCnt: data.questionDto!.storyCnt, modifiedAt: data.modifiedAt, memberDto: data.memberDto)
+                                
+                                if profileViewModel.isMentor {
+                                    NavigationLink(destination: AddAnswerView(authViewModel: authViewModel, questionId: data.questionDto!.questionId)) {
+                                        ButtonNarrowFill(text: "답변하기")
+                                    }
                                 }
                             }
+                            .padding(.horizontal, 16)
                         }
-                        .padding(.horizontal, 16)
                     }
                     
-                    if index < feedViewModel.feedPopularity.count - 1 {
+                    if feedViewModel.feedPopularity.count - 1 > index {
                         DividerLarge()
                     }
                 }
@@ -49,12 +54,21 @@ struct FeedPopularityView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
+        .onAppear {
+            getMyMemberId()
+        }
         .refreshable {
             onRefresh()
+        }
+    }
+    
+    func getMyMemberId() {
+        if let myId = Keychain().read(key: "MEMBER_ID") {
+            myMemberId = Int64(myId)!
         }
     }
 }
 
 #Preview {
-    FeedPopularityView(profileViewModel: ProfileViewModel(), feedViewModel: FeedViewModel(), isStoryOpen: .constant(false), selectedStories: .constant([]), onRefresh: {})
+    FeedPopularityView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), feedViewModel: FeedViewModel(), isStoryOpen: .constant(false), selectedStories: .constant([]), onRefresh: {})
 }

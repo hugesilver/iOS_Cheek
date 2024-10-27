@@ -28,9 +28,9 @@ class StoryViewModel: ObservableObject {
     @Published var isTimeOver: Bool = false
     
     // 스토리들 불러오기
-    func getStories(memberId: Int64, storyIds: [Int64]) {
+    func getStories(storyIds: [Int64]) {
         let publishers: [AnyPublisher<StoryModel, Error>] = storyIds.map { storyId in
-            getStory(memberId: memberId, storyId: storyId)
+            getStory(storyId: storyId)
         }
             
         Publishers.MergeMany(publishers)
@@ -63,17 +63,8 @@ class StoryViewModel: ObservableObject {
     }
     
     // 스토리 불러오기
-    func getStory(memberId: Int64, storyId: Int64) -> AnyPublisher<StoryModel, Error> {
-        var components = URLComponents(string: "\(ip)/story/\(storyId)")!
-        
-        components.queryItems = [
-            URLQueryItem(name: "loginMemberId", value: "\(memberId)")
-        ]
-        
-        guard let url = components.url else {
-            print("getStory 함수 내 URL 추출 실패")
-            return Fail(error: URLError(.resourceUnavailable)).eraseToAnyPublisher()
-        }
+    func getStory(storyId: Int64) -> AnyPublisher<StoryModel, Error> {
+        let url = URL(string: "\(ip)/story/\(storyId)")!
         
         // Header 세팅
         var request = URLRequest(url: url)
@@ -105,7 +96,7 @@ class StoryViewModel: ObservableObject {
     }
     
     // 스토리 좋아요
-    func likeStory(memberId: Int64) {
+    func likeStory() {
         let storyId: Int64 = stories[currentIndex].storyId
         
         let url = URL(string: "\(ip)/upvote")!
@@ -117,7 +108,6 @@ class StoryViewModel: ObservableObject {
         
         // Body 세팅
         let bodyData: [String: Any] = [
-            "memberId": memberId,
             "storyId": storyId
         ]
         
@@ -141,7 +131,7 @@ class StoryViewModel: ObservableObject {
                 
                 DispatchQueue.main.async {
                     if dataString == "ok" {
-                        print("멤버 \(memberId)가 스토리 \(storyId)에 좋아요 toggle에 성공")
+                        print("스토리 \(storyId)에 좋아요 toggle에 성공")
                     }
                 }
             })

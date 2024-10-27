@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FeedView: View {
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     @Binding var selectedCategory: Int64
@@ -23,12 +24,13 @@ struct FeedView: View {
             VStack(spacing: 0) {
                 HStack {
                     Menu {
-                        Picker(selection: $selectedCategory, label: EmptyView(), content: {
-                            ForEach(CategoryModels().categories) { category in
+                        ForEach(CategoryModels().categories) { category in
+                            Button(action: {
+                                selectedCategory = category.id
+                            }) {
                                 Text(category.name)
-                                    .tag(category.id)
                             }
-                        })
+                        }
                     } label: {
                         HStack(spacing: 4) {
                             Text(CategoryModels().categories[Int(selectedCategory) - 1].name)
@@ -43,7 +45,7 @@ struct FeedView: View {
                     
                     Spacer()
                     
-                    NavigationLink(destination: SearchView(profileViewModel: profileViewModel, catetory: CategoryModels().categories[Int(selectedCategory) - 1].id)) {
+                    NavigationLink(destination: SearchView(authViewModel: authViewModel, profileViewModel: profileViewModel, catetory: CategoryModels().categories[Int(selectedCategory) - 1].id)) {
                         Image("IconSearch")
                             .resizable()
                             .frame(width: 32, height: 32)
@@ -58,10 +60,10 @@ struct FeedView: View {
                     .padding(.top, 16)
                 
                 TabView(selection: $selectedTab) {
-                    FeedNewestView(profileViewModel: profileViewModel, feedViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, onRefresh: { getFeed() })
+                    FeedNewestView(authViewModel: authViewModel, profileViewModel: profileViewModel, feedViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, onRefresh: { getFeed() })
                         .tag(0)
                     
-                    FeedPopularityView(profileViewModel: profileViewModel, feedViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, onRefresh: { getFeed() })
+                    FeedPopularityView(authViewModel: authViewModel, profileViewModel: profileViewModel, feedViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, onRefresh: { getFeed() })
                         .tag(1)
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -76,7 +78,7 @@ struct FeedView: View {
                 HStack {
                     Spacer()
                     
-                    NavigationLink(destination: AddQuestionView(profileViewModel: profileViewModel, categoryId: selectedCategory)) {
+                    NavigationLink(destination: AddQuestionView(authViewModel: authViewModel, categoryId: selectedCategory)) {
                         FAB()
                     }
                 }
@@ -86,6 +88,7 @@ struct FeedView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
             getFeed()
         }
         .onChange(of: selectedCategory) { _ in
@@ -93,24 +96,19 @@ struct FeedView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
         }
     }
     
     func getFeed() {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
-        viewModel.getFeed(categoryId: selectedCategory, myId: myId)
+        viewModel.getFeed(categoryId: selectedCategory)
     }
 }
 
 #Preview {
-    FeedView(profileViewModel: ProfileViewModel(), selectedCategory: .constant(0))
+    FeedView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), selectedCategory: .constant(0))
 }

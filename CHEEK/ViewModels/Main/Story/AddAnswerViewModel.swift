@@ -229,7 +229,6 @@ class AddAnswerViewModel: ObservableObject {
             }, receiveValue: { data in
                 let dataString = String(data: data, encoding: .utf8)
                 completion(dataString == "ok")
-                print(dataString)
             })
             .store(in: &self.cancellables)
     }

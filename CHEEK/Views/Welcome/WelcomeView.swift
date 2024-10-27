@@ -9,17 +9,19 @@ import SwiftUI
 
 
 struct WelcomeView: View {
-    @State private var isLoginSuccess: Bool = false
-    @State private var isSetProfile: Bool = false
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    
+    @State private var navPath: NavigationPath = NavigationPath()
+    
+    @StateObject private var kakaoAuthViewModel: KakaoAuthViewModel = KakaoAuthViewModel()
     
     @State private var isLoading: Bool = false
     @State private var showAlert: Bool = false
     
-    @StateObject var profileViewModel = ProfileViewModel()
-    @StateObject private var kakaoAuthViewModel = KakaoAuthViewModel()
+    @State private var isDone: Bool = false
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navPath) {
             ZStack {
                 VStack(spacing: 0) {
                     // 로고와 슬로건
@@ -55,22 +57,7 @@ struct WelcomeView: View {
                             bgColor: .kakaoYellow
                         )
                         .onTapGesture {
-                            isLoading = true
-                            kakaoAuthViewModel.kakaoAuth() { isSet in
-                                guard let isSet else {
-                                    isLoading = false
-                                    return
-                                }
-                                
-                                if isSet {
-                                    profileViewModel.getMyProfile()
-                                }
-                                
-                                isSetProfile = isSet
-                                isLoginSuccess = true
-                                
-                                isLoading = false
-                            }
+                            onTapKakaoLogin()
                         }
                         
                         /*
@@ -99,20 +86,16 @@ struct WelcomeView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
-            .navigationBarBackButtonHidden(true)
-            .navigationBarHidden(true)
-            .navigationDestination(isPresented: $isLoginSuccess, destination: {
-                if isSetProfile {
-                    MainView(profileViewModel: profileViewModel)
-                } else {
-                    MentorMenteeView()
-                }
+            .navigationDestination(isPresented: $isDone, destination: {
+                MentorMenteeView(authViewModel: authViewModel, navPath: $navPath)
             })
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("오류"),
-                message: Text("인증 확인 중 발생하였습니다."),
+                message: Text("인증에 실패하였습니다."),
                 dismissButton: .default(
                     Text("확인"),
                     action: {
@@ -121,6 +104,37 @@ struct WelcomeView: View {
                 )
             )
         }
+    }
+    
+    func onTapKakaoLogin() {
+        isLoading = true
+        
+        kakaoAuthViewModel.kakaoAuth() { accessToken in
+            if let accessToken {
+                // 액세스 토큰 복사 테스트용 코드
+                UIPasteboard.general.string = accessToken
+                
+                authViewModel.oAuthLogin(accessToken: accessToken, memberType: "KAKAO") { isSet in
+                    if isSet != nil {
+                        // 메인 페이지로 변경
+                        DispatchQueue.main.async {
+                            authViewModel.isRefreshTokenValid = true
+                        }
+                        
+                        isDone = true
+                        isLoading = false
+                    } else {
+                        showAlert = true
+                    }
+                }
+            } else {
+                isLoading = false
+            }
+        }
+    }
+    
+    func onTapAppleLogin() {
+        
     }
 }
 
@@ -160,5 +174,5 @@ struct WelcomeViewSocialButton: View {
 }
 
 #Preview {
-    WelcomeView()
+    WelcomeView(authViewModel: AuthenticationViewModel())
 }

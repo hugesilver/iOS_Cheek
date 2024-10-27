@@ -12,13 +12,21 @@ class ScrapViewModel: ObservableObject {
     private let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
     private var cancellables = Set<AnyCancellable>()
     
+    // 로딩 중
+    @Published var isLoading: Bool = false
+    
+    // 스크랩 폴더 목록
     @Published var scrappedFolders: [ScrapFolderModel] = []
     
+    // 선택한 스크랩 폴더
     @Published var selectedFolder: ScrapFolderModel? = nil
+    
+    // 선택한 스크랩 폴더 내 콜렉션 목록
     @Published var collections: [CollectionModel] = []
     
-    func getScrappedFolders(myId: Int64) {
-        let url = URL(string: "\(ip)/folder/\(myId)")!
+    // 스크랩된 폴더 조회
+    func getScrappedFolders() {
+        let url = URL(string: "\(ip)/folder/")!
         
         // Header 세팅
         var request = URLRequest(url: url)
@@ -42,6 +50,7 @@ class ScrapViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    // 콜렉션 조회
     func getCollections(folderId: Int64) {
         let url = URL(string: "\(ip)/folder/story/\(folderId)")!
         
@@ -67,7 +76,10 @@ class ScrapViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func addCollection(myId: Int64, storyId: Int64, categoryId: Int64, forlderName: String, completion: @escaping (Bool) -> Void) {
+    // 콜렉션 추가
+    func addCollection(storyId: Int64, categoryId: Int64, forlderName: String, completion: @escaping (Bool) -> Void) {
+        isLoading = true
+        
         let url = URL(string: "\(ip)/collection")!
         
         // Header 세팅
@@ -77,7 +89,6 @@ class ScrapViewModel: ObservableObject {
         
         // Body 세팅
         let bodyData: [String: Any] = [
-            "memberId": myId,
             "storyId": storyId,
             "categoryId": categoryId,
             "folderName": forlderName
@@ -92,24 +103,19 @@ class ScrapViewModel: ObservableObject {
         }
         
         CombinePublishers().urlSession(req: request)
-            .sink(receiveCompletion: { isCompletion in
-                switch isCompletion {
+            .sink(receiveCompletion: { isComplete in
+                switch isComplete {
                 case .finished:
                     print("addCollection 함수 실행 중 요청 성공")
                 case .failure(let error):
                     print("addCollection 함수 실행 중 요청 실패: \(error)")
+                    self.isLoading = false
                     completion(false)
                 }
             }, receiveValue: { data in
                 let dataString = String(data: data, encoding: .utf8)
                 
-                DispatchQueue.main.async {
-                    if dataString == "ok" {
-                        
-                    } else {
-                        print(dataString)
-                    }
-                }
+                self.isLoading = false
                 
                 completion(dataString == "ok")
             })
@@ -142,8 +148,8 @@ class ScrapViewModel: ObservableObject {
         }
         
         CombinePublishers().urlSession(req: request)
-            .sink(receiveCompletion: { isCompletion in
-                switch isCompletion {
+            .sink(receiveCompletion: { isComplete in
+                switch isComplete {
                 case .finished:
                     print("deleteCollections 함수 실행 중 요청 성공")
                 case .failure(let error):
@@ -152,14 +158,6 @@ class ScrapViewModel: ObservableObject {
                 }
             }, receiveValue: { data in
                 let dataString = String(data: data, encoding: .utf8)
-                
-                DispatchQueue.main.async {
-                    if dataString == "ok" {
-                        
-                    } else {
-                        print(dataString)
-                    }
-                }
                 
                 completion(dataString == "ok")
             })
@@ -175,8 +173,8 @@ class ScrapViewModel: ObservableObject {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         CombinePublishers().urlSession(req: request)
-            .sink(receiveCompletion: { isCompletion in
-                switch isCompletion {
+            .sink(receiveCompletion: { isComplete in
+                switch isComplete {
                 case .finished:
                     print("deleteFolder 함수 실행 중 요청 성공")
                 case .failure(let error):
@@ -185,14 +183,6 @@ class ScrapViewModel: ObservableObject {
                 }
             }, receiveValue: { data in
                 let dataString = String(data: data, encoding: .utf8)
-                
-                DispatchQueue.main.async {
-                    if dataString == "ok" {
-                        
-                    } else {
-                        print(dataString)
-                    }
-                }
                 
                 completion(dataString == "ok")
             })

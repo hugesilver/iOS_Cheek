@@ -10,6 +10,8 @@ import SwiftUI
 struct EditQuestionView: View {
     @Environment(\.dismiss) private var dismiss
     
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    
     let questionId: Int64
     var content: String
     
@@ -106,6 +108,7 @@ struct EditQuestionView: View {
             Utils().hideKeyboard()
         }
         .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
             question = content
         }
         .alert(isPresented: $viewModel.showAlert) {
@@ -139,5 +142,5 @@ struct EditQuestionView: View {
 }
 
 #Preview {
-    EditQuestionView(questionId: 0, content: "")
+    EditQuestionView(authViewModel: AuthenticationViewModel(), questionId: 0, content: "")
 }

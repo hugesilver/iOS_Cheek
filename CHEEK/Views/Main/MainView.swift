@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct MainView: View {
-    @ObservedObject var profileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    @StateObject var profileViewModel: ProfileViewModel = ProfileViewModel()
     
     // 탭 인덱스
     @State var currentIndex: Int = 0
@@ -21,12 +22,20 @@ struct MainView: View {
                 Group {
                     switch currentIndex {
                     case 0:
-                        HomeView(profileViewModel: profileViewModel, currentMainIndex: $currentIndex, selectedCategory: $selectedCategory)
+                        HomeView(
+                            authViewModel: authViewModel,
+                            profileViewModel: profileViewModel,
+                            currentMainIndex: $currentIndex,
+                            selectedCategory: $selectedCategory)
                     case 1:
                         FeedView(
-                            profileViewModel: profileViewModel, selectedCategory: $selectedCategory)
+                            authViewModel: authViewModel,
+                            profileViewModel: profileViewModel,
+                            selectedCategory: $selectedCategory)
                     case 2:
-                        MypageView(profileViewModel: profileViewModel)
+                        MypageView(
+                            authViewModel: authViewModel,
+                            profileViewModel: profileViewModel)
                     default: EmptyView()
                     }
                 }
@@ -103,10 +112,18 @@ struct MainView: View {
         .navigationBarHidden(true)
         .onAppear {
             UINavigationBar.setAnimationsEnabled(false)
+            
+            getMyProfile()
+        }
+    }
+    
+    func getMyProfile() {
+        if let myMemberId = Keychain().read(key: "MEMBER_ID") {
+            profileViewModel.getProfile(targetMemberId: Int64(myMemberId)!)
         }
     }
 }
 
 #Preview {
-    MainView(profileViewModel: ProfileViewModel())
+    MainView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

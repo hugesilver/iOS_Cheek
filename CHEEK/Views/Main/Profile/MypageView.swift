@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct MypageView: View {
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
+    @State private var isInit: Bool = false
+    @State private var menus: [String] = []
+    
+    // fullScreenOver
     @State var isStoryOpen: Bool = false
     @State var isHighlightOpen: Bool = false
     
@@ -19,10 +24,6 @@ struct MypageView: View {
     @State var selectedHighlightSubject: String = ""
     
     @State var selectedStories: [Int64] = []
-    
-    @State private var isInit: Bool = false
-    
-    @State private var menus: [String] = []
     
     @State private var selectedTab: Int = 0
     @State private var tabViewHeights: [CGFloat] = [1, 1]
@@ -77,34 +78,38 @@ struct MypageView: View {
                                             .padding(.horizontal, 8)
                                     }
                                     
-                                    NavigationLink(destination:
-                                                    FollowView(myProfileViewModel: profileViewModel, targetMemberId: profileViewModel.profile?.memberId ?? 0, selectedTab: 0)) {
-                                        VStack(spacing: 2) {
-                                            Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followerCnt ?? 0))
-                                                .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                            
-                                            Text("팔로워")
-                                                .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                    NavigationLink(destination: FollowView(
+                                        authViewModel: authViewModel,
+                                        targetMemberId: profileViewModel.profile?.memberId ?? 0,
+                                        selectedTab: 0)) {
+                                            VStack(spacing: 2) {
+                                                Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followerCnt ?? 0))
+                                                    .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                                
+                                                Text("팔로워")
+                                                    .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                            }
+                                            .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
                                         }
-                                        .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
-                                    }
                                     
                                     Divider()
                                         .foregroundColor(Color(red: 0.85, green: 0.85, blue: 0.85))
                                         .frame(width: 1)
                                         .padding(.horizontal, 8)
                                     
-                                    NavigationLink(destination:
-                                                    FollowView(myProfileViewModel: profileViewModel, targetMemberId: profileViewModel.profile?.memberId ?? 0, selectedTab: 1)) {
-                                        VStack(spacing: 2) {
-                                            Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followingCnt ?? 0))
-                                                .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                            
-                                            Text("팔로잉")
-                                                .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                    NavigationLink(destination: FollowView(
+                                        authViewModel: authViewModel,
+                                        targetMemberId: profileViewModel.profile?.memberId ?? 0,
+                                        selectedTab: 1)) {
+                                            VStack(spacing: 2) {
+                                                Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followingCnt ?? 0))
+                                                    .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                                
+                                                Text("팔로잉")
+                                                    .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                            }
+                                            .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
                                         }
-                                        .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
-                                    }
                                     
                                     Spacer()
                                 }
@@ -118,7 +123,7 @@ struct MypageView: View {
                             .padding(.top, 16)
                             .padding(.horizontal, 16)
                         
-                        if profileViewModel.profile?.description != nil && ((profileViewModel.profile?.description!.isEmpty) == nil) {
+                        if profileViewModel.profile?.description != nil && !profileViewModel.profile!.description!.isEmpty {
                             Text(profileViewModel.profile!.description!)
                                 .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -146,7 +151,9 @@ struct MypageView: View {
                                         }
                                     }
                                     
-                                    NavigationLink(destination: AddHighlightView(profileViewModel: profileViewModel)) {
+                                    NavigationLink(destination: AddHighlightView(
+                                        authViewModel: authViewModel,
+                                        profileViewModel: profileViewModel)) {
                                         VStack(spacing: 12) {
                                             Image("IconPlus")
                                                 .resizable()
@@ -168,7 +175,7 @@ struct MypageView: View {
                             .padding(.top, 24)
                         }
                         
-                        NavigationLink(destination: ScrappedFoldersView(profileViewModel: profileViewModel)) {
+                        NavigationLink(destination: ScrappedFoldersView(authViewModel: authViewModel)) {
                             ProfileButtonNarrowLine(text: "스크랩된 스토리")
                                 .padding(.top, 24)
                                 .padding(.horizontal, 16)
@@ -180,20 +187,25 @@ struct MypageView: View {
                         
                         TabView(selection: $selectedTab) {
                             if profileViewModel.isMentor {
-                                ProfileStoriesView(isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, stories: profileViewModel.stories)
-                                    .background(
-                                        GeometryReader { geometry in
-                                            Color.clear
-                                                .preference(key: HeightPreferenceKey.self, value: geometry.size.height)
-                                        }
-                                    )
-                                    .onPreferenceChange(HeightPreferenceKey.self) { value in
-                                        tabViewHeights[0] = value
+                                ProfileStoriesView(
+                                    isStoryOpen: $isStoryOpen,
+                                    selectedStories: $selectedStories,
+                                    stories: profileViewModel.stories)
+                                .background(
+                                    GeometryReader { geometry in
+                                        Color.clear
+                                            .preference(key: HeightPreferenceKey.self, value: geometry.size.height)
                                     }
-                                    .tag(0)
+                                )
+                                .onPreferenceChange(HeightPreferenceKey.self) { value in
+                                    tabViewHeights[0] = value
+                                }
+                                .tag(0)
                             }
                             
-                            ProfileQuestionsView(questions: profileViewModel.questions)
+                            ProfileQuestionsView(
+                                authViewModel: authViewModel,
+                                questions: profileViewModel.questions)
                                 .background(
                                     GeometryReader { geometry in
                                         Color.clear
@@ -231,58 +243,66 @@ struct MypageView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            initMenu()
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
             
-            getDatas()
+            initData()
+            getMyData()
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
         }
         .fullScreenCover(isPresented: $isHighlightOpen) {
             if #available(iOS 16.4, *) {
-                HighlightView(highlightId: $selectedHighlightId, highlightThumbnail: $selectedHighlightThumbnail, highlightSubject: $selectedHighlightSubject, profileViewModel: profileViewModel)
-                    .presentationBackground(.clear)
+                HighlightView(
+                    authViewModel: authViewModel,
+                    profileViewModel: profileViewModel,
+                    highlightId: $selectedHighlightId,
+                    highlightThumbnail: $selectedHighlightThumbnail,
+                    highlightSubject: $selectedHighlightSubject)
+                .presentationBackground(.clear)
             } else {
-                HighlightView(highlightId: $selectedHighlightId, highlightThumbnail: $selectedHighlightThumbnail, highlightSubject: $selectedHighlightSubject, profileViewModel: profileViewModel)
+                HighlightView(
+                    authViewModel: authViewModel,
+                    profileViewModel: profileViewModel,
+                    highlightId: $selectedHighlightId,
+                    highlightThumbnail: $selectedHighlightThumbnail,
+                    highlightSubject: $selectedHighlightSubject)
             }
         }
     }
     
-    // 메뉴 초기화
-    func initMenu() {
+    // 초기화
+    func initData() {
         if !isInit {
-            isInit = true
-            
             if profileViewModel.isMentor {
                 menus.append("IconStory")
             }
             
             menus.append("IconTalk")
+            
+            isInit = true
         }
     }
     
     // 회원 데이터 조회
-    func getDatas() {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
+    func getMyData() {
+        if let myId = Keychain().read(key: "MEMBER_ID") {
+            profileViewModel.getProfile(targetMemberId: Int64(myId)!)
+            
+            if profileViewModel.isMentor {
+                profileViewModel.getHighlights(targetMemberId: Int64(myId)!)
+                profileViewModel.getStories(targetMemberId: Int64(myId)!)
+            }
+            
+            // 질문
+            profileViewModel.getQuestions(targetMemberId: Int64(myId)!)
+        } else {
         }
-        
-        profileViewModel.getMyProfile()
-        
-        // 하이라이트, 스토리
-        if profileViewModel.isMentor {
-            profileViewModel.getHighlights()
-            profileViewModel.getStories(myId: myId)
-        }
-        
-        // 질문
-        profileViewModel.getQuestions()
     }
 }
 
@@ -304,5 +324,5 @@ struct ProfileButtonNarrowLine: View {
 }
 
 #Preview {
-    MypageView(profileViewModel: ProfileViewModel())
+    MypageView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

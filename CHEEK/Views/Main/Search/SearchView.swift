@@ -10,6 +10,7 @@ import WrappingHStack
 
 struct SearchView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     @StateObject private var viewModel: SearchViewModel = SearchViewModel()
     
@@ -162,20 +163,22 @@ struct SearchView: View {
                         
                         TabView(selection: $selectedTab) {
                             SearchResultAllView(
-                                myProfileViewModel: profileViewModel,
+                                authViewModel: authViewModel,
                                 searchViewModel: viewModel,
                                 selectedTab: $selectedTab,
                                 isStoryOpen: $isStoryOpen,
                                 selectedStories: $selectedStories)
-                                .tag(0)
+                            .tag(0)
                             
-                            SearchResultProfileView(myProfileViewModel: profileViewModel, searchViewModel: viewModel)
-                                .tag(1)
+                            SearchResultProfileView(
+                                authViewModel: authViewModel,
+                                searchViewModel: viewModel)
+                            .tag(1)
                             
                             SearchResultStoryView(searchViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
                                 .tag(2)
                             
-                            SearchResultQuestionView(myProfileViewModel: profileViewModel, searchViewModel: viewModel)
+                            SearchResultQuestionView(authViewModel: authViewModel, searchViewModel: viewModel)
                                 .tag(3)
                         }
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -194,6 +197,8 @@ struct SearchView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            
             if catetory != nil {
                 selectedCategory = catetory
             }
@@ -203,10 +208,10 @@ struct SearchView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
         }
     }
@@ -219,13 +224,8 @@ struct SearchView: View {
     }
     
     func onSubmitSearch() {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
         if !searchText.isEmpty && selectedCategory != nil {
-            viewModel.getSearchResult(categoryId: selectedCategory!, keyword: searchText, myId: myId)
+            viewModel.getSearchResult(categoryId: selectedCategory!, keyword: searchText)
         }
     }
 }
@@ -253,5 +253,5 @@ struct SearchCategoryBlock: View {
 }
 
 #Preview {
-    SearchView(profileViewModel: ProfileViewModel())
+    SearchView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

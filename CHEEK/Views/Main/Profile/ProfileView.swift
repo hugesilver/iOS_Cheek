@@ -11,9 +11,11 @@ struct ProfileView: View {
     @Environment(\.dismiss) private var dismiss
     
     let targetMemberId: Int64
-    @ObservedObject var myProfileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
-    @StateObject var profileViewModel: UserProfileViewModel = UserProfileViewModel()
+    @State private var myMemberId: Int64?
+    
+    @StateObject var profileViewModel: ProfileViewModel = ProfileViewModel()
     @StateObject var followViewModel: FollowViewModel = FollowViewModel()
     @StateObject private var highlightViewModel: HighlightViewModel = HighlightViewModel()
     
@@ -69,7 +71,7 @@ struct ProfileView: View {
                                         }
                                         
                                         NavigationLink(destination:
-                                                        FollowView(myProfileViewModel: myProfileViewModel, targetMemberId: targetMemberId, selectedTab: 0)) {
+                                                        FollowView(authViewModel: authViewModel, targetMemberId: targetMemberId, selectedTab: 0)) {
                                             VStack(spacing: 2) {
                                                 Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followerCnt ?? 0))
                                                     .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
@@ -86,7 +88,7 @@ struct ProfileView: View {
                                             .padding(.horizontal, 8)
                                         
                                         NavigationLink(destination:
-                                                        FollowView(myProfileViewModel: myProfileViewModel, targetMemberId: targetMemberId, selectedTab: 1)) {
+                                                        FollowView(authViewModel: authViewModel, targetMemberId: targetMemberId, selectedTab: 1)) {
                                             VStack(spacing: 2) {
                                                 Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followingCnt ?? 0))
                                                     .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
@@ -124,7 +126,7 @@ struct ProfileView: View {
                                 .padding(.top, 4)
                                 .padding(.horizontal, 16)
                             
-                            if profileViewModel.profile?.description != nil && ((profileViewModel.profile?.description!.isEmpty) == nil) {
+                            if profileViewModel.profile?.description != nil && !profileViewModel.profile!.description!.isEmpty {
                                 Text(profileViewModel.profile!.description!)
                                     .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
                                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -132,7 +134,7 @@ struct ProfileView: View {
                                     .padding(.horizontal, 16)
                             }
                             
-                            if myProfileViewModel.profile != nil && profileViewModel.profile != nil && myProfileViewModel.profile!.memberId != targetMemberId {
+                            if myMemberId != nil && profileViewModel.profile != nil && myMemberId != targetMemberId {
                                 if profileViewModel.profile!.following {
                                     ButtonUnfollow(text: "언팔로우")
                                         .padding(.top, 24)
@@ -191,7 +193,9 @@ struct ProfileView: View {
                                         .tag(0)
                                 }
                                 
-                                ProfileQuestionsView(questions: profileViewModel.questions)
+                                ProfileQuestionsView(
+                                    authViewModel: authViewModel,
+                                    questions: profileViewModel.questions)
                                     .background(
                                         GeometryReader { geometry in
                                             Color.clear
@@ -235,20 +239,20 @@ struct ProfileView: View {
                 
                 // 하이라이트, 스토리
                 if profileViewModel.isMentor {
-                    profileViewModel.getHighlights()
-                    profileViewModel.getStories(myId: myProfileViewModel.profile!.memberId)
+                    profileViewModel.getHighlights(targetMemberId: targetMemberId)
+                    profileViewModel.getStories(targetMemberId: targetMemberId)
                 }
                 
                 // 질문
-                profileViewModel.getQuestions()
+                profileViewModel.getQuestions(targetMemberId: targetMemberId)
             }
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(storyIds: $selectedStories, profileViewModel: myProfileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(storyIds: $selectedStories, profileViewModel: myProfileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
         }
     }
@@ -256,6 +260,10 @@ struct ProfileView: View {
     
     // 메뉴 초기화
     func initMenu() {
+        if let myId = Keychain().read(key: "MEMBER_ID") {
+            myMemberId = Int64(myId)!
+        }
+        
         if !isInit {
             isInit = true
             
@@ -269,22 +277,12 @@ struct ProfileView: View {
     
     // 회원 데이터 조회
     func getProfileData() {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("myProfileViewModel에 profile이 없음")
-            return
-        }
-        
-        profileViewModel.getProfile(targetMemberId: targetMemberId, loginMemberId: myId)
+        profileViewModel.getProfile(targetMemberId: targetMemberId)
     }
     
     // 팔로우
     func onTapFollow() {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
-        followViewModel.follow(myId: myId, targetId: targetMemberId)
+        followViewModel.follow(toMemberId: targetMemberId)
         
         if profileViewModel.profile != nil {
             profileViewModel.profile!.following = true
@@ -294,12 +292,7 @@ struct ProfileView: View {
     
     // 언팔로우
     func onTapUnfollow() {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
-        followViewModel.unfollow(myId: myId, targetId: targetMemberId)
+        followViewModel.unfollow(toMemberId: targetMemberId)
         
         if profileViewModel.profile != nil {
             profileViewModel.profile!.following = false
@@ -308,12 +301,7 @@ struct ProfileView: View {
     }
     
     func onTapHighlight(highlight: HighlightListModel) {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
-        highlightViewModel.getHighlight(myId: myId, highlightId: highlight.highlightId) { isDone in
+        highlightViewModel.getHighlight(highlightId: highlight.highlightId) { isDone in
             selectedStories = highlightViewModel.highlightStories!.storyId
             isStoryOpen = true
         }
@@ -351,5 +339,5 @@ struct ButtonUnfollow: View {
 }
 
 #Preview {
-    ProfileView(targetMemberId: 1, myProfileViewModel: ProfileViewModel(), profileViewModel: UserProfileViewModel())
+    ProfileView(targetMemberId: 1, authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

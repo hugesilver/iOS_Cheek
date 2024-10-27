@@ -10,11 +10,15 @@ import SwiftUI
 struct AnsweredQuestionView: View {
     @Environment(\.dismiss) private var dismiss
     
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    
     let questionId: Int64
     
     @StateObject var viewModel: QuestionViewModel = QuestionViewModel()
     @State private var isStoryOpen: Bool = false
     @State private var selectedStories: [Int64] = []
+    
+    @State private var myMemberId: Int64?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -39,15 +43,21 @@ struct AnsweredQuestionView: View {
             
             ScrollView {
                 VStack(spacing: 24) {
-                    if viewModel.questionModel != nil {
-                        UserQuestionCard(myId: myId, questionId: viewModel.questionModel!.questionId, content: viewModel.questionModel!.content, storyCnt: viewModel.questionModel!.storyCnt, modifiedAt: viewModel.questionModel!.modifiedAt!, memberDto: viewModel.questionModel!.memberDto)
+                    if viewModel.questionModel != nil && myMemberId != nil {
+                        UserQuestionCardWithoutOption(
+                            authViewModel: authViewModel,
+                            questionId: viewModel.questionModel!.questionId,
+                            content: viewModel.questionModel!.content,
+                            modifiedAt: viewModel.questionModel!.modifiedAt!,
+                            memberDto: viewModel.questionModel!.memberDto)
+                        .padding(.horizontal, 16)
                     }
                     
                     DividerLarge()
                     
                     if viewModel.answeredUserStories.count > 0 {
                         ForEach(viewModel.answeredUserStories) { story in
-                            UserStoryCard(storyDto: story.storyDto, memberDto: story.memberDto, date: story.modifiedAt, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                            UserStoryCard(authViewModel: authViewModel, storyId: story.storyId, storyPicture: story.storyPicture, modifiedAt: story.modifiedAt, memberDto: story.memberDto, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
                         }
                     }
                 }
@@ -59,20 +69,30 @@ struct AnsweredQuestionView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
         .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            
+            getMyMemberId()
+            
             viewModel.getQuestion(questionId: questionId)
             viewModel.getAnsweredQuestions(questionId: questionId)
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(storyIds: $selectedStories, profileViewModel: profileViewModel)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
+        }
+    }
+    
+    func getMyMemberId() {
+        if let myId = Keychain().read(key: "MEMBER_ID") {
+            myMemberId = Int64(myId)!
         }
     }
 }
 
 #Preview {
-    AnsweredQuestionView(questionId: 1)
+    AnsweredQuestionView(authViewModel: AuthenticationViewModel(), questionId: 1)
 }

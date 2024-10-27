@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchResultAllView: View {
-    @ObservedObject var myProfileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var searchViewModel: SearchViewModel
     
     @Binding var selectedTab: Int
@@ -18,6 +18,7 @@ struct SearchResultAllView: View {
     
     @StateObject var followViewModel = FollowViewModel()
     
+    @State private var myMemberId: Int64?
     
     var body: some View {
         ScrollView {
@@ -47,13 +48,13 @@ struct SearchResultAllView: View {
                 ForEach(Array(searchViewModel.searchResult!.memberDto.prefix(3).enumerated()), id: \.offset) { index, memberDto in
                     VStack(spacing: 16) {
                         UserFollowCard(
-                            myProfileViewModel: myProfileViewModel,
+                            authViewModel: authViewModel,
                             data: memberDto,
-                            isMe: myProfileViewModel.profile!.memberId == memberDto.memberId,
+                            isMe: myMemberId == memberDto.memberId,
                             onTapFollow: { onTapFollow(data: memberDto) },
                             onTapUnfollow: { onTapUnfollow(data: memberDto) }
                         )
-
+                        
                         if index < searchViewModel.searchResult!.memberDto.prefix(3).count - 1 {
                             DividerSmall()
                         }
@@ -87,7 +88,7 @@ struct SearchResultAllView: View {
                 ScrollView(.horizontal) {
                     HStack(spacing: 8) {
                         ForEach(Array(searchViewModel.searchResult!.storyDto.prefix(10).enumerated()), id: \.offset) { index, storyDto in
-                            StoryCard(storyPicture: storyDto.storyPicture, storyId: storyDto.storyId, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                            StoryCard(storyId: storyDto.storyId, storyPicture: storyDto.storyPicture, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
                         }
                     }
                     .padding(.horizontal, 16)
@@ -117,15 +118,15 @@ struct SearchResultAllView: View {
                 }
                 .padding(.horizontal, 16)
                 
-                ForEach(Array(searchViewModel.searchResult!.questionDto.prefix(3).enumerated()), id: \.offset) { index, questionDto in
-                    VStack(spacing: 16) {
-                        UserQuestionModelCard(
-                            myProfileViewModel: myProfileViewModel,
-                            questionModel: questionDto)
-                        .padding(.horizontal, 16)
-
-                        if index < searchViewModel.searchResult!.questionDto.prefix(3).count - 1 {
-                            DividerSmall()
+                if myMemberId != nil {
+                    ForEach(Array(searchViewModel.searchResult!.questionDto.prefix(3).enumerated()), id: \.offset) { index, questionDto in
+                        VStack(spacing: 16) {
+                            UserQuestionCard(authViewModel: authViewModel, myId: myMemberId!, questionId: questionDto.questionId, content: questionDto.content, storyCnt: questionDto.storyCnt!, modifiedAt: questionDto.modifiedAt!, memberDto: questionDto.memberDto)
+                                .padding(.horizontal, 16)
+                            
+                            if index < searchViewModel.searchResult!.questionDto.prefix(3).count - 1 {
+                                DividerSmall()
+                            }
                         }
                     }
                 }
@@ -134,35 +135,34 @@ struct SearchResultAllView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
+        .onAppear {
+            getMyMemberId()
+        }
+    }
+    
+    func getMyMemberId() {
+        if let myId = Keychain().read(key: "MEMBER_ID") {
+            myMemberId = Int64(myId)!
+        }
     }
     
     func onTapFollow(data: FollowModel) {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
         // 팔로워 팔로우 상태 변경
         if let followerIndex = searchViewModel.searchResult!.memberDto.firstIndex(where: { $0.memberId == data.memberId }) {
             searchViewModel.searchResult!.memberDto[followerIndex].followerCnt += 1
             searchViewModel.searchResult!.memberDto[followerIndex].following = true
         }
         
-        followViewModel.follow(myId: myId, targetId: data.memberId)
+        followViewModel.follow(toMemberId: data.memberId)
     }
     
     func onTapUnfollow(data: FollowModel) {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
         // 팔로워 팔로우 상태 변경
         if let followerIndex = searchViewModel.searchResult!.memberDto.firstIndex(where: { $0.memberId == data.memberId }) {
             searchViewModel.searchResult!.memberDto[followerIndex].followerCnt -= 1
             searchViewModel.searchResult!.memberDto[followerIndex].following = false
         }
         
-        followViewModel.unfollow(myId: myId, targetId: data.memberId)
+        followViewModel.unfollow(toMemberId: data.memberId)
     }
 }

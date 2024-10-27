@@ -12,7 +12,6 @@ let vGridSpacing: CGFloat = 4
 struct ProfileStoriesView: View {
     @Binding var isStoryOpen: Bool
     @Binding var selectedStories: [Int64]
-    
     var stories: [StoryDto]
     
     var gridColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: vGridSpacing), count: 3)

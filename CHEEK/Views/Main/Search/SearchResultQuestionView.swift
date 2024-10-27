@@ -8,21 +8,23 @@
 import SwiftUI
 
 struct SearchResultQuestionView: View {
-    @ObservedObject var myProfileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var searchViewModel: SearchViewModel
+    
+    @State private var myMemberId: Int64?
     
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                ForEach(Array(searchViewModel.searchResult!.questionDto.enumerated()), id: \.offset) { index, questionDto in
-                    VStack(spacing: 16) {
-                        UserQuestionModelCard(
-                            myProfileViewModel: myProfileViewModel,
-                            questionModel: questionDto)
-                        .padding(.horizontal, 16)
-                        
-                        if index < searchViewModel.searchResult!.questionDto.count - 1 {
-                            DividerSmall()
+                if myMemberId != nil {
+                    ForEach(Array(searchViewModel.searchResult!.questionDto.enumerated()), id: \.offset) { index, questionDto in
+                        VStack(spacing: 16) {
+                            UserQuestionCard(authViewModel: authViewModel, myId: myMemberId!, questionId: questionDto.questionId, content: questionDto.content, storyCnt: questionDto.storyCnt!, modifiedAt: questionDto.modifiedAt!, memberDto: questionDto.memberDto)
+                                .padding(.horizontal, 16)
+                            
+                            if index < searchViewModel.searchResult!.questionDto.count - 1 {
+                                DividerSmall()
+                            }
                         }
                     }
                 }
@@ -31,9 +33,18 @@ struct SearchResultQuestionView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
+        .onAppear {
+            getMyMemberId()
+        }
+    }
+    
+    func getMyMemberId() {
+        if let myId = Keychain().read(key: "MEMBER_ID") {
+            myMemberId = Int64(myId)!
+        }
     }
 }
 
 #Preview {
-    SearchResultQuestionView(myProfileViewModel: ProfileViewModel(), searchViewModel: SearchViewModel())
+    SearchResultQuestionView(authViewModel: AuthenticationViewModel(), searchViewModel: SearchViewModel())
 }

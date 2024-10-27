@@ -9,6 +9,9 @@ import SwiftUI
 
 struct RegisterDomainView: View {
     @Environment(\.dismiss) private var dismiss
+    
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    @Binding var navPath: NavigationPath
     var isMentor: Bool
     
     @StateObject private var viewModel = RegisterDomainViewModel()
@@ -83,7 +86,7 @@ struct RegisterDomainView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .navigationDestination(isPresented: $viewModel.isDone, destination: {
-            SetProfileView(isMentor: isMentor)
+            SetProfileView(authViewModel: authViewModel, navPath: $navPath, isMentor: isMentor)
         })
         .alert(isPresented: $viewModel.showAlert) {
             Alert(title: Text("오류"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")))
@@ -131,5 +134,5 @@ struct EmailregisterDoneView: View {
 }
 
 #Preview {
-    RegisterDomainView(isMentor: true)
+    RegisterDomainView(authViewModel: AuthenticationViewModel(), navPath: .constant(NavigationPath()), isMentor: true)
 }

@@ -33,15 +33,15 @@ class SetProfileViewModel: ObservableObject {
     }
     
     func getEmail(completion: @escaping (String?) -> Void) {
-        guard let socialMedia: String = Keychain().read(key: "SOCIAL_MEDIA") else {
+        guard let socialMedia: String = Keychain().read(key: "MEMBER_TYPE") else {
             completion(nil)
             return
         }
         
         switch socialMedia {
         case "KAKAO":
-            KakaoAuthViewModel().checkToken() { isHasToken in
-                if isHasToken {
+            KakaoAuthViewModel().checkToken() { haveToken in
+                if haveToken {
                     KakaoAuthViewModel().getEmail() { email in
                         completion(email)
                     }

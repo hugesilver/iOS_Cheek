@@ -16,22 +16,13 @@ class FeedViewModel: ObservableObject {
     @Published var feedNewest: [FeedModel] = []
     @Published var feedPopularity: [FeedModel] = []
     
-    func getFeed(categoryId: Int64, myId: Int64) {
+    func getFeed(categoryId: Int64) {
         feedNewest = []
         feedPopularity = []
         
         print("피드 조회 시도")
         
-        var components = URLComponents(string: "\(ip)/feed/\(categoryId)")!
-        
-        components.queryItems = [
-            URLQueryItem(name: "loginMemberId", value: "\(myId)")
-        ]
-        
-        guard let url = components.url else {
-            print("getFeed 함수 내 URL 추출 실패")
-            return
-        }
+        let url = URL(string: "\(ip)/feed/\(categoryId)")!
         
         // Header 세팅
         var request = URLRequest(url: url)

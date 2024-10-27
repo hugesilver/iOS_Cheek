@@ -10,9 +10,11 @@ import PhotosUI
 
 struct SetProfileView: View {
     @Environment(\.dismiss) private var dismiss
+    
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    @Binding var navPath: NavigationPath
     var isMentor: Bool
     
-    @StateObject private var profileViewModel = ProfileViewModel()
     @StateObject private var viewModel = SetProfileViewModel()
     
     // 사진
@@ -31,9 +33,6 @@ struct SetProfileView: View {
     @State private var statusInformation: TextFieldForm.statuses = .normal
     @State private var infoInformationForm: String = ""
     @FocusState private var isInformationFocused: Bool
-    
-    // destination of navigation
-    @State private var isDone: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -151,9 +150,6 @@ struct SetProfileView: View {
         .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-        .navigationDestination(isPresented: $isDone, destination: {
-            MainView(profileViewModel: profileViewModel)
-        })
         .alert(isPresented: $viewModel.showAlert) {
             Alert(title: Text("오류"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")))
         }
@@ -195,10 +191,12 @@ struct SetProfileView: View {
             if response {
                 viewModel.setProfile(
                     profilePicture: selectImage,
-                    nickname: nickname, information: information, isMentor: isMentor) { success in
+                    nickname: nickname,
+                    information: information,
+                    isMentor: isMentor) { success in
                     if success {
-                        profileViewModel.getMyProfile()
-                        isDone = success
+                        authViewModel.isRefreshTokenValid = true
+                        navPath.removeLast(navPath.count)
                     }
                 }
             } else {
@@ -209,5 +207,5 @@ struct SetProfileView: View {
 }
 
 #Preview {
-    SetProfileView(isMentor: false)
+    SetProfileView(authViewModel: AuthenticationViewModel(), navPath: .constant(NavigationPath()), isMentor: true)
 }

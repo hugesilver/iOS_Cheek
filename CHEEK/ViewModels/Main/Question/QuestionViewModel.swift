@@ -61,7 +61,7 @@ class QuestionViewModel: ObservableObject {
     }
     
     // 질문 업로드
-    func uploadQuestion(memberId: Int64, categoryId: Int64, content: String, completion: @escaping (Bool) -> Void) {
+    func uploadQuestion(categoryId: Int64, content: String, completion: @escaping (Bool) -> Void) {
         isLoading = true
         
         let url = URL(string: "\(ip)/question")!
@@ -74,8 +74,7 @@ class QuestionViewModel: ObservableObject {
         // Body 세팅
         let bodyData: [String: Any] = [
             "content": content,
-            "categoryId": categoryId,
-            "memberId": memberId
+            "categoryId": categoryId
         ]
         
         do {

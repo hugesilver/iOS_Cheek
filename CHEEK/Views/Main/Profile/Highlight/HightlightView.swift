@@ -10,11 +10,13 @@ import SwiftUI
 struct HighlightView: View {
     @Environment(\.dismiss) private var dismiss
     
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var profileViewModel: ProfileViewModel
+    
     @Binding var highlightId: Int64
     @Binding var highlightThumbnail: String
     @Binding var highlightSubject: String
     
-    @ObservedObject var profileViewModel: ProfileViewModel
     @StateObject private var storyViewModel: StoryViewModel = StoryViewModel()
     @StateObject private var highlightViewModel: HighlightViewModel = HighlightViewModel()
     
@@ -110,7 +112,7 @@ struct HighlightView: View {
                     }
                     
                     if !storyViewModel.stories.isEmpty && storyViewModel.isAllLoaded {
-                        NavigationLink(destination: EditHighlightView(profileViewModel: profileViewModel, highlightViewModel: highlightViewModel)) {
+                        NavigationLink(destination: EditHighlightView(authViewModel: authViewModel, profileViewModel: profileViewModel, highlightViewModel: highlightViewModel)) {
                             HStack(spacing: 8) {
                                 HStack() {
                                     Text("하이라이트 수정하기")
@@ -165,6 +167,8 @@ struct HighlightView: View {
         .onAppear {
             UINavigationBar.setAnimationsEnabled(true)
             
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            
             onInit()
             
             storyViewModel.timerStory()
@@ -176,15 +180,13 @@ struct HighlightView: View {
     }
     
     func onInit() {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
-        highlightViewModel.getHighlight(myId: myId, highlightId: highlightId) { isDone in
+        highlightViewModel.getHighlight(highlightId: highlightId) { isDone in
             if isDone {
-                storyViewModel.getStories(memberId: myId, storyIds: highlightViewModel.highlightStories!.storyId)
-                highlightViewModel.setSelectedStories(storyIds: highlightViewModel.highlightStories!.storyId, stories: profileViewModel.stories)
+                storyViewModel.getStories(storyIds: highlightViewModel.highlightStories!.storyId)
+                
+                highlightViewModel.setSelectedStories(
+                    storyIds: highlightViewModel.highlightStories!.storyId,
+                    stories: profileViewModel.stories)
             }
         }
         
@@ -222,5 +224,5 @@ struct HighlightView: View {
 }
 
 #Preview {
-    HighlightView(highlightId: .constant(0), highlightThumbnail: .constant(""), highlightSubject: .constant(""), profileViewModel: ProfileViewModel())
+    HighlightView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), highlightId: .constant(0), highlightThumbnail: .constant(""), highlightSubject: .constant(""))
 }

@@ -34,7 +34,7 @@ let paletteGreyscales: [Color] = [
 struct AddAnswerView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var profileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     var questionId: Int64
     
@@ -62,7 +62,7 @@ struct AddAnswerView: View {
                     
                     // 메뉴
                     if viewModel.userInteractState == .save {
-                        AddAnswerMenusView(viewModel: viewModel, profileViewModel: profileViewModel)
+                        AddAnswerMenusView(viewModel: viewModel)
                             .padding(.top, 16)
                     }
                     
@@ -105,6 +105,9 @@ struct AddAnswerView: View {
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
+        .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+        }
         .alert(isPresented: $viewModel.showAlert) {
             Alert(
                 title: Text("오류"),
@@ -142,7 +145,6 @@ struct AddAnswerMenusView: View {
     @Environment(\.dismiss) private var dismiss
     
     @ObservedObject var viewModel: AddAnswerViewModel
-    @ObservedObject var profileViewModel: ProfileViewModel
     
     @State private var photosPickerItem: PhotosPickerItem?
     @State private var showPhotosPicker: Bool = false
@@ -231,11 +233,6 @@ struct AddAnswerMenusView: View {
     }
     
     func uploadStory() {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
         viewModel.saveCanvasImage() {
             AnswerDrawingView(viewModel: viewModel)
         } completion: { isSuccess in
@@ -646,5 +643,5 @@ struct EditTextObjectView: View {
 }
 
 #Preview {
-    AddAnswerView(profileViewModel: ProfileViewModel(), questionId: 1)
+    AddAnswerView(authViewModel: AuthenticationViewModel(), questionId: 1)
 }

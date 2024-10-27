@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AddQuestionView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var profileViewModel: ProfileViewModel
+    
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     let categoryId: Int64
     
@@ -105,6 +106,9 @@ struct AddQuestionView: View {
         .onTapGesture {
             Utils().hideKeyboard()
         }
+        .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+        }
         .alert(isPresented: $viewModel.showAlert) {
             Alert(
                 title: Text("오류"),
@@ -123,15 +127,10 @@ struct AddQuestionView: View {
     
     // 질문 추가
     func addQuestion() {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
         Utils().hideKeyboard()
         
         if !question.isEmpty {
-            viewModel.uploadQuestion(memberId: myId, categoryId: categoryId, content: question) { isSuccess in
+            viewModel.uploadQuestion(categoryId: categoryId, content: question) { isSuccess in
                 if isSuccess {
                     print(isSuccess)
                 }
@@ -143,5 +142,5 @@ struct AddQuestionView: View {
 }
 
 #Preview {
-    AddQuestionView(profileViewModel: ProfileViewModel(), categoryId: 1)
+    AddQuestionView(authViewModel: AuthenticationViewModel(), categoryId: 1)
 }

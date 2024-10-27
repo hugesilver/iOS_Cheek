@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct SearchResultProfileView: View {
-    @ObservedObject var myProfileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var searchViewModel: SearchViewModel
     
     @StateObject var followViewModel = FollowViewModel()
+    
+    @State private var myMemberId: Int64?
     
     var body: some View {
         ScrollView {
@@ -19,9 +21,9 @@ struct SearchResultProfileView: View {
                 ForEach(Array(searchViewModel.searchResult!.memberDto.prefix(3).enumerated()), id: \.offset) { index, memberDto in
                     VStack(spacing: 16) {
                         UserFollowCard(
-                            myProfileViewModel: myProfileViewModel,
+                            authViewModel: authViewModel,
                             data: memberDto,
-                            isMe: myProfileViewModel.profile!.memberId == memberDto.memberId,
+                            isMe: myMemberId == memberDto.memberId,
                             onTapFollow: { onTapFollow(data: memberDto) },
                             onTapUnfollow: { onTapUnfollow(data: memberDto) }
                         )
@@ -36,39 +38,38 @@ struct SearchResultProfileView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
+        .onAppear {
+            getMyMemberId()
+        }
+    }
+    
+    func getMyMemberId() {
+        if let myId = Keychain().read(key: "MEMBER_ID") {
+            myMemberId = Int64(myId)!
+        }
     }
     
     func onTapFollow(data: FollowModel) {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
         // 팔로워 팔로우 상태 변경
         if let followerIndex = searchViewModel.searchResult!.memberDto.firstIndex(where: { $0.memberId == data.memberId }) {
             searchViewModel.searchResult!.memberDto[followerIndex].followerCnt += 1
             searchViewModel.searchResult!.memberDto[followerIndex].following = true
         }
         
-        followViewModel.follow(myId: myId, targetId: data.memberId)
+        followViewModel.follow(toMemberId: data.memberId)
     }
     
     func onTapUnfollow(data: FollowModel) {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
         // 팔로워 팔로우 상태 변경
         if let followerIndex = searchViewModel.searchResult!.memberDto.firstIndex(where: { $0.memberId == data.memberId }) {
             searchViewModel.searchResult!.memberDto[followerIndex].followerCnt -= 1
             searchViewModel.searchResult!.memberDto[followerIndex].following = false
         }
         
-        followViewModel.unfollow(myId: myId, targetId: data.memberId)
+        followViewModel.unfollow(toMemberId: data.memberId)
     }
 }
 
 #Preview {
-    SearchResultProfileView(myProfileViewModel: ProfileViewModel(), searchViewModel: SearchViewModel())
+    SearchResultProfileView(authViewModel: AuthenticationViewModel(), searchViewModel: SearchViewModel())
 }

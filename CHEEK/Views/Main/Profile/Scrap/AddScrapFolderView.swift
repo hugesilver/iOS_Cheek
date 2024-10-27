@@ -10,7 +10,7 @@ import SwiftUI
 struct AddScrapFolderView: View {
     var storyModel: StoryModel
     
-    @ObservedObject var profileViewModel: ProfileViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var scrapViewModel: ScrapViewModel
     
     @Binding var isScrapOpen: Bool
@@ -21,58 +21,67 @@ struct AddScrapFolderView: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 16) {
-                    Text("이름 설정")
-                        .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
-                        .padding(.top, 36)
-                    
-                    HStack(spacing: 12) {
-                        ProfileS(url: storyModel.storyPicture)
+            ZStack {
+                ScrollView {
+                    VStack(spacing: 16) {
+                        Text("이름 설정")
+                            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                            .padding(.top, 36)
                         
-                        TextField(
-                            "",
-                            text: $text,
-                            prompt:
-                                Text("새로운 폴더")
-                                .foregroundColor(.cheekTextAlternative)
-                        )
-                        .focused($isFocused)
-                        .submitLabel(.send)
-                        .tint(.cheekMainNormal)
-                        .body2(font: "SUIT", color: .cheekTextNormal, bold: true)
-                        .onChange(of: isFocused) { _ in
-                            isKeyboardUp = isFocused
+                        HStack(spacing: 12) {
+                            ProfileS(url: storyModel.storyPicture)
+                            
+                            TextField(
+                                "",
+                                text: $text,
+                                prompt:
+                                    Text("새로운 폴더")
+                                    .foregroundColor(.cheekTextAlternative)
+                            )
+                            .focused($isFocused)
+                            .submitLabel(.send)
+                            .tint(.cheekMainNormal)
+                            .body2(font: "SUIT", color: .cheekTextNormal, bold: true)
+                            .onChange(of: isFocused) { _ in
+                                isKeyboardUp = isFocused
+                            }
+                            .onSubmit {
+                                addCollection()
+                            }
                         }
-                        .onSubmit {
-                            addCollection()
-                        }
+                        .padding(.horizontal, 16)
+                        
+                        Spacer()
                     }
-                    .padding(.horizontal, 16)
-                    
-                    Spacer()
+                    .padding(.bottom, 32)
                 }
-                .padding(.bottom, 32)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.cheekBackgroundTeritory)
+                
+                if scrapViewModel.isLoading {
+                    LoadingView()
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.cheekBackgroundTeritory)
+            .onTapGesture {
+                Utils().hideKeyboard()
+            }
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
+        .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+        }
     }
     
     func addCollection() {
-        guard let myId = profileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
+        Utils().hideKeyboard()
         
-        scrapViewModel.addCollection(myId: myId, storyId: storyModel.storyId, categoryId: storyModel.categoryId, forlderName: text) { isDone in
+        scrapViewModel.addCollection(storyId: storyModel.storyId, categoryId: storyModel.categoryId, forlderName: text) { isDone in
             isScrapOpen = false
         }
     }
 }
 
 #Preview {
-    AddScrapFolderView(storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), profileViewModel: ProfileViewModel(), scrapViewModel: ScrapViewModel(), isScrapOpen: .constant(true), isKeyboardUp: .constant(true))
+    AddScrapFolderView(storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), authViewModel: AuthenticationViewModel(), scrapViewModel: ScrapViewModel(), isScrapOpen: .constant(true), isKeyboardUp: .constant(true))
 }

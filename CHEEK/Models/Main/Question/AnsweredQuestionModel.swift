@@ -7,8 +7,15 @@
 
 import Foundation
 
-struct AnsweredQuestionModel: Codable {
+struct AnsweredQuestionModel: Identifiable, Codable {
     let modifiedAt: String
+    let storyId: Int64
+    let storyPicture: String
+    let upvoteCount: Int64
     let memberDto: MemberDto
-    let storyDto: StoryDto
+    let upvoted: Bool
+    
+    var id: Int64 {
+        storyId
+    }
 }

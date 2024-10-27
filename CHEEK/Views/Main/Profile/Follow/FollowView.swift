@@ -10,11 +10,13 @@ import SwiftUI
 struct FollowView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var myProfileViewModel: ProfileViewModel
-    @StateObject var viewModel: FollowViewModel = FollowViewModel()
-    
+    @ObservedObject var authViewModel: AuthenticationViewModel
     let targetMemberId: Int64
     @State var selectedTab: Int
+    
+    @State var myMemberId: Int64? = nil
+    
+    @StateObject var viewModel: FollowViewModel = FollowViewModel()
     
     var body: some View {
         NavigationStack {
@@ -38,16 +40,14 @@ struct FollowView: View {
                 TabView(selection: $selectedTab) {
                     ScrollView {
                         VStack(spacing: 32) {
-                            if myProfileViewModel.profile != nil {
                             ForEach(viewModel.followers) { follower in
                                 UserFollowCard(
-                                    myProfileViewModel: myProfileViewModel,
+                                    authViewModel: authViewModel,
                                     data: follower,
-                                    isMe: myProfileViewModel.profile!.memberId == follower.memberId,
+                                    isMe: myMemberId == follower.memberId,
                                     onTapFollow: { onTapFollow(data: follower) },
                                     onTapUnfollow: { onTapUnfollow(data: follower) })
                                 }
-                            }
                         }
                         .padding(.vertical, 27)
                     }
@@ -55,16 +55,14 @@ struct FollowView: View {
                     
                     ScrollView {
                         VStack(spacing: 32) {
-                            if myProfileViewModel.profile != nil {
                             ForEach(viewModel.followings) { following in
                                 UserFollowCard(
-                                    myProfileViewModel: myProfileViewModel,
+                                    authViewModel: authViewModel,
                                     data: following,
-                                    isMe: myProfileViewModel.profile!.memberId == following.memberId,
+                                    isMe: myMemberId == following.memberId,
                                     onTapFollow: { onTapFollow(data: following) },
                                     onTapUnfollow: { onTapUnfollow(data: following) })
                                 }
-                            }
                         }
                         .padding(.vertical, 27)
                     }
@@ -79,35 +77,26 @@ struct FollowView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            
             getFollowers()
             getFollowings()
+            
+            if let myId = Keychain().read(key: "MEMBER_ID") {
+                myMemberId = Int64(myId)!
+            }
         }
     }
     
     func getFollowers() {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
-        viewModel.getFollowers(myId: myId, targetId: targetMemberId)
+        viewModel.getFollowers(targetMemberId: targetMemberId)
     }
     
     func getFollowings() {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
-        viewModel.getFollowings(myId: myId, targetId: targetMemberId)
+        viewModel.getFollowings(targetMemberId: targetMemberId)
     }
     
     func onTapFollow(data: FollowModel) {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
         // 팔로워 팔로우 상태 변경
         if let followerIndex = viewModel.followers.firstIndex(where: { $0.memberId == data.memberId }) {
             viewModel.followers[followerIndex].followerCnt += 1
@@ -119,15 +108,10 @@ struct FollowView: View {
             viewModel.followings[followingIndex].following = true
         }
         
-        viewModel.follow(myId: myId, targetId: data.memberId)
+        viewModel.follow(toMemberId: data.memberId)
     }
     
     func onTapUnfollow(data: FollowModel) {
-        guard let myId = myProfileViewModel.profile?.memberId else {
-            print("profileViewModel에 profile이 없음")
-            return
-        }
-        
         // 팔로워 팔로우 상태 변경
         if let followerIndex = viewModel.followers.firstIndex(where: { $0.memberId == data.memberId }) {
             viewModel.followers[followerIndex].followerCnt -= 1
@@ -139,10 +123,10 @@ struct FollowView: View {
             viewModel.followings[followingIndex].following = false
         }
         
-        viewModel.unfollow(myId: myId, targetId: data.memberId)
+        viewModel.unfollow(toMemberId: data.memberId)
     }
 }
 
 #Preview {
-    FollowView(myProfileViewModel: ProfileViewModel(), targetMemberId: 1, selectedTab: 0)
+    FollowView(authViewModel: AuthenticationViewModel(), targetMemberId: 1, selectedTab: 0)
 }

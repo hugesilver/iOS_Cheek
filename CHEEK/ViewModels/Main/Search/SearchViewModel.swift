@@ -64,12 +64,11 @@ class SearchViewModel: ObservableObject {
     }
     
     // 검색 조회
-    func getSearchResult(categoryId: Int64, keyword: String, myId: Int64) {
+    func getSearchResult(categoryId: Int64, keyword: String) {
         var components = URLComponents(string: "\(ip)/search/all/\(categoryId)")!
         
         components.queryItems = [
             URLQueryItem(name: "keyword", value: "\(keyword)"),
-            URLQueryItem(name: "loginMemberId", value: "\(myId)")
         ]
         
         guard let url = components.url else {

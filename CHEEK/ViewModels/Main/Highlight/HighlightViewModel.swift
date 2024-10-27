@@ -53,17 +53,8 @@ class HighlightViewModel: ObservableObject {
     }
     
     // 하이라이트 세부 조회
-    func getHighlight(myId: Int64, highlightId: Int64, completion: @escaping (Bool) -> Void) {
-        var components = URLComponents(string: "\(ip)/highlight/\(highlightId)")!
-        
-        components.queryItems = [
-            URLQueryItem(name: "loginMemberId", value: "\(myId)")
-        ]
-        
-        guard let url = components.url else {
-            print("getHighlight 함수 내 URL 추출 실패")
-            return
-        }
+    func getHighlight(highlightId: Int64, completion: @escaping (Bool) -> Void) {
+        let url = URL(string: "\(ip)/highlight/\(highlightId)")!
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -219,8 +210,8 @@ class HighlightViewModel: ObservableObject {
         request.httpBody = httpBody
         
         CombinePublishers().urlSession(req: request)
-            .sink(receiveCompletion: {isCompletion in
-                switch isCompletion {
+            .sink(receiveCompletion: {isComplete in
+                switch isComplete {
                 case .finished:
                     print("addHighlight 함수 실행 중 요청 성공")
                 case .failure(let error):
@@ -301,8 +292,8 @@ class HighlightViewModel: ObservableObject {
         request.httpBody = httpBody
         
         CombinePublishers().urlSession(req: request)
-            .sink(receiveCompletion: { isCompletion in
-                switch isCompletion {
+            .sink(receiveCompletion: { isComplete in
+                switch isComplete {
                 case .finished:
                     print("editHighlight 함수 실행 중 요청 성공")
                 case .failure(let error):
@@ -338,8 +329,8 @@ class HighlightViewModel: ObservableObject {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         CombinePublishers().urlSession(req: request)
-            .sink(receiveCompletion: { isCompletion in
-                switch isCompletion {
+            .sink(receiveCompletion: { isComplete in
+                switch isComplete {
                 case .finished:
                     print("deleteHighlight 함수 실행 중 요청 성공")
                 case .failure(let error):

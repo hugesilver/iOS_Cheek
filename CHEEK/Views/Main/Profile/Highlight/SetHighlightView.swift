@@ -10,6 +10,7 @@ import SwiftUI
 struct SetHighlightView: View {
     @Environment(\.dismiss) private var dismiss
     
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var highlightViewModel: HighlightViewModel
     
@@ -121,6 +122,9 @@ struct SetHighlightView: View {
         .navigationBarHidden(true)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
+        .onAppear {
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+        }
         .alert(isPresented: $highlightViewModel.showAlert) {
             Alert(
                 title: Text("오류"),
@@ -174,5 +178,5 @@ struct SetHighlightView: View {
 }
 
 #Preview {
-    SetHighlightView(profileViewModel: ProfileViewModel(), highlightViewModel: HighlightViewModel())
+    SetHighlightView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), highlightViewModel: HighlightViewModel())
 }

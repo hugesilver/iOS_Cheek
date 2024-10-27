@@ -17,19 +17,10 @@ class FollowViewModel: ObservableObject {
     
     
     // 팔로워 조회
-    func getFollowers(myId: Int64, targetId: Int64) {
+    func getFollowers(targetMemberId: Int64) {
         print("팔로워 조회 시도")
         
-        var components = URLComponents(string: "\(ip)/member-connection/follower/\(targetId)")!
-        
-        components.queryItems = [
-            URLQueryItem(name: "loginMemberId", value: "\(myId)")
-        ]
-        
-        guard let url = components.url else {
-            print("getFollowers 함수 내 URL 추출 실패")
-            return
-        }
+        let url = URL(string: "\(ip)/member-connection/follower/\(targetMemberId)")!
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -53,19 +44,10 @@ class FollowViewModel: ObservableObject {
     }
     
     // 팔로잉 조회
-    func getFollowings(myId: Int64, targetId: Int64) {
+    func getFollowings(targetMemberId: Int64) {
         print("팔로잉 조회 시도")
         
-        var components = URLComponents(string: "\(ip)/member-connection/following/\(targetId)")!
-        
-        components.queryItems = [
-            URLQueryItem(name: "loginMemberId", value: "\(myId)")
-        ]
-        
-        guard let url = components.url else {
-            print("getFollowings 함수 내 URL 추출 실패")
-            return
-        }
+        let url = URL(string: "\(ip)/member-connection/following/\(targetMemberId)")!
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -89,26 +71,13 @@ class FollowViewModel: ObservableObject {
     }
     
     // 팔로우
-    func follow(myId: Int64, targetId: Int64) {
-        let url = URL(string: "\(ip)/member-connection")!
+    func follow(toMemberId: Int64) {
+        let url = URL(string: "\(ip)/member-connection/\(toMemberId)")!
         
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        // Body 세팅
-        let bodyData: [String: Any] = [
-            "toMemberId": targetId,
-            "fromMemberId": myId
-        ]
-        
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: bodyData, options: [])
-        } catch {
-            print("팔로우 JSON 변환 중 오류: \(error)")
-            return
-        }
         
         CombinePublishers().urlSession(req: request)
             .sink(receiveCompletion: { completion in
@@ -131,26 +100,13 @@ class FollowViewModel: ObservableObject {
     }
     
     // 언팔로우
-    func unfollow(myId: Int64, targetId: Int64) {
-        let url = URL(string: "\(ip)/member-connection")!
+    func unfollow(toMemberId: Int64) {
+        let url = URL(string: "\(ip)/member-connection/\(toMemberId)")!
         
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        // Body 세팅
-        let bodyData: [String: Any] = [
-            "toMemberId": targetId,
-            "fromMemberId": myId
-        ]
-        
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: bodyData, options: [])
-        } catch {
-            print("언팔로우 JSON 변환 중 오류: \(error)")
-            return
-        }
         
         CombinePublishers().urlSession(req: request)
             .sink(receiveCompletion: { completion in

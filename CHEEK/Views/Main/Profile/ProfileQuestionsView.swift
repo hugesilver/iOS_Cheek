@@ -8,12 +8,17 @@
 import SwiftUI
 
 struct ProfileQuestionsView: View {
+    @ObservedObject var authViewModel: AuthenticationViewModel
     var questions: [QuestionDto]
+    
+    @State private var myMemberId: Int64? = nil
     
     var body: some View {
         VStack(spacing: 12) {
-            ForEach(questions) { question in
-                QuestionCard(question: question.content)
+            if myMemberId != nil {
+                ForEach(questions) { question in
+                    QuestionCard(authViewModel: authViewModel, myId: myMemberId!, questionId: question.questionId, content: question.content, storyCnt: question.storyCnt, memberId: myMemberId!)
+                }
             }
             
             Spacer()
@@ -22,9 +27,18 @@ struct ProfileQuestionsView: View {
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
+        .onAppear {
+            getMyMemberId()
+        }
+    }
+    
+    func getMyMemberId() {
+        if let myId = Keychain().read(key: "MEMBER_ID") {
+            myMemberId = Int64(myId)!
+        }
     }
 }
 
 #Preview {
-    ProfileQuestionsView(questions: [])
+    ProfileQuestionsView(authViewModel: AuthenticationViewModel(), questions: [])
 }
