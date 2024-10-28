@@ -58,6 +58,7 @@ struct AnsweredQuestionView: View {
                     if viewModel.answeredUserStories.count > 0 {
                         ForEach(viewModel.answeredUserStories) { story in
                             UserStoryCard(authViewModel: authViewModel, storyId: story.storyId, storyPicture: story.storyPicture, modifiedAt: story.modifiedAt, memberDto: story.memberDto, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                                .padding(.horizontal, 16)
                         }
                     }
                 }
