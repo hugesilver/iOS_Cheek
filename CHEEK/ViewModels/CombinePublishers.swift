@@ -96,7 +96,7 @@ class CombinePublishers: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("\(refreshToken)", forHTTPHeaderField: "Authorization")
+        request.addValue("Bearer \(refreshToken)", forHTTPHeaderField: "Authorization")
         
         return URLSession.shared.dataTaskPublisher(for: request)
             .tryMap() { data, response in
