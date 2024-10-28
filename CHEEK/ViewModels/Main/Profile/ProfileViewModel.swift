@@ -153,13 +153,13 @@ class ProfileViewModel: ObservableObject {
         
         // Body 세팅
         let bodyData: [String: Any] = [
-            "storyId": storyIds
+            "storyIdList": storyIds
         ]
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: bodyData, options: [])
         } catch {
-            print("스토리 좋아요 JSON 변환 중 오류: \(error)")
+            print("스토리 삭제 JSON 변환 중 오류: \(error)")
             return
         }
         
@@ -175,8 +175,10 @@ class ProfileViewModel: ObservableObject {
                 let dataString = String(data: data, encoding: .utf8)
                 
                 if dataString == "ok" {
-                    self.stories.removeAll { self.selectedStoriesForDelete.contains($0) }
-                    self.selectedStoriesForDelete.removeAll()
+                    DispatchQueue.main.async {
+                        self.stories.removeAll { self.selectedStoriesForDelete.contains($0) }
+                        self.selectedStoriesForDelete.removeAll()
+                    }
                 }
             })
             .store(in: &cancellables)
