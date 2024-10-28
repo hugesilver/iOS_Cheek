@@ -18,14 +18,11 @@ class AuthenticationViewModel: ObservableObject {
     
     // 리프레시 토큰 유효성 체크
     func checkRefreshTokenValid() -> Bool {
-        guard let refreshToken = Keychain().read(key: "REFRESH_TOKEN"),
+        guard let _ = Keychain().read(key: "REFRESH_TOKEN"),
               let refreshTokenExpireTime = Keychain().read(key: "REFRESH_TOKEN_EXPIRE_TIME"),
               let refreshTokenExpireTimeToDate = Utils().convertTokenTime(timeString: refreshTokenExpireTime) else {
             return false
         }
-        
-        print("리프레시 토큰: \(refreshToken)")
-        print("리스레시 토큰 만료 시간: \(refreshTokenExpireTime)")
         
         return refreshTokenExpireTimeToDate >= Date()
     }
@@ -41,14 +38,21 @@ class AuthenticationViewModel: ObservableObject {
         return accessTokenExpireTimeToDate <= Date()
     }
     
-    // 키체인 내 토큰 정보 모두 삭제
-    func deleteTokensInKeychain() {
-        Keychain().delete(key: "MEMBER_TYPE")
+    // 로그아웃
+    func logOut() {
         Keychain().delete(key: "MEMBER_ID")
         Keychain().delete(key: "ACCESS_TOKEN")
         Keychain().delete(key: "ACCESS_TOKEN_EXPIRE_TIME")
         Keychain().delete(key: "REFRESH_TOKEN")
         Keychain().delete(key: "REFRESH_TOKEN_EXPIRE_TIME")
+        
+        if let socialMedia: String = Keychain().read(key: "MEMBER_TYPE") {
+            if socialMedia == "KAKAO" {
+                KakaoAuthViewModel().logout()
+            }
+            
+            Keychain().delete(key: "MEMBER_TYPE")
+        }
     }
     
     // 소셜 로그인 및 회원가입
@@ -111,5 +115,36 @@ class AuthenticationViewModel: ObservableObject {
                 completion(data.profileComplete)
             })
             .store(in: &cancellables)
+    }
+    
+    func serverLogout() {
+        let url = URL(string: "\(ip)/member/logout")!
+        
+        // Header 세팅
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        CombinePublishers().urlSession(req: request)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("logout 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("logout 함수 실행 중 요청 실패: \(error)")
+                }
+            }, receiveValue: { data in
+                let dataString = String(data: data, encoding: .utf8)
+                
+                if dataString == "ok" {
+                    
+                }
+            })
+            .store(in: &self.cancellables)
+        
+        self.logOut()
+        
+        DispatchQueue.main.async {
+            self.isRefreshTokenValid = false
+        }
     }
 }

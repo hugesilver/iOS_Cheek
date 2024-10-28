@@ -43,7 +43,7 @@ struct ContentView: View {
         .onChange(of: authViewModel.isRefreshTokenValid) { isValid in
             if authViewModel.isInit && !isValid {
                 authViewModel.showAlert = true
-                authViewModel.deleteTokensInKeychain()
+                authViewModel.logOut()
             }
         }
         .onAppear {
