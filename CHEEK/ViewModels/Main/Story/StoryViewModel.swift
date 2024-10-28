@@ -99,24 +99,12 @@ class StoryViewModel: ObservableObject {
     func likeStory() {
         let storyId: Int64 = stories[currentIndex].storyId
         
-        let url = URL(string: "\(ip)/upvote")!
+        let url = URL(string: "\(ip)/upvote/\(storyId)")!
         
         // Header 세팅
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        // Body 세팅
-        let bodyData: [String: Any] = [
-            "storyId": storyId
-        ]
-        
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: bodyData, options: [])
-        } catch {
-            print("스토리 좋아요 JSON 변환 중 오류: \(error)")
-            return
-        }
         
         CombinePublishers().urlSession(req: request)
             .sink(receiveCompletion: { completion in
