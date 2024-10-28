@@ -121,7 +121,7 @@ struct HighlightView: View {
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .background(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .foregroundColor(storyViewModel.stories[storyViewModel.currentIndex].upvoted ? .cheekStatusAlert : .cheekGrey200)
+                                        .foregroundColor(.cheekGrey200)
                                 )
                             }
                             .padding(.top, 16)
