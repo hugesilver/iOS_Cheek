@@ -7,36 +7,6 @@
 
 import SwiftUI
 
-struct CaptionCard: View {
-    var data: MemberProfileModel
-    
-    var body: some View {
-        VStack(spacing: 6) {
-            HStack(spacing: 8) {
-                ProfileS(url: data.profilePicture ?? "")
-                
-                VStack(alignment: .leading) {
-                    Text(data.nickname)
-                        .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
-                        .lineLimit(1)
-                    
-                    Spacer()
-                    
-                    Text(data.description ?? "")
-                        .caption1(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                        .lineLimit(1)
-                }
-                .frame(maxWidth: 188)
-            }
-            
-            Text(data.information)
-                .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
-                .lineLimit(1)
-        }
-        .frame(maxWidth: 236)
-    }
-}
-
 struct RankingCard: View {
     @ObservedObject var authViewModel: AuthenticationViewModel
     

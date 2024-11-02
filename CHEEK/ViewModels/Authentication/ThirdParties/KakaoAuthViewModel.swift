@@ -11,6 +11,7 @@ import KakaoSDKCommon
 import KakaoSDKAuth
 import KakaoSDKUser
 import Combine
+import UIKit
 
 class KakaoAuthViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
@@ -36,6 +37,10 @@ class KakaoAuthViewModel: ObservableObject {
                 
                 if oauthToken != nil {
                     print("카카오톡 앱을 통하여 로그인 성공: \(String(describing: oauthToken))")
+                    
+                    // 액세스 토큰 복사 테스트용 코드
+                    UIPasteboard.general.string = oauthToken?.accessToken
+                    
                     completion(oauthToken?.accessToken)
                     return
                 }
@@ -49,6 +54,10 @@ class KakaoAuthViewModel: ObservableObject {
                 
                 if oauthToken != nil {
                     print("카카오톡 웹사이트를 통하여 로그인 성공: \(String(describing: oauthToken))")
+                    
+                    // 액세스 토큰 복사 테스트용 코드
+                    UIPasteboard.general.string = oauthToken?.accessToken
+                    
                     completion(oauthToken?.accessToken)
                     return
                 }

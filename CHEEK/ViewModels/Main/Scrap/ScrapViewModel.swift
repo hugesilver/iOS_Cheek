@@ -26,7 +26,7 @@ class ScrapViewModel: ObservableObject {
     
     // 스크랩된 폴더 조회
     func getScrappedFolders() {
-        let url = URL(string: "\(ip)/folder/")!
+        let url = URL(string: "\(ip)/folder")!
         
         // Header 세팅
         var request = URLRequest(url: url)

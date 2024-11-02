@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
+    @ObservedObject var notificationViewModel: NotificationViewModel
     
     @StateObject var viewModel: TopMembersViewModel = TopMembersViewModel()
     
@@ -46,10 +47,12 @@ struct HomeView: View {
                         )
                     }
                     
-                    Image("IconBell")
-                        .resizable()
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 48, height: 48)
+                    NavigationLink(destination: NotificationView(authViewModel: authViewModel, notificationViewModel: notificationViewModel)) {
+                        Image("IconBell")
+                            .resizable()
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 48, height: 48)
+                    }
                 }
                 .padding(.top, 24)
                 .padding(.bottom, 16)
@@ -157,5 +160,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), currentMainIndex: .constant(0), selectedCategory: .constant(1))
+    HomeView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), notificationViewModel: NotificationViewModel(), currentMainIndex: .constant(0), selectedCategory: .constant(1))
 }

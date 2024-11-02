@@ -111,9 +111,6 @@ struct WelcomeView: View {
         
         kakaoAuthViewModel.kakaoAuth() { accessToken in
             if let accessToken {
-                // 액세스 토큰 복사 테스트용 코드
-                UIPasteboard.general.string = accessToken
-                
                 authViewModel.oAuthLogin(accessToken: accessToken, memberType: "KAKAO") { isSet in
                     if isSet != nil {
                         // 메인 페이지로 변경

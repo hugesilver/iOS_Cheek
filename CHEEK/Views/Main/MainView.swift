@@ -9,7 +9,9 @@ import SwiftUI
 
 struct MainView: View {
     @ObservedObject var authViewModel: AuthenticationViewModel
+    
     @StateObject var profileViewModel: ProfileViewModel = ProfileViewModel()
+    @StateObject var notificationViewModel: NotificationViewModel = NotificationViewModel()
     
     // 탭 인덱스
     @State var currentIndex: Int = 0
@@ -25,6 +27,7 @@ struct MainView: View {
                         HomeView(
                             authViewModel: authViewModel,
                             profileViewModel: profileViewModel,
+                            notificationViewModel: notificationViewModel,
                             currentMainIndex: $currentIndex,
                             selectedCategory: $selectedCategory)
                     case 1:
@@ -114,6 +117,7 @@ struct MainView: View {
             UINavigationBar.setAnimationsEnabled(false)
             
             getMyProfile()
+            notificationViewModel.isNotificationEnabledAndFCMReady()
         }
     }
     

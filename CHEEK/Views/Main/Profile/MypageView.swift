@@ -52,10 +52,12 @@ struct MypageView: View {
                             .padding(8)
                     }
                     
-                    Image("IconPreference")
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 32, height: 32)
-                        .padding(8)
+                    NavigationLink(destination: AccountPreferencesView(authViewModel: authViewModel)) {
+                        Image("IconPreference")
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 32, height: 32)
+                            .padding(8)
+                    }
                 }
             }
             .padding(.top, 8)
