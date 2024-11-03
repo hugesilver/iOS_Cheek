@@ -67,16 +67,16 @@ struct NotificationView: View {
                                 message: notificationMessage(type: notification.type),
                                 date: notification.time,
                                 thumbnailPicture: notification.picture,
-                                onProfileTap: {
+                                onTapProfile: {
                                     destinationType = .profile
                                     targetMemberId = notification.typeId
                                     isPresented = true
                                 },
-                                onThumbnailTap: {
+                                onTapThumbnail: {
                                     selectedStories = [notification.typeId]
                                     isStoryOpen = true
                                 },
-                                onBakcgroundTap: {
+                                onTapBakcground: {
                                     notificationViewModel.setReadNotifications(notificationId: notification.notificationId)
                                 }
                             )
@@ -144,9 +144,9 @@ struct NotificationBlock: View {
     let date: String
     let thumbnailPicture: String?
     
-    let onProfileTap: () -> Void
-    let onThumbnailTap: () -> Void
-    let onBakcgroundTap: () -> Void
+    let onTapProfile: () -> Void
+    let onTapThumbnail: () -> Void
+    let onTapBakcground: () -> Void
     
     var body: some View {
         HStack(spacing: 12) {
@@ -163,7 +163,7 @@ struct NotificationBlock: View {
                 }
                 .frame(width: 48, height: 48)
                 .onTapGesture {
-                    onProfileTap()
+                    onTapProfile()
                 }
             }
             
@@ -194,14 +194,14 @@ struct NotificationBlock: View {
                 .frame(width: 48, height: 48)
                 .clipShape(RoundedRectangle(cornerRadius: 6))
                 .onTapGesture {
-                    onThumbnailTap()
+                    onTapThumbnail()
                 }
             }
         }
         .padding(16)
         .background(isRead ? .clear : Color(red: 0.96, green: 0.98, blue: 1))
         .onTapGesture {
-            onBakcgroundTap()
+            onTapBakcground()
         }
     }
 }
