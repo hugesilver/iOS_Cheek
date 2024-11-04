@@ -11,12 +11,17 @@ struct AccountPreferencesView: View {
     @Environment(\.dismiss) private var dismiss
     
     @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var profileViewModel: ProfileViewModel
     
-    enum modeTypes {
+    enum NavigationType {
+        case editProfile
+    }
+    
+    enum alertModeTypes {
         case logout
     }
     
-    @State var mode: modeTypes = .logout
+    @State var alertMode: alertModeTypes = .logout
     @State var showAlert: Bool = false
     
     var body: some View {
@@ -35,7 +40,7 @@ struct AccountPreferencesView: View {
                     Spacer()
                 }
                 .overlay(
-                    Text("내 스토리 삭제")
+                    Text("계정 설정")
                         .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
                     , alignment: .center
                 )
@@ -44,16 +49,27 @@ struct AccountPreferencesView: View {
                 
                 ScrollView {
                     VStack(spacing: 16) {
+                        NavigationLink(destination: EditProfileView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
+                            Text("계정 편집")
+                                .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        
+                        DividerSmall()
+                        
                         Text("로그아웃")
                             .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .onTapGesture {
-                                mode = .logout
+                                alertMode = .logout
                                 showAlert = true
                             }
+                        
+                        DividerSmall()
                     }
                     .padding(.horizontal, 16)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
@@ -72,7 +88,7 @@ struct AccountPreferencesView: View {
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
         }
         .alert(isPresented: $showAlert) {
-            switch mode {
+            switch alertMode {
             case .logout:
                 Alert(
                     title: Text("로그아웃 하시겠습니까?"),
@@ -87,5 +103,5 @@ struct AccountPreferencesView: View {
 }
 
 #Preview {
-    AccountPreferencesView(authViewModel: AuthenticationViewModel())
+    AccountPreferencesView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

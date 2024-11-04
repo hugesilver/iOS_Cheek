@@ -42,67 +42,65 @@ struct AddAnswerView: View {
     @State var questionModel: QuestionModel? = nil
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                if viewModel.isLoading {
-                    LoadingView()
-                } else {
-                    ZStack(alignment: .top) {
-                        // 캔버스
-                        GeometryReader { _ in
-                            AnswerDrawingView(viewModel: viewModel)
-                                .frame(
-                                    width: UIScreen.main.bounds.width,
-                                    height: (UIScreen.main.bounds.width / 9) * 16
-                                )
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                        }
-                        .ignoresSafeArea(.keyboard, edges: .all)
+        ZStack {
+            if viewModel.isLoading {
+                LoadingView()
+            } else {
+                ZStack(alignment: .top) {
+                    // 캔버스
+                    GeometryReader { _ in
+                        AnswerDrawingView(viewModel: viewModel)
+                            .frame(
+                                width: UIScreen.main.bounds.width,
+                                height: (UIScreen.main.bounds.width / 9) * 16
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
+                    .ignoresSafeArea(.keyboard, edges: .all)
+                }
+                
+                // 메뉴
+                if viewModel.userInteractState == .save {
+                    AddAnswerMenusView(viewModel: viewModel)
+                        .padding(.top, 16)
+                }
+                
+                // 텍스트
+                if viewModel.userInteractState == .text {
+                    // 텍스트 추가
+                    if viewModel.addTextObject {
+                        AddTextObjectView(viewModel: viewModel)
                     }
                     
-                    // 메뉴
-                    if viewModel.userInteractState == .save {
-                        AddAnswerMenusView(viewModel: viewModel)
-                            .padding(.top, 16)
-                    }
-                    
-                    // 텍스트
-                    if viewModel.userInteractState == .text {
-                        // 텍스트 추가
-                        if viewModel.addTextObject {
-                            AddTextObjectView(viewModel: viewModel)
-                        }
-                        
-                        // 텍스트 수정
-                        if viewModel.editTextObject {
-                            EditTextObjectView(viewModel: viewModel)
-                        }
-                    }
-                    
-                    // 그리기 팔레트
-                    if viewModel.userInteractState == .draw {
-                        DrawPaletteView(viewModel: viewModel)
-                    }
-                    
-                    // 배경색 팔레트
-                    if viewModel.userInteractState == .backgroundColor {
-                        BackgroundColorPaletteView(viewModel: viewModel)
+                    // 텍스트 수정
+                    if viewModel.editTextObject {
+                        EditTextObjectView(viewModel: viewModel)
                     }
                 }
-            }
-            .onChange(of: viewModel.userInteractState) { value in
+                
+                // 그리기 팔레트
                 if viewModel.userInteractState == .draw {
-                    viewModel.canvas.isUserInteractionEnabled = true
-                } else {
-                    viewModel.canvas.isUserInteractionEnabled = false
+                    DrawPaletteView(viewModel: viewModel)
+                }
+                
+                // 배경색 팔레트
+                if viewModel.userInteractState == .backgroundColor {
+                    BackgroundColorPaletteView(viewModel: viewModel)
                 }
             }
-            .onAppear {
-                viewModel.getQuestion(questionId: questionId)
-            }
-            .background(.cheekTextNormal)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .onChange(of: viewModel.userInteractState) { value in
+            if viewModel.userInteractState == .draw {
+                viewModel.canvas.isUserInteractionEnabled = true
+            } else {
+                viewModel.canvas.isUserInteractionEnabled = false
+            }
+        }
+        .onAppear {
+            viewModel.getQuestion(questionId: questionId)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.cheekTextNormal)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
@@ -398,7 +396,7 @@ struct DrawPaletteView: View {
                     Circle()
                         .frame(width: 8, height: 8)
                         .foregroundColor(selectedTab == 1 ? .cheekTextAlternative : .cheekGrey200)
-                        
+                    
                 }
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
@@ -509,7 +507,7 @@ struct BackgroundColorPaletteView: View {
                     Circle()
                         .frame(width: 8, height: 8)
                         .foregroundColor(selectedTab == 1 ? .cheekTextAlternative : .cheekGrey200)
-                        
+                    
                 }
             }
             .frame(maxHeight: .infinity, alignment: .bottom)

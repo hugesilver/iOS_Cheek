@@ -81,7 +81,7 @@ struct MainView: View {
                     // MY
                     VStack(spacing: 2) {
                         VStack {
-                            ProfileBtnnav(url: profileViewModel.profile?.profilePicture ?? "")
+                            ProfileBtnnav(url: profileViewModel.profile?.profilePicture)
                                 .opacity(currentIndex == 2 ? 1 :0.6)
                         }
                         .frame(width: 32, height: 32)
@@ -114,8 +114,6 @@ struct MainView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            UINavigationBar.setAnimationsEnabled(false)
-            
             getMyProfile()
             notificationViewModel.isNotificationEnabledAndFCMReady()
         }

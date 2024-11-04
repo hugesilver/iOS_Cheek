@@ -19,61 +19,59 @@ struct FollowView: View {
     @StateObject var viewModel: FollowViewModel = FollowViewModel()
     
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                HStack {
-                    Image("IconChevronLeft")
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 40, height: 40)
-                        .onTapGesture {
-                            dismiss()
-                        }
-                        .padding(8)
-                    
-                    Spacer()
-                }
-                .padding(.top, 8)
-                .padding(.horizontal, 16)
-                
-                TabsText(tabs: ["팔로워", "팔로잉"], selectedTab: $selectedTab)
-                
-                TabView(selection: $selectedTab) {
-                    ScrollView {
-                        VStack(spacing: 32) {
-                            ForEach(viewModel.followers) { follower in
-                                UserFollowCard(
-                                    authViewModel: authViewModel,
-                                    data: follower,
-                                    isMe: myMemberId == follower.memberId,
-                                    onTapFollow: { onTapFollow(data: follower) },
-                                    onTapUnfollow: { onTapUnfollow(data: follower) })
-                                }
-                        }
-                        .padding(.vertical, 27)
+        VStack(spacing: 0) {
+            HStack {
+                Image("IconChevronLeft")
+                    .foregroundColor(.cheekTextNormal)
+                    .frame(width: 40, height: 40)
+                    .onTapGesture {
+                        dismiss()
                     }
-                    .tag(0)
-                    
-                    ScrollView {
-                        VStack(spacing: 32) {
-                            ForEach(viewModel.followings) { following in
-                                UserFollowCard(
-                                    authViewModel: authViewModel,
-                                    data: following,
-                                    isMe: myMemberId == following.memberId,
-                                    onTapFollow: { onTapFollow(data: following) },
-                                    onTapUnfollow: { onTapUnfollow(data: following) })
-                                }
-                        }
-                        .padding(.vertical, 27)
-                    }
-                    .tag(1)
-                }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(8)
+                
+                Spacer()
             }
+            .padding(.top, 8)
+            .padding(.horizontal, 16)
+            
+            TabsText(tabs: ["팔로워", "팔로잉"], selectedTab: $selectedTab)
+            
+            TabView(selection: $selectedTab) {
+                ScrollView {
+                    VStack(spacing: 32) {
+                        ForEach(viewModel.followers) { follower in
+                            UserFollowCard(
+                                authViewModel: authViewModel,
+                                data: follower,
+                                isMe: myMemberId == follower.memberId,
+                                onTapFollow: { onTapFollow(data: follower) },
+                                onTapUnfollow: { onTapUnfollow(data: follower) })
+                        }
+                    }
+                    .padding(.vertical, 27)
+                }
+                .tag(0)
+                
+                ScrollView {
+                    VStack(spacing: 32) {
+                        ForEach(viewModel.followings) { following in
+                            UserFollowCard(
+                                authViewModel: authViewModel,
+                                data: following,
+                                isMe: myMemberId == following.memberId,
+                                onTapFollow: { onTapFollow(data: following) },
+                                onTapUnfollow: { onTapUnfollow(data: following) })
+                        }
+                    }
+                    .padding(.vertical, 27)
+                }
+                .tag(1)
+            }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.cheekBackgroundTeritory)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {

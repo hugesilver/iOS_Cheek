@@ -89,7 +89,7 @@ struct AnswerQuestionBlock: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
-                ProfileXS(url: data.memberDto.profilePicture ?? "")
+                ProfileXS(url: data.memberDto.profilePicture)
                 
                 Text(data.memberDto.nickname)
                     .body2(font: "SUIT", color: .cheekTextStrong, bold: true)

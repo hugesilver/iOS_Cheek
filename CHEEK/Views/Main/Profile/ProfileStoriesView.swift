@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-let vGridSpacing: CGFloat = 4
+fileprivate let vGridSpacing: CGFloat = 4
 
 struct ProfileStoriesView: View {
     @Binding var isStoryOpen: Bool

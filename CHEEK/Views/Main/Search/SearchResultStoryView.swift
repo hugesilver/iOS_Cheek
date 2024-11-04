@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+fileprivate let vGridSpacing: CGFloat = 4
+
 struct SearchResultStoryView: View {
     @ObservedObject var searchViewModel: SearchViewModel
     

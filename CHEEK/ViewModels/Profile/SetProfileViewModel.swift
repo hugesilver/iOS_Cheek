@@ -96,8 +96,7 @@ class SetProfileViewModel: ObservableObject {
                 return
             }
             
-            let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
-            let url = URL(string: "\(ip)/member/profile")!
+            let url = URL(string: "\(self.ip)/member/profile")!
             
             // Boundary 설정
             let boundary = UUID().uuidString
@@ -131,14 +130,8 @@ class SetProfileViewModel: ObservableObject {
                 httpBody.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"profile.jpg\"\r\n".data(using: .utf8)!)
                 httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
                 httpBody.append(profilePicture.jpegData(compressionQuality: 0.5)!)
-            } else {
-                httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
-                httpBody.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"\"\r\n".data(using: .utf8)!)
-                httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
-                httpBody.append(Data())
+                httpBody.append("\r\n".data(using: .utf8)!)
             }
-            
-            httpBody.append("\r\n".data(using: .utf8)!)
     
             // Boundary 끝 추가
             httpBody.append("--\(boundary)--\r\n".data(using: .utf8)!)
@@ -150,9 +143,9 @@ class SetProfileViewModel: ObservableObject {
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .finished:
-                        print("validateDomain 함수 실행 중 요청 성공")
+                        print("setProfile 함수 실행 중 요청 성공")
                     case .failure(let error):
-                        print("validateDomain 함수 실행 중 요청 실패: \(error)")
+                        print("setProfile 함수 실행 중 요청 실패: \(error)")
                         self.showError(message: "요청 중 오류가 발생하였습니다.")
                     }
                 }, receiveValue: { data in
@@ -170,5 +163,73 @@ class SetProfileViewModel: ObservableObject {
                 })
                 .store(in: &self.cancellables)
         }
+    }
+    
+    func editProfile(profilePicture: UIImage?, nickname: String, information: String, description: String, completion: @escaping (Bool) -> Void) {
+        let url = URL(string: "\(ip)/member/profile")!
+        
+        // Boundary 설정
+        let boundary = UUID().uuidString
+        
+        // Header 설정
+        var request = URLRequest(url: url)
+        request.httpMethod = "PATCH"
+        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        // Body 설정
+        var httpBody = Data()
+        
+        // profileDto
+        let profileDto: [String: Any] = [
+            "nickname": nickname,
+            "information": information,
+            "description": description
+        ]
+        
+        if let jsonData = try? JSONSerialization.data(withJSONObject: profileDto, options: .prettyPrinted) {
+            httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
+            httpBody.append("Content-Disposition: form-data; name=\"profileDto\"\r\n".data(using: .utf8)!)
+            httpBody.append("Content-Type: application/json\r\n\r\n".data(using: .utf8)!)
+            httpBody.append(jsonData)
+            httpBody.append("\r\n".data(using: .utf8)!)
+        }
+        
+        if let profilePicture {
+            httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
+            httpBody.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"profile.jpg\"\r\n".data(using: .utf8)!)
+            httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+            httpBody.append(profilePicture.jpegData(compressionQuality: 0.5)!)
+            httpBody.append("\r\n".data(using: .utf8)!)
+        }
+
+        // Boundary 끝 추가
+        httpBody.append("--\(boundary)--\r\n".data(using: .utf8)!)
+        
+        request.httpBody = httpBody
+        
+        // 서버에 요청 보내기
+        CombinePublishers().urlSession(req: request)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("editProfile 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("editProfile 함수 실행 중 요청 실패: \(error)")
+                    self.showError(message: "요청 중 오류가 발생하였습니다.")
+                }
+            }, receiveValue: { data in
+                let dataString = String(data: data, encoding: .utf8)
+                
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    
+                    if dataString != "ok" {
+                        self.showError(message: "수정 중 오류가 발생하였습니다.")
+                    }
+                }
+                
+                completion(dataString == "ok")
+            })
+            .store(in: &self.cancellables)
     }
 }

@@ -35,119 +35,130 @@ struct SetProfileView: View {
     @FocusState private var isInformationFocused: Bool
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                VStack(spacing: 0) {
-                    HStack {
-                        Image("IconChevronLeft")
-                            .foregroundColor(.cheekTextNormal)
-                            .frame(width: 40, height: 40)
-                            .onTapGesture {
-                                dismiss()
-                            }
-                            .padding(8)
-                        
-                        Spacer()
-                    }
-                    .padding(.top, 8)
-                    
-                    Text("내 프로필을 설정해주세요.")
-                        .headline1(font: "SUIT", color: .cheekTextNormal, bold: true)
-                        .padding(.top, 28)
-                    
-                    // 프로필 사진 선택
-                    PhotosPicker(selection: $photosPickerItem, matching: .images) {
-                        if let image = selectImage {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 128, height: 128)
-                                .clipShape(Circle())
-                        } else {
-                            Image("ImageDefaultProfile")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 128, height: 128)
+        ZStack {
+            VStack(spacing: 0) {
+                HStack {
+                    Image("IconChevronLeft")
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 40, height: 40)
+                        .onTapGesture {
+                            dismiss()
                         }
-                    }
-                    .onChange(of: photosPickerItem) { image in
-                        Task {
-                            guard let data = try? await image?.loadTransferable(type: Data.self) else { return }
-                            selectImage = UIImage(data: data)
-                        }
-                        
-                        photosPickerItem = nil
-                    }
-                    .overlay(
-                        Circle()
-                            .stroke(.cheekWhite, lineWidth: 4)
-                            .background(Circle().foregroundColor(.cheekMainNormal))
-                            .frame(width: 40, height: 40)
-                            .overlay(
-                                Image("IconPlus")
-                                    .resizable()
-                                    .foregroundColor(.cheekWhite)
-                                    .frame(width: 24, height: 24)
-                            )
-                        , alignment: .bottomTrailing
-                    )
-                    .padding(.top, 40)
-                    
-                    VStack(spacing: 24) {
-                        // 닉네임
-                        TextFieldForm(name: "닉네임", placeholder: "이름 또는 닉네임 입력", text: $nickname, information: $infoNicknameForm, status: $statusNickname, isFocused: $isNicknameFocused)
-                            .onChange(of: nickname) { text in
-                                if text.count > 8 {
-                                    nickname = String(text.prefix(8))
-                                }
-                            }
-                            .onChange(of: isNicknameFocused) { _ in
-                                onChangeNicknameFocused()
-                            }
-                        
-                        // 직무 한줄소개
-                        TextFieldForm(name: "직무 한줄소개", placeholder: "예 > 당근 프론트엔드 개발자", text: $information, information: $infoInformationForm, status: $statusInformation, isFocused: $isInformationFocused)
-                            .onChange(of: information) { text in
-                                information = String(text.prefix(20))
-                            }
-                            .onChange(of: isInformationFocused) { _ in
-                                if isInformationFocused {
-                                    statusInformation = .focused
-                                } else {
-                                    statusInformation = .normal
-                                }
-                            }
-                    }
-                    .padding(.top, 48)
+                        .padding(8)
                     
                     Spacer()
-                    
-                    // 다음 버튼
-                    if !viewModel.isLoading && !nickname.isEmpty && isUniqueNickname && !information.isEmpty {
-                        ButtonActive(text: "다음")
-                            .onTapGesture {
-                                setProfile()
-                            }
+                }
+                .padding(.top, 8)
+                
+                Text("내 프로필을 설정해주세요.")
+                    .headline1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                    .padding(.top, 28)
+                
+                // 프로필 사진 선택
+                PhotosPicker(selection: $photosPickerItem, matching: .images) {
+                    if let image = selectImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 128, height: 128)
+                            .clipShape(Circle())
                     } else {
-                        ButtonDisabled(text: "다음")
+                        Image("ImageDefaultProfile")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 128, height: 128)
                     }
                 }
-                .padding(.bottom,
-                         isNicknameFocused || isInformationFocused ? 24 : 31)
-                .padding(.horizontal, 16)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.cheekBackgroundTeritory)
+                .onChange(of: photosPickerItem) { image in
+                    Task {
+                        guard let data = try? await image?.loadTransferable(type: Data.self) else { return }
+                        selectImage = UIImage(data: data)
+                    }
+                    
+                    photosPickerItem = nil
+                }
+                .overlay(
+                    Circle()
+                        .stroke(.cheekWhite, lineWidth: 4)
+                        .background(Circle().foregroundColor(.cheekMainNormal))
+                        .frame(width: 40, height: 40)
+                        .overlay(
+                            Image("IconPlus")
+                                .resizable()
+                                .foregroundColor(.cheekWhite)
+                                .frame(width: 24, height: 24)
+                        )
+                    , alignment: .bottomTrailing
+                )
+                .padding(.top, 40)
                 
-                if viewModel.isLoading {
-                    LoadingView()
+                VStack(spacing: 24) {
+                    // 닉네임
+                    TextFieldForm(
+                        name: "닉네임",
+                        placeholder: "이름 또는 닉네임 입력",
+                        isReqired: true,
+                        text: $nickname,
+                        information: $infoNicknameForm,
+                        status: $statusNickname,
+                        isFocused: $isNicknameFocused)
+                    .onChange(of: nickname) { text in
+                        if text.count > 8 {
+                            nickname = String(text.prefix(8))
+                        }
+                    }
+                    .onChange(of: isNicknameFocused) { _ in
+                        onChangeNicknameFocused()
+                    }
+                    
+                    // 직무 한줄소개
+                    TextFieldForm(
+                        name: "직무 한줄소개",
+                        placeholder: "예 > 당근 프론트엔드 개발자",
+                        isReqired: true,
+                        text: $information,
+                        information: $infoInformationForm,
+                        status: $statusInformation,
+                        isFocused: $isInformationFocused)
+                    .onChange(of: information) { text in
+                        information = String(text.prefix(20))
+                    }
+                    .onChange(of: isInformationFocused) { _ in
+                        if isInformationFocused {
+                            statusInformation = .focused
+                        } else {
+                            statusInformation = .normal
+                        }
+                    }
+                }
+                .padding(.top, 48)
+                
+                Spacer()
+                
+                // 다음 버튼
+                if !viewModel.isLoading && !nickname.isEmpty && isUniqueNickname && !information.isEmpty {
+                    ButtonActive(text: "다음")
+                        .onTapGesture {
+                            setProfile()
+                        }
+                } else {
+                    ButtonDisabled(text: "다음")
                 }
             }
+            .padding(.bottom,
+                     isNicknameFocused || isInformationFocused ? 24 : 31)
+            .padding(.horizontal, 16)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .onTapGesture {
-                Utils().hideKeyboard()
+            .background(.cheekBackgroundTeritory)
+            
+            if viewModel.isLoading {
+                LoadingView()
             }
         }
-        .background(.cheekBackgroundTeritory)
+        .onTapGesture {
+            Utils().hideKeyboard()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .alert(isPresented: $viewModel.showAlert) {
@@ -166,7 +177,7 @@ struct SetProfileView: View {
             } else {
                 viewModel.checkUniqueNickname(nickname: nickname) { response in
                     isUniqueNickname = response
-                                                                
+                    
                     if response {
                         statusNickname = .correct
                         infoNicknameForm = "사용 가능한 닉네임입니다."
@@ -194,11 +205,15 @@ struct SetProfileView: View {
                     nickname: nickname,
                     information: information,
                     isMentor: isMentor) { success in
-                    if success {
-                        authViewModel.isRefreshTokenValid = true
-                        navPath.removeLast(navPath.count)
+                        if success {
+                            // 메인으로 이동
+                            authViewModel.isRefreshTokenValid = true
+                            // 웰컴 페이지 초기 페이지로 이동
+                            navPath.removeLast(navPath.count)
+                        } else {
+                            viewModel.showError(message: "프로필 설정 중 오류가 발생했습니다.")
+                        }
                     }
-                }
             } else {
                 viewModel.showError(message: "이미 등록된 닉네임입니다.")
             }

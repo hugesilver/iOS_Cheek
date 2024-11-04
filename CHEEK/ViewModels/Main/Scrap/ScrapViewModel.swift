@@ -64,9 +64,9 @@ class ScrapViewModel: ObservableObject {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    print("getScrappedFolders 함수 실행 중 요청 성공")
+                    print("getCollections 함수 실행 중 요청 성공")
                 case .failure(let error):
-                    print("getScrappedFolders 함수 실행 중 요청 실패: \(error)")
+                    print("getCollections 함수 실행 중 요청 실패: \(error)")
                 }
             }, receiveValue: { data in
                 DispatchQueue.main.async {

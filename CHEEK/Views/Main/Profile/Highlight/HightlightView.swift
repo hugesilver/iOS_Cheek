@@ -23,7 +23,7 @@ struct HighlightView: View {
     @State private var offset: CGSize = .zero
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             GeometryReader { reader in
                 VStack(spacing: 0) {
                     // 상단
@@ -165,8 +165,6 @@ struct HighlightView: View {
             }
         }
         .onAppear {
-            UINavigationBar.setAnimationsEnabled(true)
-            
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
             
             onInit()
@@ -175,7 +173,6 @@ struct HighlightView: View {
         }
         .onDisappear {
             storyViewModel.stopTimer()
-            UINavigationBar.setAnimationsEnabled(false)
         }
     }
     

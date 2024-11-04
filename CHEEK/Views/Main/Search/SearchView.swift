@@ -24,179 +24,179 @@ struct SearchView: View {
     @State var selectedStories: [Int64] = []
     
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading, spacing: 0) {
-                // 뒤로가기와 검색
-                HStack {
-                    Image("IconChevronLeft")
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 32, height: 32)
-                        .onTapGesture {
-                            dismiss()
-                        }
-                        .padding(8)
-                    
-                    if selectedCategory != nil {
-                        ScrollViewReader { proxy in
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 9) {
-                                    if let selectedCategory {
-                                        ChipSearch(
-                                            text: CategoryModels().categories[Int(selectedCategory) - 1].name,
-                                            onTap: { onTapChipClose() })
-                                        .id(0)
-                                    }
-                                    
-                                    TextField(
-                                        "",
-                                        text: $searchText,
-                                        prompt: Text("회사, 사람, 키워드로 검색")
-                                            .foregroundColor(.cheekTextAlternative)
-                                    )
-                                    .submitLabel(.search)
-                                    .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
-                                    .foregroundColor(.cheekTextStrong)
-                                    .id(1)
-                                    .onChange(of: searchText) { _ in
-                                        proxy.scrollTo(1, anchor: .trailing)
-                                    }
-                                    .onSubmit {
-                                        onSubmitSearch()
-                                    }
+        VStack(alignment: .leading, spacing: 0) {
+            // 뒤로가기와 검색
+            HStack {
+                Image("IconChevronLeft")
+                    .foregroundColor(.cheekTextNormal)
+                    .frame(width: 32, height: 32)
+                    .onTapGesture {
+                        dismiss()
+                    }
+                    .padding(8)
+                
+                if selectedCategory != nil {
+                    ScrollViewReader { proxy in
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 9) {
+                                if let selectedCategory {
+                                    ChipSearch(
+                                        text: CategoryModels().categories[Int(selectedCategory) - 1].name,
+                                        onTap: { onTapChipClose() })
+                                    .id(0)
                                 }
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 8)
+                                
+                                TextField(
+                                    "",
+                                    text: $searchText,
+                                    prompt: Text("회사, 사람, 키워드로 검색")
+                                        .foregroundColor(.cheekTextAlternative)
+                                )
+                                .submitLabel(.search)
+                                .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                                .foregroundColor(.cheekTextStrong)
+                                .id(1)
+                                .onChange(of: searchText) { _ in
+                                    proxy.scrollTo(1, anchor: .trailing)
+                                }
+                                .onSubmit {
+                                    onSubmitSearch()
+                                }
                             }
-                            .background(
-                                Capsule()
-                                    .foregroundColor(.cheekLineAlternative)
-                            )
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 8)
                         }
+                        .background(
+                            Capsule()
+                                .foregroundColor(.cheekLineAlternative)
+                        )
                     }
                 }
-                .padding(.top, 8)
-                .padding(.horizontal, 16)
-                
-                // 검색 전
-                if !viewModel.isSearched || selectedCategory == nil {
-                    if selectedCategory != nil {
-                        ScrollView {
-                            if !viewModel.recentSearches.isEmpty {
-                                VStack(spacing: 8) {
-                                    // 최근 검색
-                                    HStack {
-                                        Text("최근 검색")
-                                            .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                            .padding(.vertical, 12)
+            }
+            .padding(.top, 8)
+            .padding(.horizontal, 16)
+            
+            // 검색 전
+            if !viewModel.isSearched || selectedCategory == nil {
+                if selectedCategory != nil {
+                    ScrollView {
+                        if !viewModel.recentSearches.isEmpty {
+                            VStack(spacing: 8) {
+                                // 최근 검색
+                                HStack {
+                                    Text("최근 검색")
+                                        .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                        .padding(.vertical, 12)
+                                    
+                                    Spacer()
+                                    
+                                    Text("전체 삭제")
+                                        .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 14)
+                                        .onTapGesture {
+                                            viewModel.removeAllSearched()
+                                        }
+                                }
+                                .padding(.horizontal, 16)
+                                
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 8) {
+                                        ForEach(viewModel.recentSearches, id: \.self) { search in
+                                            ChipDefault(text: search)
+                                                .onTapGesture {
+                                                    searchText = search
+                                                }
+                                        }
                                         
-                                        Spacer()
-                                        
-                                        Text("전체 삭제")
-                                            .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                                            .padding(.horizontal, 10)
-                                            .padding(.vertical, 14)
-                                            .onTapGesture {
-                                                viewModel.removeAllSearched()
-                                            }
                                     }
                                     .padding(.horizontal, 16)
-                                    
-                                    ScrollView(.horizontal, showsIndicators: false) {
-                                        HStack(spacing: 8) {
-                                            ForEach(viewModel.recentSearches, id: \.self) { search in
-                                                ChipDefault(text: search)
-                                                    .onTapGesture {
-                                                        searchText = search
-                                                    }
-                                            }
-                                            
-                                        }
-                                        .padding(.horizontal, 16)
-                                    }
                                 }
-                                .padding(.top, 16)
                             }
-                            
-                            // 트렌딩 키워드
-                            HStack {
-                                Category(title: "트렌딩 키워드", description: "지난 7일간 가장 많이 발견된 키워드예요!")
-                                
-                                Spacer()
-                            }
-                            .padding(.top, 40)
-                            .padding(.leading, 16)
-                            
-                            WrappingHStack(viewModel.trendingKeywords, id: \.self, spacing: .constant(8), lineSpacing: 8) { keyword in
-                                ChipDefault(text: keyword)
-                                    .onTapGesture {
-                                        self.searchText = keyword
-                                    }
-                            }
-                            .padding(.top, 8)
-                            .padding(.horizontal, 16)
-                            
+                            .padding(.top, 16)
+                        }
+                        
+                        // 트렌딩 키워드
+                        HStack {
+                            Category(title: "트렌딩 키워드", description: "지난 7일간 가장 많이 발견된 키워드예요!")
                             
                             Spacer()
                         }
-                    } else {
-                        ScrollView {
-                            VStack(alignment: .leading, spacing: 24) {
-                                Text("카테고리를 선택해주세요")
-                                    .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                
-                                ForEach(CategoryModels().categories) { category in
-                                    SearchCategoryBlock(category: category)
-                                        .onTapGesture {
-                                            selectedCategory = category.id
-                                        }
+                        .padding(.top, 40)
+                        .padding(.leading, 16)
+                        
+                        WrappingHStack(viewModel.trendingKeywords, id: \.self, spacing: .constant(8), lineSpacing: 8) { keyword in
+                            ChipDefault(text: keyword)
+                                .onTapGesture {
+                                    self.searchText = keyword
                                 }
+                        }
+                        .padding(.top, 8)
+                        .padding(.horizontal, 16)
+                        
+                        
+                        Spacer()
+                    }
+                } else {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 24) {
+                            Text("카테고리를 선택해주세요")
+                                .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                            
+                            ForEach(CategoryModels().categories) { category in
+                                SearchCategoryBlock(category: category)
+                                    .onTapGesture {
+                                        selectedCategory = category.id
+                                    }
                             }
                         }
-                        .padding(.top, 24)
-                        .padding(.horizontal, 16)
                     }
+                    .padding(.top, 24)
+                    .padding(.horizontal, 16)
                 }
-                // 검색 후
-                else {
-                    VStack(spacing: 0) {
-                        TabsText(tabs: ["전체", "프로필", "스토리", "질문"], selectedTab: $selectedTab)
-                        
-                        TabView(selection: $selectedTab) {
-                            SearchResultAllView(
-                                authViewModel: authViewModel,
-                                searchViewModel: viewModel,
-                                selectedTab: $selectedTab,
-                                isStoryOpen: $isStoryOpen,
-                                selectedStories: $selectedStories)
-                            .tag(0)
-                            
-                            SearchResultProfileView(
-                                authViewModel: authViewModel,
-                                searchViewModel: viewModel)
-                            .tag(1)
-                            
-                            SearchResultStoryView(searchViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
-                                .tag(2)
-                            
-                            SearchResultQuestionView(authViewModel: authViewModel, searchViewModel: viewModel)
-                                .tag(3)
-                        }
-                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    }
-                    .padding(.top, 16)
+            }
+            // 검색 후
+            else {
+                VStack(spacing: 0) {
+                    TabsText(tabs: ["전체", "프로필", "스토리", "질문"], selectedTab: $selectedTab)
                     
+                    TabView(selection: $selectedTab) {
+                        SearchResultAllView(
+                            authViewModel: authViewModel,
+                            searchViewModel: viewModel,
+                            selectedTab: $selectedTab,
+                            isStoryOpen: $isStoryOpen,
+                            selectedStories: $selectedStories)
+                        .tag(0)
+                        
+                        SearchResultProfileView(
+                            authViewModel: authViewModel,
+                            searchViewModel: viewModel)
+                        .tag(1)
+                        
+                        SearchResultStoryView(searchViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                            .tag(2)
+                        
+                        SearchResultQuestionView(authViewModel: authViewModel, searchViewModel: viewModel)
+                            .tag(3)
+                    }
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
+                .padding(.top, 16)
+                
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.cheekBackgroundTeritory)
-            .onTapGesture {
-                Utils().hideKeyboard()
-            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.cheekBackgroundTeritory)
+        .onTapGesture {
+            Utils().hideKeyboard()
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
+            UINavigationBar.setAnimationsEnabled(false)
+            
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
             
             if catetory != nil {
@@ -205,6 +205,9 @@ struct SearchView: View {
             
             viewModel.getRecentSearched()
             viewModel.getTrendingKeywords()
+        }
+        .onDisappear {
+            UINavigationBar.setAnimationsEnabled(true)
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {

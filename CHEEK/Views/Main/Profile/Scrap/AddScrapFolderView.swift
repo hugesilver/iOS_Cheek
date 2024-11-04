@@ -20,51 +20,49 @@ struct AddScrapFolderView: View {
     @State var text: String = ""
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                ScrollView {
-                    VStack(spacing: 16) {
-                        Text("이름 설정")
-                            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
-                            .padding(.top, 36)
+        ZStack {
+            ScrollView {
+                VStack(spacing: 16) {
+                    Text("이름 설정")
+                        .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                        .padding(.top, 36)
+                    
+                    HStack(spacing: 12) {
+                        ProfileS(url: storyModel.storyPicture)
                         
-                        HStack(spacing: 12) {
-                            ProfileS(url: storyModel.storyPicture)
-                            
-                            TextField(
-                                "",
-                                text: $text,
-                                prompt:
-                                    Text("새로운 폴더")
-                                    .foregroundColor(.cheekTextAlternative)
-                            )
-                            .focused($isFocused)
-                            .submitLabel(.send)
-                            .tint(.cheekMainNormal)
-                            .body2(font: "SUIT", color: .cheekTextNormal, bold: true)
-                            .onChange(of: isFocused) { _ in
-                                isKeyboardUp = isFocused
-                            }
-                            .onSubmit {
-                                addCollection()
-                            }
+                        TextField(
+                            "",
+                            text: $text,
+                            prompt:
+                                Text("새로운 폴더")
+                                .foregroundColor(.cheekTextAlternative)
+                        )
+                        .focused($isFocused)
+                        .submitLabel(.send)
+                        .tint(.cheekMainNormal)
+                        .body2(font: "SUIT", color: .cheekTextNormal, bold: true)
+                        .onChange(of: isFocused) { _ in
+                            isKeyboardUp = isFocused
                         }
-                        .padding(.horizontal, 16)
-                        
-                        Spacer()
+                        .onSubmit {
+                            addCollection()
+                        }
                     }
-                    .padding(.bottom, 32)
+                    .padding(.horizontal, 16)
+                    
+                    Spacer()
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.cheekBackgroundTeritory)
-                
-                if scrapViewModel.isLoading {
-                    LoadingView()
-                }
+                .padding(.bottom, 32)
             }
-            .onTapGesture {
-                Utils().hideKeyboard()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.cheekBackgroundTeritory)
+            
+            if scrapViewModel.isLoading {
+                LoadingView()
             }
+        }
+        .onTapGesture {
+            Utils().hideKeyboard()
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)

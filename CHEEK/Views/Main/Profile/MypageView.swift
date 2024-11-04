@@ -52,7 +52,7 @@ struct MypageView: View {
                             .padding(8)
                     }
                     
-                    NavigationLink(destination: AccountPreferencesView(authViewModel: authViewModel)) {
+                    NavigationLink(destination: AccountPreferencesView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
                         Image("IconPreference")
                             .foregroundColor(.cheekTextNormal)
                             .frame(width: 32, height: 32)
@@ -70,7 +70,7 @@ struct MypageView: View {
                     
                     VStack(spacing: 0) {
                         HStack(spacing: 24) {
-                            ProfileXL(url: profileViewModel.profile?.profilePicture ?? "")
+                            ProfileXL(url: profileViewModel.profile?.profilePicture)
                             
                             GeometryReader { geometry in
                                 HStack(spacing: 0) {

@@ -52,14 +52,19 @@ struct SetHighlightView: View {
                 
                 VStack(spacing: 24) {
                     if highlightViewModel.originalThumbnail != nil {
-                        AsyncImage(url: URL(string: highlightViewModel.selectedStories.last?.storyPicture ?? "")) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } placeholder: {
-                            Image("ImageDefaultProfile")
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
+                        Group {
+                            if highlightViewModel.selectedStories.last?.storyPicture != nil {
+                                AsyncImage(url: URL(string: highlightViewModel.selectedStories.last!.storyPicture)) { image in
+                                    image
+                                        .resizable()
+                                } placeholder: {
+                                    Image("ImageDefaultProfile")
+                                        .resizable()
+                                }
+                            } else {
+                                Image("ImageDefaultProfile")
+                                    .resizable()
+                            }
                         }
                         .frame(width: 128, height: 128)
                         .clipShape(Circle())
@@ -71,14 +76,19 @@ struct SetHighlightView: View {
                                 .frame(width: 128, height: 128)
                                 .clipShape(Circle())
                         } else {
-                            AsyncImage(url: URL(string: highlightViewModel.selectedStories.first?.storyPicture ?? "")) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                            } placeholder: {
-                                Image("ImageDefaultProfile")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
+                            Group {
+                                if highlightViewModel.selectedStories.first?.storyPicture != nil {
+                                    AsyncImage(url: URL(string: highlightViewModel.selectedStories.first!.storyPicture)) { image in
+                                        image
+                                            .resizable()
+                                    } placeholder: {
+                                        Image("ImageDefaultProfile")
+                                            .resizable()
+                                    }
+                                } else {
+                                    Image("ImageDefaultProfile")
+                                        .resizable()
+                                }
                             }
                             .frame(width: 128, height: 128)
                             .clipShape(Circle())
@@ -96,7 +106,14 @@ struct SetHighlightView: View {
                 
                 // 닉네임
                 VStack {
-                    TextFieldForm(name: "이름", placeholder: "도움말 텍스트", text: $highlightViewModel.subject, information: $infoSubjectForm, status: $statusSubject, isFocused: $isSubjectFocused)
+                    TextFieldForm(
+                        name: "이름",
+                        placeholder: "도움말 텍스트",
+                        isReqired: true,
+                        text: $highlightViewModel.subject,
+                        information: $infoSubjectForm,
+                        status: $statusSubject,
+                        isFocused: $isSubjectFocused)
                         .onChange(of: highlightViewModel.subject) { text in
                             if highlightViewModel.subject.count > 8 {
                                 highlightViewModel.subject = String(text.prefix(12))

@@ -57,6 +57,7 @@ struct CertificateEmailView: View {
                         name: "이메일",
                         placeholder: "예 > cheek@cheek.com",
                         keyboardType: .emailAddress,
+                        isReqired: false,
                         text: $email,
                         information: .constant(""),
                         status: $statusEmail,
@@ -93,6 +94,7 @@ struct CertificateEmailView: View {
                                 name: "",
                                 placeholder: "인증번호 입력(\(String(format: "%02d:%02d", viewModel.codeExpireTime / 60, viewModel.codeExpireTime % 60)))",
                                 keyboardType: .numberPad,
+                                isReqired: false,
                                 text: $verificationCode,
                                 information: .constant(""),
                                 status: $statusVerificationCode,
@@ -142,6 +144,7 @@ struct CertificateEmailView: View {
             .padding(.horizontal, 16)
             .padding(.bottom,
                      isEmailFocused || isVerificationCodeFocused ? 24 : 31)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
             
             if viewModel.showPopup {

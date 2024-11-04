@@ -19,7 +19,7 @@ struct RankingCard: View {
                 HStack(spacing: 8) {
                     Ranking(rank: rank)
                     
-                    ProfileS(url: data.profilePicture ?? "")
+                    ProfileS(url: data.profilePicture)
                     
                     VStack(alignment: .leading) {
                         Text(data.nickname)
@@ -65,7 +65,7 @@ struct UserFollowCard: View {
             VStack(alignment: .leading, spacing: 6) {
                 NavigationLink(destination: ProfileView(targetMemberId: data.memberId, authViewModel: authViewModel)) {
                     HStack(spacing: 8) {
-                        ProfileS(url: data.profilePicture ?? "")
+                        ProfileS(url: data.profilePicture)
                         
                         VStack(alignment: .leading, spacing: 2) {
                             Text(data.nickname)
@@ -120,7 +120,7 @@ struct UserCardLarge: View {
     var body: some View {
         NavigationLink(destination: ProfileView(targetMemberId: memberId, authViewModel: authViewModel)) {
             HStack(spacing: 8) {
-                ProfileM(url: profilePicture ?? "")
+                ProfileM(url: profilePicture)
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)

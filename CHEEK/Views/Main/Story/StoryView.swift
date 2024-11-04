@@ -21,174 +21,170 @@ struct StoryView: View {
     @State private var isScrapKeyboardUp: Bool = false
     
     var body: some View {
-        NavigationStack {
-            GeometryReader { reader in
-                VStack(spacing: 0) {
-                    // 상단
-                    Color.cheekTextNormal
-                        .frame(height: reader.safeAreaInsets.top, alignment: .top)
-                    
-                    ZStack(alignment: .top) {
-                        if !viewModel.stories.isEmpty && viewModel.isAllLoaded {
-                            AsyncImage(url: URL(string: viewModel.stories[viewModel.currentIndex].storyPicture)) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .background(.cheekMainNormal)
-                                    .clipped()
-                            } placeholder: {
-                                Color.clear
+        GeometryReader { reader in
+            VStack(spacing: 0) {
+                // 상단
+                Color.cheekTextNormal
+                    .frame(height: reader.safeAreaInsets.top, alignment: .top)
+                
+                ZStack(alignment: .top) {
+                    if !viewModel.stories.isEmpty && viewModel.isAllLoaded {
+                        AsyncImage(url: URL(string: viewModel.stories[viewModel.currentIndex].storyPicture)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .background(.cheekMainNormal)
+                                .clipped()
+                        } placeholder: {
+                            Color.clear
+                        }
+                        .frame(
+                            width: UIScreen.main.bounds.width,
+                            height: (UIScreen.main.bounds.width / 9) * 16
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        
+                        HStack(spacing: 4) {
+                            ForEach(viewModel.stories.indices, id: \.self) { index in
+                                ProgressView(value: index == viewModel.currentIndex ? min(max(viewModel.timerProgress, 0.0), 1.0) : (index < viewModel.currentIndex ? 1.0 : 0.0))
+                                    .progressViewStyle(LinearProgressViewStyle(tint: .cheekBackgroundTeritory))
+                                    .background(.cheekBackgroundTeritory.opacity(0.4))
+                                    .foregroundColor(.cheekBackgroundTeritory)
+                                    .frame(height: 2)
+                                    .clipShape(Capsule())
+                                    .animation(viewModel.timerProgress > 0 ? .linear : nil, value: viewModel.timerProgress)
                             }
-                            .frame(
-                                width: UIScreen.main.bounds.width,
-                                height: (UIScreen.main.bounds.width / 9) * 16
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            
-                            HStack(spacing: 4) {
-                                ForEach(viewModel.stories.indices, id: \.self) { index in
-                                    ProgressView(value: index == viewModel.currentIndex ? min(max(viewModel.timerProgress, 0.0), 1.0) : (index < viewModel.currentIndex ? 1.0 : 0.0))
-                                        .progressViewStyle(LinearProgressViewStyle(tint: .cheekBackgroundTeritory))
-                                        .background(.cheekBackgroundTeritory.opacity(0.4))
-                                        .foregroundColor(.cheekBackgroundTeritory)
-                                        .frame(height: 2)
-                                        .clipShape(Capsule())
-                                        .animation(viewModel.timerProgress > 0 ? .linear : nil, value: viewModel.timerProgress)
+                        }
+                        .frame(height: 2)
+                        .padding(16)
+                        .onChange(of: viewModel.isTimeOver) { isTimeOver in
+                            if isTimeOver {
+                                goNext()
+                            }
+                        }
+                        
+                        HStack {
+                            Color.clear
+                                .frame(maxWidth: UIScreen.main.bounds.width * 0.25, maxHeight: .infinity)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    goPrev()
                                 }
-                            }
-                            .frame(height: 2)
-                            .padding(16)
-                            .onChange(of: viewModel.isTimeOver) { isTimeOver in
-                                if isTimeOver {
+                            
+                            Spacer()
+                            
+                            Color.clear
+                                .frame(maxWidth: UIScreen.main.bounds.width * 0.25, maxHeight: .infinity)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
                                     goNext()
                                 }
-                            }
-                            
-                            HStack {
-                                Color.clear
-                                    .frame(maxWidth: UIScreen.main.bounds.width * 0.25, maxHeight: .infinity)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        goPrev()
-                                    }
-                                
-                                Spacer()
-                                
-                                Color.clear
-                                    .frame(maxWidth: UIScreen.main.bounds.width * 0.25, maxHeight: .infinity)
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        goNext()
-                                    }
-                            }
-                            
-                            HStack(spacing: 8) {
-                                ProfileXS(url: viewModel.stories[viewModel.currentIndex].memberDto.profilePicture ?? "")
-                                
-                                Text(viewModel.stories[viewModel.currentIndex].memberDto.nickname)
-                                    .body2(font: "SUIT", color: .cheekWhite, bold: true)
-                                
-                                Spacer()
-                                
-                                // 닫기
-                                Image("IconX")
-                                    .resizable()
-                                    .frame(width: 32, height: 32)
-                                    .foregroundColor(.cheekWhite)
-                                    .onTapGesture {
-                                        dismiss()
-                                    }
-                                    
-                            }
-                            .padding(.top, 27)
-                            .padding(.horizontal, 16)
-                        } else {
-                            LoadingView()
                         }
-                    }
-                    
-                    
-                    if !viewModel.stories.isEmpty && viewModel.isAllLoaded {
+                        
                         HStack(spacing: 8) {
-                            HStack(spacing: 4) {
-                                Image("IconHeart")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundColor(viewModel.stories[viewModel.currentIndex].upvoted ? .cheekWhite : .cheekLineNormal)
-                                
-                                Text("좋아요")
-                                    .body1(font: "SUIT", color: viewModel.stories[viewModel.currentIndex].upvoted ? .cheekWhite : .cheekLineNormal, bold: true)
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .foregroundColor(viewModel.stories[viewModel.currentIndex].upvoted ? .cheekStatusAlert : .cheekGrey200)
-                            )
-                            .onTapGesture {
-                                onTapLike()
-                            }
+                            ProfileXS(url: viewModel.stories[viewModel.currentIndex].memberDto.profilePicture)
                             
-                            HStack(spacing: 4) {
-                                Image("IconCollection")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundColor(.cheekLineNormal)
-                                
-                                Text("스크랩")
-                                    .body1(font: "SUIT", color: .cheekTextAssitive, bold: true)
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .foregroundColor(.cheekGrey200)
-                            )
-                            .onChange(of: isScrapOpen) { _ in
-                                if isScrapOpen {
-                                    viewModel.stopTimer()
-                                } else {
-                                    viewModel.timerStory()
+                            Text(viewModel.stories[viewModel.currentIndex].memberDto.nickname)
+                                .body2(font: "SUIT", color: .cheekWhite, bold: true)
+                            
+                            Spacer()
+                            
+                            // 닫기
+                            Image("IconX")
+                                .resizable()
+                                .frame(width: 32, height: 32)
+                                .foregroundColor(.cheekWhite)
+                                .onTapGesture {
+                                    dismiss()
                                 }
-                            }
-                            .onTapGesture {
-                                isScrapOpen = true
-                            }
+                            
                         }
-                        .padding(.top, 16)
+                        .padding(.top, 27)
                         .padding(.horizontal, 16)
+                    } else {
+                        LoadingView()
                     }
                 }
-                .background(.cheekTextNormal)
-                .ignoresSafeArea(edges: .top)
-                .offset(y: offset.height)
-                .gesture(
-                    DragGesture()
-                        .onChanged { gesture in
-                            if gesture.translation.height > 0 {
-                                offset = gesture.translation
-                            }
+                
+                
+                if !viewModel.stories.isEmpty && viewModel.isAllLoaded {
+                    HStack(spacing: 8) {
+                        HStack(spacing: 4) {
+                            Image("IconHeart")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundColor(viewModel.stories[viewModel.currentIndex].upvoted ? .cheekWhite : .cheekLineNormal)
+                            
+                            Text("좋아요")
+                                .body1(font: "SUIT", color: viewModel.stories[viewModel.currentIndex].upvoted ? .cheekWhite : .cheekLineNormal, bold: true)
                         }
-                        .onEnded { gesture in
-                            if gesture.translation.height > UIScreen.main.bounds.height / 2 {
-                                dismiss()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .foregroundColor(viewModel.stories[viewModel.currentIndex].upvoted ? .cheekStatusAlert : .cheekGrey200)
+                        )
+                        .onTapGesture {
+                            onTapLike()
+                        }
+                        
+                        HStack(spacing: 4) {
+                            Image("IconCollection")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundColor(.cheekLineNormal)
+                            
+                            Text("스크랩")
+                                .body1(font: "SUIT", color: .cheekTextAssitive, bold: true)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .foregroundColor(.cheekGrey200)
+                        )
+                        .onChange(of: isScrapOpen) { _ in
+                            if isScrapOpen {
+                                viewModel.stopTimer()
                             } else {
-                                offset = .zero
+                                viewModel.timerStory()
                             }
                         }
-                )
-                .animation(.spring(), value: offset)
+                        .onTapGesture {
+                            isScrapOpen = true
+                        }
+                    }
+                    .padding(.top, 16)
+                    .padding(.horizontal, 16)
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.cheekTextNormal)
+            .ignoresSafeArea(edges: .top)
+            .offset(y: offset.height)
+            .gesture(
+                DragGesture()
+                    .onChanged { gesture in
+                        if gesture.translation.height > 0 {
+                            offset = gesture.translation
+                        }
+                    }
+                    .onEnded { gesture in
+                        if gesture.translation.height > UIScreen.main.bounds.height / 2 {
+                            dismiss()
+                        } else {
+                            offset = .zero
+                        }
+                    }
+            )
+            .animation(.spring(), value: offset)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
             viewModel.getStories(storyIds: storyIds)
-            UINavigationBar.setAnimationsEnabled(true)
         }
         .onDisappear {
             viewModel.stopTimer()
-            UINavigationBar.setAnimationsEnabled(false)
         }
         .sheet(isPresented: $isScrapOpen) {
             SelectScrappedFolderView(authViewModel: authViewModel, storyModel: viewModel.stories[viewModel.currentIndex], isScrapOpen: $isScrapOpen, isKeyboardUp: $isScrapKeyboardUp)

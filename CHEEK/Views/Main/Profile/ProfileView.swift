@@ -30,172 +30,156 @@ struct ProfileView: View {
     @State private var tabViewHeight: CGFloat = 1
     
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                HStack {
-                    Image("IconChevronLeft")
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 40, height: 40)
-                        .onTapGesture {
-                            dismiss()
-                        }
-                        .padding(8)
-                    
-                    Spacer()
-                }
-                .padding(.top, 8)
-                .padding(.horizontal, 16)
+        VStack(spacing: 0) {
+            HStack {
+                Image("IconChevronLeft")
+                    .foregroundColor(.cheekTextNormal)
+                    .frame(width: 40, height: 40)
+                    .onTapGesture {
+                        dismiss()
+                    }
+                    .padding(8)
                 
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            HStack(spacing: 24) {
-                                ProfileXL(url: profileViewModel.profile?.profilePicture ?? "")
-                                
-                                GeometryReader { geometry in
-                                    HStack(spacing: 0) {
-                                        if profileViewModel.isMentor {
-                                            VStack(spacing: 2) {
-                                                Text("\(profileViewModel.stories.count)")
-                                                    .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                                
-                                                Text("스토리")
-                                                    .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                                            }
-                                            .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
+                Spacer()
+            }
+            .padding(.top, 8)
+            .padding(.horizontal, 16)
+            
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(spacing: 0) {
+                        HStack(spacing: 24) {
+                            ProfileXL(url: profileViewModel.profile?.profilePicture)
+                            
+                            GeometryReader { geometry in
+                                HStack(spacing: 0) {
+                                    if profileViewModel.isMentor {
+                                        VStack(spacing: 2) {
+                                            Text("\(profileViewModel.stories.count)")
+                                                .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
                                             
-                                            Divider()
-                                                .foregroundColor(Color(red: 0.85, green: 0.85, blue: 0.85))
-                                                .frame(width: 1)
-                                                .padding(.horizontal, 8)
+                                            Text("스토리")
+                                                .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
                                         }
-                                        
-                                        NavigationLink(destination:
-                                                        FollowView(authViewModel: authViewModel, targetMemberId: targetMemberId, selectedTab: 0)) {
-                                            VStack(spacing: 2) {
-                                                Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followerCnt ?? 0))
-                                                    .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                                
-                                                Text("팔로워")
-                                                    .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                                            }
-                                            .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
-                                        }
+                                        .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
                                         
                                         Divider()
                                             .foregroundColor(Color(red: 0.85, green: 0.85, blue: 0.85))
                                             .frame(width: 1)
                                             .padding(.horizontal, 8)
-                                        
-                                        NavigationLink(destination:
-                                                        FollowView(authViewModel: authViewModel, targetMemberId: targetMemberId, selectedTab: 1)) {
-                                            VStack(spacing: 2) {
-                                                Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followingCnt ?? 0))
-                                                    .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                                
-                                                Text("팔로잉")
-                                                    .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                                            }
-                                            .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
-                                        }
-                                        
-                                        Spacer()
                                     }
-                                }
-                            }
-                            .padding(.horizontal, 16)
-                            
-                            HStack(spacing: 8) {
-                                Text(profileViewModel.profile?.nickname ?? "불러오는 중...")
-                                    .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
-                                
-                                if profileViewModel.isMentor {
-                                    Image("IconMentor")
-                                        .resizable()
-                                        .frame(width: 20, height: 20)
-                                }
-                                
-                                Spacer()
-                            }
-                            .padding(.top, 16)
-                            .padding(.horizontal, 16)
-                            
-                            Text(profileViewModel.profile?.information ?? "불러오는 중...")
-                                .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.top, 4)
-                                .padding(.horizontal, 16)
-                            
-                            if profileViewModel.profile?.description != nil && !profileViewModel.profile!.description!.isEmpty {
-                                Text(profileViewModel.profile!.description!)
-                                    .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.top, 8)
-                                    .padding(.horizontal, 16)
-                            }
-                            
-                            if myMemberId != nil && profileViewModel.profile != nil && myMemberId != targetMemberId {
-                                if profileViewModel.profile!.following {
-                                    ButtonUnfollow(text: "언팔로우")
-                                        .padding(.top, 24)
-                                        .padding(.horizontal, 16)
-                                        .onTapGesture {
-                                            onTapUnfollow()
-                                        }
                                     
-                                } else {
-                                    ButtonFollow(text: "팔로우")
-                                        .padding(.top, 24)
-                                        .padding(.horizontal, 16)
-                                        .onTapGesture {
-                                            onTapFollow()
+                                    NavigationLink(destination:
+                                                    FollowView(authViewModel: authViewModel, targetMemberId: targetMemberId, selectedTab: 0)) {
+                                        VStack(spacing: 2) {
+                                            Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followerCnt ?? 0))
+                                                .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                            
+                                            Text("팔로워")
+                                                .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
                                         }
+                                        .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
+                                    }
+                                    
+                                    Divider()
+                                        .foregroundColor(Color(red: 0.85, green: 0.85, blue: 0.85))
+                                        .frame(width: 1)
+                                        .padding(.horizontal, 8)
+                                    
+                                    NavigationLink(destination:
+                                                    FollowView(authViewModel: authViewModel, targetMemberId: targetMemberId, selectedTab: 1)) {
+                                        VStack(spacing: 2) {
+                                            Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followingCnt ?? 0))
+                                                .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                                            
+                                            Text("팔로잉")
+                                                .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                        }
+                                        .frame(maxWidth: max(geometry.size.width / 3 - 8 - 1, 0))
+                                    }
+                                    
+                                    Spacer()
                                 }
                             }
+                        }
+                        .padding(.horizontal, 16)
+                        
+                        HStack(spacing: 8) {
+                            Text(profileViewModel.profile?.nickname ?? "불러오는 중...")
+                                .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
                             
-                            if profileViewModel.isMentor && !profileViewModel.highlights.isEmpty {
-                                ScrollView(.horizontal) {
-                                    HStack(spacing: 16) {
-                                        ForEach(profileViewModel.highlights) { highlight in
-                                            VStack(spacing: 12) {
-                                                ProfileL(url: highlight.thumbnailPicture)
-                                                
-                                                Text(highlight.subject)
-                                                    .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
-                                            }
-                                            .frame(maxWidth: 72)
-                                            .onTapGesture {
-                                                onTapHighlight(highlight: highlight)
-                                            }
+                            if profileViewModel.isMentor {
+                                Image("IconMentor")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding(.top, 16)
+                        .padding(.horizontal, 16)
+                        
+                        Text(profileViewModel.profile?.information ?? "불러오는 중...")
+                            .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.top, 4)
+                            .padding(.horizontal, 16)
+                        
+                        if profileViewModel.profile?.description != nil && !profileViewModel.profile!.description!.isEmpty {
+                            Text(profileViewModel.profile!.description!)
+                                .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.top, 8)
+                                .padding(.horizontal, 16)
+                        }
+                        
+                        if myMemberId != nil && profileViewModel.profile != nil && myMemberId != targetMemberId {
+                            if profileViewModel.profile!.following {
+                                ButtonUnfollow(text: "언팔로우")
+                                    .padding(.top, 24)
+                                    .padding(.horizontal, 16)
+                                    .onTapGesture {
+                                        onTapUnfollow()
+                                    }
+                                
+                            } else {
+                                ButtonFollow(text: "팔로우")
+                                    .padding(.top, 24)
+                                    .padding(.horizontal, 16)
+                                    .onTapGesture {
+                                        onTapFollow()
+                                    }
+                            }
+                        }
+                        
+                        if profileViewModel.isMentor && !profileViewModel.highlights.isEmpty {
+                            ScrollView(.horizontal) {
+                                HStack(spacing: 16) {
+                                    ForEach(profileViewModel.highlights) { highlight in
+                                        VStack(spacing: 12) {
+                                            ProfileL(url: highlight.thumbnailPicture)
+                                            
+                                            Text(highlight.subject)
+                                                .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                        }
+                                        .frame(maxWidth: 72)
+                                        .onTapGesture {
+                                            onTapHighlight(highlight: highlight)
                                         }
                                     }
-                                    .padding(.horizontal, 16)
                                 }
-                                .padding(.top, 24)
-                            }
-                            
-                            TabsIcon(tabs: menus, selectedTab: $selectedTab)
-                                .padding(.top, 24)
                                 .padding(.horizontal, 16)
-                            
-                            TabView(selection: $selectedTab) {
-                                if profileViewModel.isMentor {
-                                    ProfileStoriesView(isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, stories: profileViewModel.stories)
-                                        .background(
-                                            GeometryReader { geometry in
-                                                Color.clear
-                                                    .preference(key: HeightPreferenceKey.self, value: geometry.size.height)
-                                            }
-                                        )
-                                        .onPreferenceChange(HeightPreferenceKey.self) { value in
-                                            tabViewHeight = value
-                                        }
-                                        .tag(0)
-                                }
-                                
-                                ProfileQuestionsView(
-                                    authViewModel: authViewModel,
-                                    questions: profileViewModel.questions)
+                            }
+                            .padding(.top, 24)
+                        }
+                        
+                        TabsIcon(tabs: menus, selectedTab: $selectedTab)
+                            .padding(.top, 24)
+                            .padding(.horizontal, 16)
+                        
+                        TabView(selection: $selectedTab) {
+                            if profileViewModel.isMentor {
+                                ProfileStoriesView(isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, stories: profileViewModel.stories)
                                     .background(
                                         GeometryReader { geometry in
                                             Color.clear
@@ -205,29 +189,43 @@ struct ProfileView: View {
                                     .onPreferenceChange(HeightPreferenceKey.self) { value in
                                         tabViewHeight = value
                                     }
-                                    .tag(profileViewModel.isMentor ? 1 : 0)
+                                    .tag(0)
                             }
-                            .frame(height: tabViewHeight)
-                            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                            
+                            ProfileQuestionsView(
+                                authViewModel: authViewModel,
+                                questions: profileViewModel.questions)
+                            .background(
+                                GeometryReader { geometry in
+                                    Color.clear
+                                        .preference(key: HeightPreferenceKey.self, value: geometry.size.height)
+                                }
+                            )
+                            .onPreferenceChange(HeightPreferenceKey.self) { value in
+                                tabViewHeight = value
+                            }
+                            .tag(profileViewModel.isMentor ? 1 : 0)
                         }
-                        .padding(.top, 24)
+                        .frame(height: tabViewHeight)
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.cheekBackgroundTeritory)
-                    .onChange(of: profileViewModel.questions) { _ in
-                        proxy.scrollTo(0, anchor: .top)
-                    }
-                    .onChange(of: profileViewModel.stories) { _ in
-                        proxy.scrollTo(0, anchor: .top)
-                    }
-                    .onAppear {
-                        proxy.scrollTo(0, anchor: .top)
-                    }
+                    .padding(.top, 24)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.cheekBackgroundTeritory)
+                .onChange(of: profileViewModel.questions) { _ in
+                    proxy.scrollTo(0, anchor: .top)
+                }
+                .onChange(of: profileViewModel.stories) { _ in
+                    proxy.scrollTo(0, anchor: .top)
+                }
+                .onAppear {
+                    proxy.scrollTo(0, anchor: .top)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.cheekBackgroundTeritory)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {

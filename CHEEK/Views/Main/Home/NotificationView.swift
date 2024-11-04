@@ -156,7 +156,7 @@ struct NotificationBlock: View {
                     .foregroundColor(isRead ? .clear : .cheekStatusCaution)
                 
                 ZStack(alignment: .bottomTrailing) {
-                    ProfileM(url: profilePicture ?? "")
+                    ProfileM(url: profilePicture)
                     
                     Image("IconLike")
                         .frame(width: 20, height: 20)

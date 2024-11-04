@@ -7,14 +7,14 @@
 
 import SwiftUI
 
+fileprivate let vGridSpacing: CGFloat = 4
+
 struct ScrappedStoriesView: View {
     @Environment(\.dismiss) private var dismiss
     
     @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var scrapViewModel: ScrapViewModel
     var folderModel: ScrapFolderModel
-    
-    var storyColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
     
     @State private var isSelectable: Bool = false
     
@@ -86,7 +86,7 @@ struct ScrappedStoriesView: View {
                     
                     // 컬렉션 모음
                     ScrollView {
-                        LazyVGrid(columns: storyColumns, spacing: 4) {
+                        LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 4), count: 3), spacing: 4) {
                             ForEach(scrapViewModel.collections) { collection in
                                 ZStack(alignment: .leading) {
                                     AsyncImage(url: URL(string: collection.storyPicture)) { image in
@@ -193,8 +193,9 @@ struct ScrappedStoriesView: View {
                     .padding(.top, 8)
                     .padding(.horizontal, 16)
                     
+                    // 컬렉션 모음
                     ScrollView {
-                        LazyVGrid(columns: storyColumns, spacing: 4) {
+                        LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 4), count: 3), spacing: 4) {
                             ForEach(scrapViewModel.collections) { collection in
                                 ZStack(alignment: .leading) {
                                     AsyncImage(url: URL(string: collection.storyPicture)) { image in
