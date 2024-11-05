@@ -10,9 +10,7 @@ import SwiftUI
 struct RegisterDomainView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
-    @Binding var navPath: NavigationPath
-    var isMentor: Bool
+    var isDone: () -> Void
     
     @StateObject private var viewModel = RegisterDomainViewModel()
     
@@ -51,7 +49,7 @@ struct RegisterDomainView: View {
                     name: "이메일",
                     placeholder: "예 > cheek@cheek.com",
                     keyboardType: .emailAddress,
-                    isReqired: true,
+                    isReqired: false,
                     text: $email,
                     information: .constant(""),
                     status: $statusEmail,
@@ -91,15 +89,17 @@ struct RegisterDomainView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-        .navigationDestination(isPresented: $viewModel.isDone, destination: {
-            SetProfileView(authViewModel: authViewModel, navPath: $navPath, isMentor: isMentor)
-        })
         .alert(isPresented: $viewModel.showAlert) {
             Alert(title: Text("오류"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")))
         }
         .onDisappear {
             // 타이머 종료
             viewModel.cancelTimer()
+        }
+        .onChange(of: viewModel.isDone) { _ in
+            if viewModel.isDone {
+                isDone()
+            }
         }
     }
     
@@ -140,5 +140,5 @@ struct EmailregisterDoneView: View {
 }
 
 #Preview {
-    RegisterDomainView(authViewModel: AuthenticationViewModel(), navPath: .constant(NavigationPath()), isMentor: true)
+    RegisterDomainView(isDone: {})
 }

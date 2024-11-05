@@ -15,10 +15,10 @@ struct WelcomeView: View {
     
     @StateObject private var kakaoAuthViewModel: KakaoAuthViewModel = KakaoAuthViewModel()
     
+    @State var isMentor: Bool?
+    
     @State private var isLoading: Bool = false
     @State private var showAlert: Bool = false
-    
-    @State private var isDone: Bool = false
     
     var body: some View {
         NavigationStack(path: $navPath) {
@@ -86,9 +86,20 @@ struct WelcomeView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
-            .navigationDestination(isPresented: $isDone, destination: {
-                MentorMenteeView(authViewModel: authViewModel, navPath: $navPath)
-            })
+            .navigationDestination(for: String.self) { path in
+                switch path {
+                case "MentorMenteeView":
+                    MentorMenteeView(navPath: $navPath, isMentor: $isMentor)
+                    
+                case "VerifyMentorView":
+                    VerifyMentorView(navPath: $navPath)
+                
+                case "SetProfileView":
+                    SetProfileView(authViewModel: authViewModel, navPath: $navPath, isMentor: isMentor!)
+                    
+                default: EmptyView()
+                }
+            }
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
@@ -118,7 +129,7 @@ struct WelcomeView: View {
                             authViewModel.isRefreshTokenValid = true
                         }
                         
-                        isDone = true
+                        navPath.append("MentorMenteeView")
                         isLoading = false
                     } else {
                         showAlert = true

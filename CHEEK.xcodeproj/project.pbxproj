@@ -87,6 +87,8 @@
 		E2BF98382C921E1B00213043 /* QuestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BF98372C921E1B00213043 /* QuestionModel.swift */; };
 		E2BF983A2C9223E400213043 /* StoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BF98392C9223E400213043 /* StoryModel.swift */; };
 		E2C562072CD6988100276F44 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C562062CD6988100276F44 /* EditProfileView.swift */; };
+		E2C5620A2CD9491D00276F44 /* RequestMentorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C562092CD9491D00276F44 /* RequestMentorView.swift */; };
+		E2C5620C2CD9CF5200276F44 /* VerifyMentorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C5620B2CD9CF5200276F44 /* VerifyMentorView.swift */; };
 		E2D5577F2CA575A3005285BE /* RegisterDomainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5577E2CA575A3005285BE /* RegisterDomainViewModel.swift */; };
 		E2D557812CAB0AC5005285BE /* CombinePublishers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D557802CAB0AC5005285BE /* CombinePublishers.swift */; };
 		E2D8BE092CC0D9960064E344 /* SetHighlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE082CC0D9960064E344 /* SetHighlightView.swift */; };
@@ -207,6 +209,8 @@
 		E2BF98372C921E1B00213043 /* QuestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionModel.swift; sourceTree = "<group>"; };
 		E2BF98392C9223E400213043 /* StoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryModel.swift; sourceTree = "<group>"; };
 		E2C562062CD6988100276F44 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
+		E2C562092CD9491D00276F44 /* RequestMentorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestMentorView.swift; sourceTree = "<group>"; };
+		E2C5620B2CD9CF5200276F44 /* VerifyMentorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyMentorView.swift; sourceTree = "<group>"; };
 		E2D5577E2CA575A3005285BE /* RegisterDomainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDomainViewModel.swift; sourceTree = "<group>"; };
 		E2D557802CAB0AC5005285BE /* CombinePublishers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePublishers.swift; sourceTree = "<group>"; };
 		E2D8BE082CC0D9960064E344 /* SetHighlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetHighlightView.swift; sourceTree = "<group>"; };
@@ -469,6 +473,7 @@
 			children = (
 				E2A626252C1043E3005B28BE /* CertificateEmailView.swift */,
 				E2A626292C104413005B28BE /* RegisterDomainView.swift */,
+				E2C5620B2CD9CF5200276F44 /* VerifyMentorView.swift */,
 			);
 			path = Mentor;
 			sourceTree = "<group>";
@@ -674,6 +679,7 @@
 			children = (
 				E2D8BE542CCEBB760064E344 /* AccountPreferencesView.swift */,
 				E2C562062CD6988100276F44 /* EditProfileView.swift */,
+				E2C562092CD9491D00276F44 /* RequestMentorView.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -929,6 +935,7 @@
 				E27EF5722C7CAC5F0047E6EC /* Cards.swift in Sources */,
 				E22778872CBAC0A100EEB63D /* StoryViewModel.swift in Sources */,
 				E28BD7D72C861F80006BBF4D /* FeedNewestView.swift in Sources */,
+				E2C5620A2CD9491D00276F44 /* RequestMentorView.swift in Sources */,
 				E201F1302C35D5000042AA2E /* AnswerImageView.swift in Sources */,
 				E2BD4D9E2C294B5B00E1B783 /* Keychain.swift in Sources */,
 				E2D8BE262CC6ACE60064E344 /* ScrappedFoldersView.swift in Sources */,
@@ -972,6 +979,7 @@
 				E2417C402C71E70800A7A2A0 /* Chip.swift in Sources */,
 				E2D8BE5B2CCEC6A00064E344 /* NotificationModel.swift in Sources */,
 				E27EF5802C7E0C310047E6EC /* ProfileView.swift in Sources */,
+				E2C5620C2CD9CF5200276F44 /* VerifyMentorView.swift in Sources */,
 				E2D8BE162CC56D300064E344 /* EditHightLightView.swift in Sources */,
 				E2D8BE1C2CC631A30064E344 /* CategoryModels.swift in Sources */,
 				E21877A62CBC250A00DD541C /* FeedModel.swift in Sources */,

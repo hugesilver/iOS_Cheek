@@ -13,12 +13,8 @@ struct AccountPreferencesView: View {
     @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
-    enum NavigationType {
-        case editProfile
-    }
-    
     enum alertModeTypes {
-        case logout
+        case logout, delete
     }
     
     @State var alertMode: alertModeTypes = .logout
@@ -66,6 +62,17 @@ struct AccountPreferencesView: View {
                             }
                         
                         DividerSmall()
+                        
+                        Text("회원 탈퇴")
+                            .title1(font: "SUIT", color: .cheekStatusAlert, bold: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        if profileViewModel.profile != nil && profileViewModel.profile!.role == "MENTEE" {
+                            NavigationLink(destination: RequestMentorView(authViewModel: authViewModel)) {
+                                ButtonActive(text: "멘토 회원 전환")
+                                    .padding(.top, 8)
+                            }
+                        }
                     }
                     .padding(.horizontal, 16)
                 }
@@ -94,6 +101,14 @@ struct AccountPreferencesView: View {
                     title: Text("로그아웃 하시겠습니까?"),
                     primaryButton: .destructive(Text("네")) {
                         authViewModel.serverLogout()
+                    },
+                    secondaryButton: .cancel(Text("아니오"))
+                )
+            case .delete:
+                Alert(
+                    title: Text("정말 회원 탈퇴하시겠습니까?"),
+                    primaryButton: .destructive(Text("네")) {
+                        
                     },
                     secondaryButton: .cancel(Text("아니오"))
                 )

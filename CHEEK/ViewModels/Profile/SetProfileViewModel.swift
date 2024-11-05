@@ -13,9 +13,6 @@ class SetProfileViewModel: ObservableObject {
     let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
     var cancellables = Set<AnyCancellable>()
     
-    // 이메일
-    @Published private var email: String = ""
-    
     // 로딩 중
     @Published var isLoading: Bool = false
     
@@ -89,80 +86,71 @@ class SetProfileViewModel: ObservableObject {
     }
     
     func setProfile(profilePicture: UIImage?, nickname: String, information: String, isMentor: Bool, completion: @escaping (Bool) -> Void) {
-        getEmail() { email in
-            guard let email = email else {
-                print("오류: 프로필 설정 중 이메일 없음")
-                completion(false)
-                return
-            }
-            
-            let url = URL(string: "\(self.ip)/member/profile")!
-            
-            // Boundary 설정
-            let boundary = UUID().uuidString
-            
-            // Header 설정
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            
-            // Body 설정
-            var httpBody = Data()
-            
-            // profileDto
-            let profileDto: [String: Any] = [
-                "email": email,
-                "nickname": nickname,
-                "information": information,
-                "role": isMentor ? "MENTOR" : "MENTEE"
-            ]
-            
-            if let jsonData = try? JSONSerialization.data(withJSONObject: profileDto, options: .prettyPrinted) {
-                httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
-                httpBody.append("Content-Disposition: form-data; name=\"profileDto\"\r\n".data(using: .utf8)!)
-                httpBody.append("Content-Type: application/json\r\n\r\n".data(using: .utf8)!)
-                httpBody.append(jsonData)
-                httpBody.append("\r\n".data(using: .utf8)!)
-            }
-            
-            if let profilePicture {
-                httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
-                httpBody.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"profile.jpg\"\r\n".data(using: .utf8)!)
-                httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
-                httpBody.append(profilePicture.jpegData(compressionQuality: 0.5)!)
-                httpBody.append("\r\n".data(using: .utf8)!)
-            }
-    
-            // Boundary 끝 추가
-            httpBody.append("--\(boundary)--\r\n".data(using: .utf8)!)
-            
-            request.httpBody = httpBody
-            
-            // 서버에 요청 보내기
-            CombinePublishers().urlSession(req: request)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        print("setProfile 함수 실행 중 요청 성공")
-                    case .failure(let error):
-                        print("setProfile 함수 실행 중 요청 실패: \(error)")
-                        self.showError(message: "요청 중 오류가 발생하였습니다.")
-                    }
-                }, receiveValue: { data in
-                    let dataString = String(data: data, encoding: .utf8)
-                    
-                    DispatchQueue.main.async {
-                        self.isLoading = false
-                        
-                        if dataString != "ok" {
-                            self.showError(message: "등록 중 오류가 발생하였습니다.")
-                        }
-                    }
-                    
-                    completion(dataString == "ok")
-                })
-                .store(in: &self.cancellables)
+        let url = URL(string: "\(self.ip)/member/profile")!
+        
+        // Boundary 설정
+        let boundary = UUID().uuidString
+        
+        // Header 설정
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        // Body 설정
+        var httpBody = Data()
+        
+        // profileDto
+        let profileDto: [String: Any] = [
+            "nickname": nickname,
+            "information": information,
+            "role": isMentor ? "MENTOR" : "MENTEE"
+        ]
+        
+        if let jsonData = try? JSONSerialization.data(withJSONObject: profileDto, options: .prettyPrinted) {
+            httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
+            httpBody.append("Content-Disposition: form-data; name=\"profileDto\"\r\n".data(using: .utf8)!)
+            httpBody.append("Content-Type: application/json\r\n\r\n".data(using: .utf8)!)
+            httpBody.append(jsonData)
+            httpBody.append("\r\n".data(using: .utf8)!)
         }
+        
+        if let profilePicture {
+            httpBody.append("--\(boundary)\r\n".data(using: .utf8)!)
+            httpBody.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"profile.jpg\"\r\n".data(using: .utf8)!)
+            httpBody.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+            httpBody.append(profilePicture.jpegData(compressionQuality: 0.5)!)
+            httpBody.append("\r\n".data(using: .utf8)!)
+        }
+        
+        // Boundary 끝 추가
+        httpBody.append("--\(boundary)--\r\n".data(using: .utf8)!)
+        
+        request.httpBody = httpBody
+        
+        // 서버에 요청 보내기
+        CombinePublishers().urlSession(req: request)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("setProfile 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("setProfile 함수 실행 중 요청 실패: \(error)")
+                    self.showError(message: "요청 중 오류가 발생하였습니다.")
+                }
+            }, receiveValue: { data in
+                let dataString = String(data: data, encoding: .utf8)
+                
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    
+                    if dataString != "ok" {
+                        self.showError(message: "등록 중 오류가 발생하였습니다.")
+                    }
+                }
+                
+                completion(dataString == "ok")
+            })
+            .store(in: &self.cancellables)
     }
     
     func editProfile(profilePicture: UIImage?, nickname: String, information: String, description: String, completion: @escaping (Bool) -> Void) {
@@ -201,7 +189,7 @@ class SetProfileViewModel: ObservableObject {
             httpBody.append(profilePicture.jpegData(compressionQuality: 0.5)!)
             httpBody.append("\r\n".data(using: .utf8)!)
         }
-
+        
         // Boundary 끝 추가
         httpBody.append("--\(boundary)--\r\n".data(using: .utf8)!)
         

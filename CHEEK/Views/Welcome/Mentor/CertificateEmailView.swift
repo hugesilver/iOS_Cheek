@@ -11,9 +11,8 @@ import SwiftUI
 struct CertificateEmailView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
-    @Binding var navPath: NavigationPath
-    var isMentor: Bool
+    var isNotVailedDomain: () -> Void
+    var isDone: () -> Void
     
     @StateObject private var viewModel = CertificateEmailMentorViewModel()
     
@@ -133,9 +132,10 @@ struct CertificateEmailView: View {
                 // 다음
                 if viewModel.isSent {
                     if viewModel.isVerificationCodeChecked {
-                        NavigationLink(destination: SetProfileView(authViewModel: authViewModel, navPath: $navPath, isMentor: isMentor)) {
-                            ButtonActive(text: "다음")
-                        }
+                        ButtonActive(text: "다음")
+                            .onTapGesture {
+                                isDone()
+                            }
                     } else {
                         ButtonDisabled(text: "다음")
                     }
@@ -148,7 +148,7 @@ struct CertificateEmailView: View {
             .background(.cheekBackgroundTeritory)
             
             if viewModel.showPopup {
-                EmailPopupView(showPopup: $viewModel.showPopup, authViewModel: authViewModel, navPath: $navPath, isMentor: isMentor)
+                EmailPopupView(showPopup: $viewModel.showPopup, isNotVailedDomain: isNotVailedDomain)
             }
             
             if viewModel.isLoading {
@@ -156,6 +156,7 @@ struct CertificateEmailView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .alert(isPresented: $viewModel.showAlert) {
@@ -194,9 +195,7 @@ struct CertificateEmailView: View {
 struct EmailPopupView: View {
     @Binding var showPopup: Bool
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
-    @Binding var navPath: NavigationPath
-    var isMentor: Bool
+    var isNotVailedDomain: () -> Void
     
     var body: some View {
         VStack {
@@ -216,9 +215,11 @@ struct EmailPopupView: View {
                             showPopup = false
                         }
                     
-                    NavigationLink(destination: RegisterDomainView(authViewModel: authViewModel, navPath: $navPath, isMentor: isMentor)) {
+                    
                         ButtonLine(text: "이메일 등록 신청")
-                    }
+                        .onTapGesture {
+                            isNotVailedDomain()
+                        }
                 }
             }
             .padding(.horizontal, 16)
@@ -236,5 +237,5 @@ struct EmailPopupView: View {
 }
 
 #Preview {
-    CertificateEmailView(authViewModel: AuthenticationViewModel(), navPath: .constant(NavigationPath()), isMentor: true)
+    CertificateEmailView(isNotVailedDomain: {}, isDone: {})
 }

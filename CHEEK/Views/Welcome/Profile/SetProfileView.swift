@@ -13,7 +13,7 @@ struct SetProfileView: View {
     
     @ObservedObject var authViewModel: AuthenticationViewModel
     @Binding var navPath: NavigationPath
-    var isMentor: Bool
+    let isMentor: Bool
     
     @StateObject private var viewModel = SetProfileViewModel()
     
@@ -209,7 +209,7 @@ struct SetProfileView: View {
                             // 메인으로 이동
                             authViewModel.isRefreshTokenValid = true
                             // 웰컴 페이지 초기 페이지로 이동
-                            navPath.removeLast(navPath.count)
+                            navPath = NavigationPath()
                         } else {
                             viewModel.showError(message: "프로필 설정 중 오류가 발생했습니다.")
                         }

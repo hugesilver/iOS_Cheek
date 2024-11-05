@@ -10,11 +10,8 @@ import SwiftUI
 struct MentorMenteeView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
     @Binding var navPath: NavigationPath
-    
-    @State var isMentor: Bool? = nil
-    @State var isDone: Bool = false
+    @Binding var isMentor: Bool?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -60,20 +57,14 @@ struct MentorMenteeView: View {
             
             // 다음 버튼
             if isMentor != nil {
-                NavigationLink(destination: {
-                    if let isMentor {
-                        if isMentor {
-                            CertificateEmailView(authViewModel: authViewModel, navPath: $navPath, isMentor: isMentor)
+                ButtonActive(text: "다음")
+                    .onTapGesture {
+                        if isMentor! {
+                            navPath.append("VerifyMentorView")
                         } else {
-                            SetProfileView(authViewModel: authViewModel, navPath: $navPath, isMentor: isMentor)
+                            navPath.append("SetProfileView")
                         }
                     }
-                }) {
-                    ButtonActive(text: "다음")
-                        .onTapGesture {
-                            isDone = true
-                        }
-                }
             } else {
                 ButtonDisabled(text: "다음")
             }
@@ -87,5 +78,5 @@ struct MentorMenteeView: View {
 }
 
 #Preview {
-    MentorMenteeView(authViewModel: AuthenticationViewModel(), navPath: .constant(NavigationPath()))
+    MentorMenteeView(navPath: .constant(NavigationPath()), isMentor: .constant(nil))
 }
