@@ -130,14 +130,14 @@ struct EditProfileView: View {
                                 information: $infoNicknameForm,
                                 status: $statusNickname,
                                 isFocused: $isNicknameFocused)
-                                .onChange(of: nickname) { text in
-                                    if text.count > 8 {
-                                        nickname = String(text.prefix(8))
-                                    }
+                            .onChange(of: nickname) { text in
+                                if text.count > 8 {
+                                    nickname = String(text.prefix(8))
                                 }
-                                .onChange(of: isNicknameFocused) { _ in
-                                    onChangeNicknameFocused()
-                                }
+                            }
+                            .onChange(of: isNicknameFocused) { _ in
+                                onChangeNicknameFocused()
+                            }
                             
                             // 직무 한줄소개
                             TextFieldForm(
@@ -148,16 +148,16 @@ struct EditProfileView: View {
                                 information: $infoInformationForm,
                                 status: $statusInformation,
                                 isFocused: $isInformationFocused)
-                                .onChange(of: information) { text in
-                                    information = String(text.prefix(20))
+                            .onChange(of: information) { text in
+                                information = String(text.prefix(20))
+                            }
+                            .onChange(of: isInformationFocused) { _ in
+                                if isInformationFocused {
+                                    statusInformation = .focused
+                                } else {
+                                    statusInformation = .normal
                                 }
-                                .onChange(of: isInformationFocused) { _ in
-                                    if isInformationFocused {
-                                        statusInformation = .focused
-                                    } else {
-                                        statusInformation = .normal
-                                    }
-                                }
+                            }
                             
                             // 자기소개
                             TextEditorForm(
@@ -169,21 +169,21 @@ struct EditProfileView: View {
                                 information: $infoDescriptionForm,
                                 status: $statusDescription,
                                 isFocused: $isDescriptionFocused)
-                                .onChange(of: description) { text in
-                                    if text.last == "\n" {
-                                        description = String(text.dropLast())
-                                        Utils().hideKeyboard()
-                                    }
-                                    
-                                    description = String(text.prefix(50))
+                            .onChange(of: description) { text in
+                                if text.last == "\n" {
+                                    description = String(text.dropLast())
+                                    Utils().hideKeyboard()
                                 }
-                                .onChange(of: isDescriptionFocused) { _ in
-                                    if isDescriptionFocused {
-                                        statusDescription = .focused
-                                    } else {
-                                        statusDescription = .normal
-                                    }
+                                
+                                description = String(text.prefix(50))
+                            }
+                            .onChange(of: isDescriptionFocused) { _ in
+                                if isDescriptionFocused {
+                                    statusDescription = .focused
+                                } else {
+                                    statusDescription = .normal
                                 }
+                            }
                         }
                         .padding(.top, 48)
                         
@@ -236,7 +236,7 @@ struct EditProfileView: View {
             } else {
                 viewModel.checkUniqueNickname(nickname: nickname) { response in
                     isUniqueNickname = response
-                                                                
+                    
                     if response {
                         statusNickname = .correct
                         infoNicknameForm = "사용 가능한 닉네임입니다."
@@ -256,30 +256,38 @@ struct EditProfileView: View {
         
         viewModel.isLoading = true
         
-        viewModel.checkUniqueNickname(nickname: nickname) {
-            response in
-            if response {
-                viewModel.editProfile(
-                    profilePicture: selectImage,
-                    nickname: nickname,
-                    information: information,
-                    description: description) { success in
-                        if success {
-                            DispatchQueue.main.async {
-                                if let myMemberId = Keychain().read(key: "MEMBER_ID") {
-                                    profileViewModel.getProfile(targetMemberId: Int64(myMemberId)!)
-                                }
-                                
-                                dismiss()
-                            }
-                        } else {
-                            viewModel.showError(message: "프로필 설정 중 오류가 발생했습니다.")
-                        }
-                    }
-            } else {
-                viewModel.showError(message: "이미 등록된 닉네임입니다.")
+        if profileViewModel.profile != nil && profileViewModel.profile!.nickname == nickname {
+            editProfile()
+        } else {
+            viewModel.checkUniqueNickname(nickname: nickname) {
+                response in
+                if response {
+                    editProfile()
+                } else {
+                    viewModel.showError(message: "이미 등록된 닉네임입니다.")
+                }
             }
         }
+    }
+    
+    func editProfile() {
+        viewModel.editProfile(
+            profilePicture: selectImage,
+            nickname: nickname,
+            information: information,
+            description: description) { success in
+                if success {
+                    DispatchQueue.main.async {
+                        if let myMemberId = Keychain().read(key: "MEMBER_ID") {
+                            profileViewModel.getProfile(targetMemberId: Int64(myMemberId)!)
+                        }
+                        
+                        dismiss()
+                    }
+                } else {
+                    viewModel.showError(message: "프로필 설정 중 오류가 발생했습니다.")
+                }
+            }
     }
 }
 
