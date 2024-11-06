@@ -115,7 +115,9 @@ class ScrapViewModel: ObservableObject {
             }, receiveValue: { data in
                 let dataString = String(data: data, encoding: .utf8)
                 
-                self.isLoading = false
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                }
                 
                 completion(dataString == "ok")
             })

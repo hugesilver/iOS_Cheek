@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AddScrapFolderView: View {
+    @Environment(\.dismiss) private var dismiss
+    
     var storyModel: StoryModel
     
     @ObservedObject var authViewModel: AuthenticationViewModel
@@ -23,9 +25,25 @@ struct AddScrapFolderView: View {
         ZStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    Text("이름 설정")
-                        .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
-                        .padding(.top, 36)
+                    // 상단바
+                    HStack {
+                        Image("IconChevronLeft")
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 32, height: 32)
+                            .onTapGesture {
+                                dismiss()
+                            }
+                            .padding(8)
+                        
+                        Spacer()
+                    }
+                    .overlay(
+                        Text("이름 설정")
+                            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                        , alignment: .center
+                    )
+                    .padding(.top, 24)
+                    .padding(.horizontal, 16)
                     
                     HStack(spacing: 12) {
                         ProfileS(url: storyModel.storyPicture)

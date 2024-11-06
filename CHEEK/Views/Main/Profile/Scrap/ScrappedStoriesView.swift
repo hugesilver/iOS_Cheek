@@ -78,7 +78,7 @@ struct ScrappedStoriesView: View {
                     }
                     .overlay(
                         Text(folderModel.folderName)
-                            .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
                         , alignment: .center
                     )
                     .padding(.top, 8)
@@ -187,7 +187,7 @@ struct ScrappedStoriesView: View {
                     }
                     .overlay(
                         Text(folderModel.folderName)
-                            .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
                         , alignment: .center
                     )
                     .padding(.top, 8)
