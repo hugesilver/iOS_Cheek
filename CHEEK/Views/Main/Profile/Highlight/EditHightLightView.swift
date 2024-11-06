@@ -16,10 +16,6 @@ struct EditHighlightView: View {
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var highlightViewModel: HighlightViewModel
     
-    var storyColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
-    
-    @State private var showAlert: Bool = false
-    
     var body: some View {
         VStack(spacing: 0) {
             // 상단바
@@ -52,9 +48,6 @@ struct EditHighlightView: View {
                     Text("완료")
                         .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
                         .padding(.horizontal, 18)
-                        .onTapGesture {
-                            showAlert = true
-                        }
                 }
             }
             .overlay(
@@ -92,7 +85,7 @@ struct EditHighlightView: View {
             
             // 내 스토리 목록
             ScrollView {
-                LazyVGrid(columns: storyColumns, spacing: 4) {
+                LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: vGridSpacing), count: 3), spacing: 4) {
                     ForEach(profileViewModel.stories) { story in
                         ZStack(alignment: .leading) {
                             AsyncImage(url: URL(string: story.storyPicture)) { image in
@@ -172,25 +165,6 @@ struct EditHighlightView: View {
         .navigationBarHidden(true)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
-        .alert(isPresented: $showAlert) {
-            Alert(
-                title: Text("경고"),
-                message: Text("스토리를 아무것도 선택하지 않았어요.\n혹시 삭제하실 건가요?"),
-                primaryButton: .destructive(Text("삭제")) {
-                    highlightViewModel.deleteHighlight() { isDone in
-                        if isDone {
-                            DispatchQueue.main.async {
-                                profileViewModel.highlights.removeAll { $0.highlightId == highlightViewModel.highlightId }
-                                dismiss()
-                            }
-                        }
-                    }
-                },
-                secondaryButton: .cancel(Text("취소")) {
-                    
-                }
-            )
-        }
         .onAppear {
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
             

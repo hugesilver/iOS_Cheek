@@ -15,11 +15,9 @@ struct SearchResultStoryView: View {
     @Binding var isStoryOpen: Bool
     @Binding var selectedStories: [Int64]
     
-    var storyColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
-    
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: storyColumns, spacing: 4) {
+            LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 4), count: 3), spacing: 4) {
                 ForEach(searchViewModel.searchResult!.storyDto) { story in
                     ZStack(alignment: .leading) {
                         AsyncImage(url: URL(string: story.storyPicture)) { image in

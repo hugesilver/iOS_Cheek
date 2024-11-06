@@ -14,11 +14,9 @@ struct ProfileStoriesView: View {
     @Binding var selectedStories: [Int64]
     var stories: [StoryDto]
     
-    var gridColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: vGridSpacing), count: 3)
-    
     var body: some View {
         VStack(spacing: 0) {
-            LazyVGrid(columns: gridColumns) {
+            LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: vGridSpacing), count: 3)) {
                 ForEach(stories) { story in
                     AsyncImage(url: URL(string: story.storyPicture)) { image in
                         image

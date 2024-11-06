@@ -15,8 +15,6 @@ struct DeleteStoryView: View {
     @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
-    var storyColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
-    
     enum deleteModeTypes {
         case delete, none
     }
@@ -72,7 +70,7 @@ struct DeleteStoryView: View {
         
         // 스토리 모음
         ScrollView {
-            LazyVGrid(columns: storyColumns, spacing: 4) {
+            LazyVGrid(columns:  Array(repeating: .init(.flexible(), spacing: vGridSpacing), count: 3), spacing: 4) {
                 ForEach(profileViewModel.stories) { story in
                     ZStack(alignment: .leading) {
                         AsyncImage(url: URL(string: story.storyPicture)) { image in
@@ -156,7 +154,7 @@ struct DeleteStoryView: View {
             case .delete:
                 Alert(
                     title: Text("경고"),
-                    message: Text("정말 이 스토리들을 지울까요?"),
+                    message: Text("정말 \(profileViewModel.selectedStoriesForDelete.count)개의 스토리들을 지울까요?"),
                     primaryButton: .destructive(Text("삭제")) {
                         deleteStories()
                     },

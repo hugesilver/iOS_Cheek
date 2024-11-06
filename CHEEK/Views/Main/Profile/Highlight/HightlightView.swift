@@ -22,6 +22,8 @@ struct HighlightView: View {
     
     @State private var offset: CGSize = .zero
     
+    @State private var showAlert: Bool = false
+    
     var body: some View {
         NavigationStack {
             GeometryReader { reader in
@@ -99,7 +101,8 @@ struct HighlightView: View {
                             } else {
                                 Text("스토리를 불러올 수 없습니다.")
                                     .body1(font: "SUIT", color: .cheekWhite, bold: false)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: (UIScreen.main.bounds.width / 9) * 16)
                             }
                         } else {
                             LoadingView()
@@ -121,28 +124,38 @@ struct HighlightView: View {
                         .padding(.horizontal, 16)
                     }
                     
-                    if !storyViewModel.stories.isEmpty && storyViewModel.isAllLoaded {
-                        NavigationLink(destination: EditHighlightView(authViewModel: authViewModel, profileViewModel: profileViewModel, highlightViewModel: highlightViewModel)) {
-                            HStack(spacing: 8) {
-                                HStack() {
-                                    Text("하이라이트 수정하기")
-                                        .body1(font: "SUIT", color: .cheekTextAssitive, bold: true)
-                                }
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .foregroundColor(.cheekGrey200)
-                                )
+                    if storyViewModel.isAllLoaded {
+                        HStack(spacing: 8) {
+                            NavigationLink(destination: EditHighlightView(authViewModel: authViewModel, profileViewModel: profileViewModel, highlightViewModel: highlightViewModel)) {
+                                Text("하이라이트 수정")
+                                    .body1(font: "SUIT", color: .cheekTextAssitive, bold: true)
                             }
-                            .padding(.top, 16)
-                            .padding(.horizontal, 16)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .foregroundColor(.cheekGrey200)
+                            )
                             .onAppear {
                                 storyViewModel.timerStory()
                             }
+                            .simultaneousGesture(TapGesture().onEnded{
+                                storyViewModel.stopTimer()
+                            })
+                            
+                            Text("하이라이트 삭제")
+                                .body1(font: "SUIT", color: .cheekWhite, bold: true)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .foregroundColor(.cheekStatusAlert)
+                                )
+                                .onTapGesture {
+                                    storyViewModel.stopTimer()
+                                    showAlert = true
+                                }
                         }
-                        .simultaneousGesture(TapGesture().onEnded{
-                            storyViewModel.stopTimer()
-                        })
+                        .padding(.top, 16)
+                        .padding(.horizontal, 16)
                     }
                 }
                 .background(.cheekTextNormal)
@@ -183,6 +196,18 @@ struct HighlightView: View {
         }
         .onDisappear {
             storyViewModel.stopTimer()
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("경고"),
+                message: Text("정말 이 하이라이트를 지울까요?"),
+                primaryButton: .destructive(Text("삭제")) {
+                    deleteHighlight()
+                },
+                secondaryButton: .cancel(Text("취소")) {
+                    storyViewModel.timerStory()
+                }
+            )
         }
     }
     
@@ -226,6 +251,18 @@ struct HighlightView: View {
         } else {
             storyViewModel.timerProgress = 0
             storyViewModel.currentIndex += 1
+        }
+    }
+    
+    // 하이라이트 삭제
+    func deleteHighlight() {
+        highlightViewModel.deleteHighlight() { isDone in
+            if isDone {
+                DispatchQueue.main.async {
+                    profileViewModel.highlights.removeAll { $0.highlightId == highlightViewModel.highlightId }
+                    dismiss()
+                }
+            }
         }
     }
 }

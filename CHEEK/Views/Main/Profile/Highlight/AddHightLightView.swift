@@ -17,8 +17,6 @@ struct AddHighlightView: View {
     
     @StateObject var highlightViewModel = HighlightViewModel()
     
-    var storyColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 4), count: 3)
-    
     @State private var showAlert: Bool = false
     
     var body: some View {
@@ -93,7 +91,7 @@ struct AddHighlightView: View {
             
             // 내 스토리 목록
             ScrollView {
-                LazyVGrid(columns: storyColumns, spacing: 4) {
+                LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: vGridSpacing), count: 3), spacing: 4) {
                     ForEach(profileViewModel.stories) { story in
                         ZStack(alignment: .leading) {
                             AsyncImage(url: URL(string: story.storyPicture)) { image in

@@ -340,7 +340,6 @@ class HighlightViewModel: ObservableObject {
             }, receiveValue: { data in
                 let dataString = String(data: data, encoding: .utf8)
                 DispatchQueue.main.async {
-                    self.isDone = true
                     completion(dataString == "ok")
                 }
             })
