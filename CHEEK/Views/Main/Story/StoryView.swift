@@ -28,85 +28,95 @@ struct StoryView: View {
                     .frame(height: reader.safeAreaInsets.top, alignment: .top)
                 
                 ZStack(alignment: .top) {
-                    if !viewModel.stories.isEmpty && viewModel.isAllLoaded {
-                        AsyncImage(url: URL(string: viewModel.stories[viewModel.currentIndex].storyPicture)) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .background(.cheekMainNormal)
-                                .clipped()
-                        } placeholder: {
-                            Color.clear
-                        }
-                        .frame(
-                            width: UIScreen.main.bounds.width,
-                            height: (UIScreen.main.bounds.width / 9) * 16
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        
-                        HStack(spacing: 4) {
-                            ForEach(viewModel.stories.indices, id: \.self) { index in
-                                ProgressView(value: index == viewModel.currentIndex ? min(max(viewModel.timerProgress, 0.0), 1.0) : (index < viewModel.currentIndex ? 1.0 : 0.0))
-                                    .progressViewStyle(LinearProgressViewStyle(tint: .cheekBackgroundTeritory))
-                                    .background(.cheekBackgroundTeritory.opacity(0.4))
-                                    .foregroundColor(.cheekBackgroundTeritory)
-                                    .frame(height: 2)
-                                    .clipShape(Capsule())
-                                    .animation(viewModel.timerProgress > 0 ? .linear : nil, value: viewModel.timerProgress)
+                    if viewModel.isAllLoaded {
+                        if !viewModel.stories.isEmpty {
+                            AsyncImage(url: URL(string: viewModel.stories[viewModel.currentIndex].storyPicture)) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .background(.cheekMainNormal)
+                                    .clipped()
+                            } placeholder: {
+                                Color.clear
                             }
-                        }
-                        .frame(height: 2)
-                        .padding(16)
-                        .onChange(of: viewModel.isTimeOver) { isTimeOver in
-                            if isTimeOver {
-                                goNext()
-                            }
-                        }
-                        
-                        HStack {
-                            Color.clear
-                                .frame(maxWidth: UIScreen.main.bounds.width * 0.25, maxHeight: .infinity)
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    goPrev()
+                            .frame(
+                                width: UIScreen.main.bounds.width,
+                                height: (UIScreen.main.bounds.width / 9) * 16
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            
+                            HStack(spacing: 4) {
+                                ForEach(viewModel.stories.indices, id: \.self) { index in
+                                    ProgressView(value: index == viewModel.currentIndex ? min(max(viewModel.timerProgress, 0.0), 1.0) : (index < viewModel.currentIndex ? 1.0 : 0.0))
+                                        .progressViewStyle(LinearProgressViewStyle(tint: .cheekBackgroundTeritory))
+                                        .background(.cheekBackgroundTeritory.opacity(0.4))
+                                        .foregroundColor(.cheekBackgroundTeritory)
+                                        .frame(height: 2)
+                                        .clipShape(Capsule())
+                                        .animation(viewModel.timerProgress > 0 ? .linear : nil, value: viewModel.timerProgress)
                                 }
-                            
-                            Spacer()
-                            
-                            Color.clear
-                                .frame(maxWidth: UIScreen.main.bounds.width * 0.25, maxHeight: .infinity)
-                                .contentShape(Rectangle())
-                                .onTapGesture {
+                            }
+                            .frame(height: 2)
+                            .padding(16)
+                            .onChange(of: viewModel.isTimeOver) { isTimeOver in
+                                if isTimeOver {
                                     goNext()
                                 }
+                            }
+                            
+                            HStack {
+                                Color.clear
+                                    .frame(maxWidth: UIScreen.main.bounds.width * 0.25, maxHeight: .infinity)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        goPrev()
+                                    }
+                                
+                                Spacer()
+                                
+                                Color.clear
+                                    .frame(maxWidth: UIScreen.main.bounds.width * 0.25, maxHeight: .infinity)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        goNext()
+                                    }
+                            }
+                            
+                            HStack(spacing: 8) {
+                                ProfileXS(url: viewModel.stories[viewModel.currentIndex].memberDto.profilePicture)
+                                
+                                Text(viewModel.stories[viewModel.currentIndex].memberDto.nickname)
+                                    .body2(font: "SUIT", color: .cheekWhite, bold: true)
+                                
+                                Spacer()
+                            }
+                            .padding(.top, 27)
+                            .padding(.horizontal, 16)
+                        } else {
+                            Text("스토리를 불러올 수 없습니다.")
+                                .body1(font: "SUIT", color: .cheekWhite, bold: false)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
-                        
-                        HStack(spacing: 8) {
-                            ProfileXS(url: viewModel.stories[viewModel.currentIndex].memberDto.profilePicture)
-                            
-                            Text(viewModel.stories[viewModel.currentIndex].memberDto.nickname)
-                                .body2(font: "SUIT", color: .cheekWhite, bold: true)
-                            
-                            Spacer()
-                            
-                            // 닫기
-                            Image("IconX")
-                                .resizable()
-                                .frame(width: 32, height: 32)
-                                .foregroundColor(.cheekWhite)
-                                .onTapGesture {
-                                    dismiss()
-                                }
-                            
-                        }
-                        .padding(.top, 27)
-                        .padding(.horizontal, 16)
                     } else {
                         LoadingView()
                     }
+                    
+                    HStack {
+                        Spacer()
+                        
+                        // 닫기
+                        Image("IconX")
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                            .foregroundColor(.cheekWhite)
+                            .onTapGesture {
+                                dismiss()
+                            }
+                    }
+                    .padding(.top, 27)
+                    .padding(.horizontal, 16)
                 }
-                
                 
                 if !viewModel.stories.isEmpty && viewModel.isAllLoaded {
                     HStack(spacing: 8) {

@@ -12,6 +12,16 @@
 				<string>kakao$(KAKAO_APP_KEY)</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>dev.hugesilver.CHEEK</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>cheek</string>
+			</array>
+		</dict>
 	</array>
 	<key>KAKAO_APP_KEY</key>
 	<string>$(KAKAO_APP_KEY)</string>
@@ -34,7 +44,9 @@
 		<string>SUIT-Regular.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
-	<array/>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

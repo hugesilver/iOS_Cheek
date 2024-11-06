@@ -42,6 +42,10 @@ class StoryViewModel: ObservableObject {
                 case .failure(let error):
                     print("스토리 요청 중 오류 발생: \(error)")
                 }
+                
+                DispatchQueue.main.async {
+                    self.isAllLoaded = true
+                }
             }, receiveValue: { storiesArray in
                 DispatchQueue.main.async {
                     // stories 순서에 맞게 정렬
@@ -55,7 +59,6 @@ class StoryViewModel: ObservableObject {
                             return firstIndex < secondIndex
                         }
                     
-                    self.isAllLoaded = true
                     self.timerStory()
                 }
             })

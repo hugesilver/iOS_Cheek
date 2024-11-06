@@ -13,13 +13,15 @@ struct MainView: View {
     @StateObject var profileViewModel: ProfileViewModel = ProfileViewModel()
     @StateObject var notificationViewModel: NotificationViewModel = NotificationViewModel()
     
+    @State var navPath: NavigationPath = NavigationPath()
+    
     // 탭 인덱스
     @State var currentIndex: Int = 0
     
     @State var selectedCategory: Int64 = 1
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navPath) {
             VStack(spacing: 0) {
                 Group {
                     switch currentIndex {
@@ -110,12 +112,24 @@ struct MainView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
+            .navigationDestination(for: String.self) { path in
+                switch path {
+                case "NotificationView": NotificationView(authViewModel: authViewModel, notificationViewModel: notificationViewModel)
+                default:
+                    EmptyView()
+                }
+            }
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
             getMyProfile()
             notificationViewModel.isNotificationEnabledAndFCMReady()
+        }
+        .onOpenURL { url in
+            if url.host == "noti" {
+                navPath.append("NotificationView")
+            }
         }
     }
     

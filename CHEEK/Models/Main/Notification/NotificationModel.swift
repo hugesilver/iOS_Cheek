@@ -13,9 +13,11 @@ struct NotificationModel: Identifiable, Codable, Equatable {
     let typeId: Int64
     let body: String
     let picture: String?
+    /*
     let nickname: String
     let profilePicture: String?
     let time: String
+    */
     
     var id: Int64 {
         notificationId

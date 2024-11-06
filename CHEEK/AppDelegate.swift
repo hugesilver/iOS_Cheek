@@ -134,6 +134,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         // Print full message.
         print(userInfo)
+        
+        guard let urlString = response.notification.request.content.userInfo["link"] as? String,
+              let link = URL(string: urlString)
+        else { return }
+        await UIApplication.shared.open(link)
     }
 }
 
@@ -143,6 +148,10 @@ extension AppDelegate: MessagingDelegate {
     // [START refresh_token]
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         print("Firebase registration token: \(String(describing: fcmToken))")
+        
+        if let fcmToken {
+            Keychain().create(key: "FCM_TOKEN", value: fcmToken)
+        }
         
         let dataDict: [String: String] = ["token": fcmToken ?? ""]
         NotificationCenter.default.post(

@@ -53,7 +53,7 @@ class ProfileViewModel: ObservableObject {
             }, receiveValue: { data in
                 DispatchQueue.main.async {
                     self.profile = data
-                    self.isMentor = data.role == "MENTOR"
+                    self.isMentor = data.role == "MENTOR" || data.role == "ADMIN"
                 }
             })
             .store(in: &self.cancellables)
