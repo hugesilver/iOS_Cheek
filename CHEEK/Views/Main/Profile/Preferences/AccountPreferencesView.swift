@@ -45,6 +45,7 @@ struct AccountPreferencesView: View {
                 
                 ScrollView {
                     VStack(spacing: 16) {
+                        // 계정 편집
                         NavigationLink(destination: EditProfileView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
                             Text("계정 편집")
                                 .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
@@ -53,6 +54,7 @@ struct AccountPreferencesView: View {
                         
                         DividerSmall()
                         
+                        // 로그아웃
                         Text("로그아웃")
                             .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -63,9 +65,22 @@ struct AccountPreferencesView: View {
                         
                         DividerSmall()
                         
+                        // 관리자 페이지
+                        if profileViewModel.profile != nil && profileViewModel.profile!.role == "ADMIN" {
+                            NavigationLink(destination: AdminView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
+                                Text("관리자 페이지")
+                                    .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            
+                            DividerSmall()
+                        }
+                        
+                        // 회원 탈퇴
                         Text("회원 탈퇴")
                             .title1(font: "SUIT", color: .cheekStatusAlert, bold: true)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                       
                         
                         if profileViewModel.profile != nil && profileViewModel.profile!.role == "MENTEE" {
                             NavigationLink(destination: RequestMentorView(authViewModel: authViewModel)) {

@@ -13,7 +13,7 @@ struct ProfileModel: Identifiable, Codable, Equatable {
     let nickname: String
     let information: String
     let description: String?
-    let role: String
+    var role: String
     var following: Bool
     var followerCnt: Int64
     var followingCnt: Int64

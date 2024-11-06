@@ -89,6 +89,9 @@
 		E2C562072CD6988100276F44 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C562062CD6988100276F44 /* EditProfileView.swift */; };
 		E2C5620A2CD9491D00276F44 /* RequestMentorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C562092CD9491D00276F44 /* RequestMentorView.swift */; };
 		E2C5620C2CD9CF5200276F44 /* VerifyMentorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C5620B2CD9CF5200276F44 /* VerifyMentorView.swift */; };
+		E2C562112CDBDECA00276F44 /* AdminView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C562102CDBDECA00276F44 /* AdminView.swift */; };
+		E2C562142CDBE15700276F44 /* AdminViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C562132CDBE15700276F44 /* AdminViewModel.swift */; };
+		E2C562172CDBE3DB00276F44 /* AdminMemberInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C562162CDBE3DB00276F44 /* AdminMemberInfoModel.swift */; };
 		E2D5577F2CA575A3005285BE /* RegisterDomainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5577E2CA575A3005285BE /* RegisterDomainViewModel.swift */; };
 		E2D557812CAB0AC5005285BE /* CombinePublishers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D557802CAB0AC5005285BE /* CombinePublishers.swift */; };
 		E2D8BE092CC0D9960064E344 /* SetHighlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE082CC0D9960064E344 /* SetHighlightView.swift */; };
@@ -211,6 +214,9 @@
 		E2C562062CD6988100276F44 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		E2C562092CD9491D00276F44 /* RequestMentorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestMentorView.swift; sourceTree = "<group>"; };
 		E2C5620B2CD9CF5200276F44 /* VerifyMentorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyMentorView.swift; sourceTree = "<group>"; };
+		E2C562102CDBDECA00276F44 /* AdminView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminView.swift; sourceTree = "<group>"; };
+		E2C562132CDBE15700276F44 /* AdminViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminViewModel.swift; sourceTree = "<group>"; };
+		E2C562162CDBE3DB00276F44 /* AdminMemberInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminMemberInfoModel.swift; sourceTree = "<group>"; };
 		E2D5577E2CA575A3005285BE /* RegisterDomainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDomainViewModel.swift; sourceTree = "<group>"; };
 		E2D557802CAB0AC5005285BE /* CombinePublishers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePublishers.swift; sourceTree = "<group>"; };
 		E2D8BE082CC0D9960064E344 /* SetHighlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetHighlightView.swift; sourceTree = "<group>"; };
@@ -599,6 +605,22 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		E2C562122CDBE14A00276F44 /* Admin */ = {
+			isa = PBXGroup;
+			children = (
+				E2C562132CDBE15700276F44 /* AdminViewModel.swift */,
+			);
+			path = Admin;
+			sourceTree = "<group>";
+		};
+		E2C562152CDBE2A900276F44 /* Admin */ = {
+			isa = PBXGroup;
+			children = (
+				E2C562162CDBE3DB00276F44 /* AdminMemberInfoModel.swift */,
+			);
+			path = Admin;
+			sourceTree = "<group>";
+		};
 		E2D8BE062CC0C3AA0064E344 /* Highlight */ = {
 			isa = PBXGroup;
 			children = (
@@ -680,6 +702,7 @@
 				E2D8BE542CCEBB760064E344 /* AccountPreferencesView.swift */,
 				E2C562062CD6988100276F44 /* EditProfileView.swift */,
 				E2C562092CD9491D00276F44 /* RequestMentorView.swift */,
+				E2C562102CDBDECA00276F44 /* AdminView.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -750,6 +773,7 @@
 		E2F376102C1A1D8200A727C7 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				E2C562122CDBE14A00276F44 /* Admin */,
 				E2D8BE562CCEC3200064E344 /* Notification */,
 				E2D8BE2B2CC6B1CE0064E344 /* Scrap */,
 				E21877A72CBC317600DD541C /* Search */,
@@ -785,6 +809,7 @@
 		E2FA48942C2FF4F80098137F /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				E2C562152CDBE2A900276F44 /* Admin */,
 				E2D8BE592CCEC6930064E344 /* Notification */,
 				E2D8BE2E2CC6B6450064E344 /* Scrap */,
 				E2D8BE1D2CC6405F0064E344 /* Highlight */,
@@ -944,6 +969,7 @@
 				E2C562072CD6988100276F44 /* EditProfileView.swift in Sources */,
 				E2D8BE472CCACC4D0064E344 /* EditQuestionView.swift in Sources */,
 				E2BF98352C92072700213043 /* QuestionViewModel.swift in Sources */,
+				E2C562142CDBE15700276F44 /* AdminViewModel.swift in Sources */,
 				E27EF5692C7AFAB10047E6EC /* CategoryModel.swift in Sources */,
 				E2D8BE092CC0D9960064E344 /* SetHighlightView.swift in Sources */,
 				E201F1322C35D5630042AA2E /* AnswerQuestionView.swift in Sources */,
@@ -954,6 +980,7 @@
 				E21877A12CBC1F9700DD541C /* FeedViewModel.swift in Sources */,
 				E28BD7D92C86326C006BBF4D /* FeedPopularityView.swift in Sources */,
 				E2F376072C19A0DF00A727C7 /* MainView.swift in Sources */,
+				E2C562112CDBDECA00276F44 /* AdminView.swift in Sources */,
 				E2D8BE2D2CC6B1D90064E344 /* ScrapViewModel.swift in Sources */,
 				E2417C422C71FC1000A7A2A0 /* Ranking.swift in Sources */,
 				E2417C392C71C52500A7A2A0 /* Images.swift in Sources */,
@@ -993,6 +1020,7 @@
 				E27619E32CBB12350029E077 /* FollowView.swift in Sources */,
 				E2D8BE342CC6D0150064E344 /* AddScrapFolderView.swift in Sources */,
 				E27EF5782C7CC2910047E6EC /* SearchResultProfileView.swift in Sources */,
+				E2C562172CDBE3DB00276F44 /* AdminMemberInfoModel.swift in Sources */,
 				E2D8BE302CC6B64E0064E344 /* ScrapModel.swift in Sources */,
 				E2417C372C71C27200A7A2A0 /* BannerList.swift in Sources */,
 				E2417C352C71C12D00A7A2A0 /* LoadingView.swift in Sources */,

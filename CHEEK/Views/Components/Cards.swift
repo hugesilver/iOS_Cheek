@@ -148,7 +148,6 @@ struct QuestionCard: View {
     let storyCnt: Int64
     let memberId: Int64
     
-    @State var isEditQuestionOpen: Bool = false
     @State var showAlert: Bool = false
     
     var body: some View {
@@ -175,9 +174,7 @@ struct QuestionCard: View {
                 
                 if myId == memberId {
                     Menu {
-                        Button(action: {
-                            isEditQuestionOpen = true
-                        }) {
+                        NavigationLink(destination: EditQuestionView(authViewModel: authViewModel, questionId: questionId, content: content)) {
                             Text("질문 수정")
                         }
                         
@@ -193,10 +190,6 @@ struct QuestionCard: View {
                             .resizable()
                             .foregroundColor(.cheekTextAlternative)
                             .frame(width: 32, height: 32)
-                    }
-                    
-                    NavigationLink(destination: EditQuestionView(authViewModel: authViewModel, questionId: questionId, content: content), isActive: $isEditQuestionOpen) {
-                        EmptyView()
                     }
                 }
             }
