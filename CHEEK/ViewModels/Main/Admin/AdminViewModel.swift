@@ -14,6 +14,10 @@ class AdminViewModel: ObservableObject {
     
     @Published var memberList: [AdminMemberInfoModel] = []
     
+    init() {
+        getMemberInfo()
+    }
+    
     // 회원 정보 불러오기
     func getMemberInfo() {
         let url = URL(string: "\(ip)/member/info/all")!

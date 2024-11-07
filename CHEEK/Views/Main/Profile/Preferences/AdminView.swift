@@ -109,7 +109,6 @@ struct AdminView: View {
         .navigationBarHidden(true)
         .onAppear {
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
-            viewModel.getMemberInfo()
         }
         .alert(isPresented: $showAlert) {
             Alert(
