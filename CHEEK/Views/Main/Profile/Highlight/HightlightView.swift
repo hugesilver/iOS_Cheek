@@ -182,17 +182,16 @@ struct HighlightView: View {
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-        .onChange(of: highlightViewModel.isDone) { _ in
-            if highlightViewModel.isDone {
-                dismiss()
-            }
-        }
         .onAppear {
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
             
             onInit()
             
             storyViewModel.timerStory()
+            
+            if highlightViewModel.isDone {
+                dismiss()
+            }
         }
         .onDisappear {
             storyViewModel.stopTimer()
@@ -226,10 +225,6 @@ struct HighlightView: View {
         highlightViewModel.originalThumbnail = highlightThumbnail
         highlightViewModel.convertUIImage(url: highlightThumbnail)
         highlightViewModel.subject = highlightSubject
-        
-        if highlightViewModel.isDone {
-            dismiss()
-        }
     }
     
     // 이전으로
