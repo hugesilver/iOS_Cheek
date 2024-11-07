@@ -107,7 +107,12 @@ struct AddQuestionView: View {
             Utils().hideKeyboard()
         }
         .onAppear {
+            UINavigationBar.setAnimationsEnabled(false)
+            
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+        }
+        .onDisappear {
+            UINavigationBar.setAnimationsEnabled(true)
         }
         .alert(isPresented: $viewModel.showAlert) {
             Alert(

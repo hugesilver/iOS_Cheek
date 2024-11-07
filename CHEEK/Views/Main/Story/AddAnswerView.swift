@@ -104,7 +104,12 @@ struct AddAnswerView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
+            UINavigationBar.setAnimationsEnabled(false)
+            
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+        }
+        .onDisappear {
+            UINavigationBar.setAnimationsEnabled(true)
         }
         .alert(isPresented: $viewModel.showAlert) {
             Alert(
