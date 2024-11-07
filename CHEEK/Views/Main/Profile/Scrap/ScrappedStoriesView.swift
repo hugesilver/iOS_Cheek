@@ -22,7 +22,7 @@ struct ScrappedStoriesView: View {
     @State var selectedStories: [Int64] = []
     
     enum deleteModeTypes {
-        case collections, folder, none
+        case collections, folder, empty, none
     }
     
     @State var selectedCollections: [CollectionModel] = []
@@ -71,7 +71,12 @@ struct ScrappedStoriesView: View {
                                 .padding(.horizontal, 18)
                                 .padding(.vertical, 12)
                                 .onTapGesture {
-                                    deleteMode = .none
+                                    if scrapViewModel.collections.isEmpty {
+                                        deleteMode = .empty
+                                    } else {
+                                        deleteMode = .none
+                                    }
+                                    
                                     showAlert = true
                                 }
                         }
@@ -170,10 +175,10 @@ struct ScrappedStoriesView: View {
                         Image("IconChevronLeft")
                             .foregroundColor(.cheekTextNormal)
                             .frame(width: 32, height: 32)
+                            .padding(8)
                             .onTapGesture {
                                 dismiss()
                             }
-                            .padding(8)
                         
                         Spacer()
                         
@@ -267,6 +272,15 @@ struct ScrappedStoriesView: View {
                 Alert(
                     title: Text("경고"),
                     message: Text("모든 콜렉션을 선택하셨습니다.\n해당 폴더를 삭제할까요?"),
+                    primaryButton: .destructive(Text("삭제")) {
+                        deleteFolder()
+                    },
+                    secondaryButton: .cancel(Text("취소"))
+                )
+            case .empty:
+                Alert(
+                    title: Text("경고"),
+                    message: Text("콜렉션이 모두 비어있습니다.\n폴더를 삭제할까요?"),
                     primaryButton: .destructive(Text("삭제")) {
                         deleteFolder()
                     },
