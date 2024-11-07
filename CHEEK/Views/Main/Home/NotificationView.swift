@@ -51,31 +51,29 @@ struct NotificationView: View {
             .padding(.horizontal, 16)
             
             // 목록
-            List {
-                ForEach(notificationViewModel.notifications) { notification in
-                    NotificationBlock(
-                        isRead: notificationViewModel.readNotifications.contains(notification.notificationId),
-                        /*
-                         isLike: notification.type == "MEMBER_CONNECTION" || notification.type == "UPVOTE",
-                         profilePicture: notification.profilePicture,
-                         */
-                        message: notification.body,
-                        // date: notification.time,
-                        thumbnailPicture: notification.picture,
-                        onTapBakcground: {
-                            onTapBackground(notification: notification)
-                        }
-                    )
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            notificationViewModel.deleteOneNotification(notificationId: notification.notificationId)
-                        } label: {
-                            Text("삭제")
-                        }
+            List(notificationViewModel.notifications) { notification in
+                NotificationBlock(
+                    isRead: notificationViewModel.readNotifications.contains(notification.notificationId),
+                    /*
+                     isLike: notification.type == "MEMBER_CONNECTION" || notification.type == "UPVOTE",
+                     profilePicture: notification.profilePicture,
+                     */
+                    message: notification.body,
+                    // date: notification.time,
+                    thumbnailPicture: notification.picture,
+                    onTapBakcground: {
+                        onTapBackground(notification: notification)
                     }
-                    .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets())
+                )
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        notificationViewModel.deleteOneNotification(notificationId: notification.notificationId)
+                    } label: {
+                        Text("삭제")
+                    }
                 }
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets())
             }
             .listStyle(.plain)
         }

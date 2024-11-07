@@ -43,14 +43,14 @@ struct AdminView: View {
             
             List(viewModel.memberList) { member in
                 HStack {
-                    VStack(spacing: 0) {
-                        Text(member.nickname)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(member.nickname ?? "null")
                             .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
                         
                         Text(member.email)
-                            .label2(font: "SUIT", color: .cheekTextAssitive, bold: false)
+                            .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
                         
-                        Text(member.role)
+                        Text(member.role ?? "null")
                             .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
                     }
                     
@@ -78,7 +78,7 @@ struct AdminView: View {
                             selectedRole = "ADMIN"
                             showAlert = true
                         }) {
-                            Text("MENTEE")
+                            Text("ADMIN")
                         }
                         
                         Button(action: {
@@ -98,9 +98,10 @@ struct AdminView: View {
                 }
                 .padding(16)
                 .frame(maxWidth: .infinity)
-                
-                
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets())
             }
+            .listStyle(.plain)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
@@ -108,14 +109,15 @@ struct AdminView: View {
         .navigationBarHidden(true)
         .onAppear {
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            viewModel.getMemberInfo()
         }
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("\(selectedMember?.nickname ?? "")의 역할을 \(selectedRole)으로 변경하시겠습니까?"),
-                primaryButton: .destructive(Text("네")) {
+                primaryButton: .destructive(Text("변경")) {
                     changeMemberRole()
                 },
-                secondaryButton: .cancel(Text("아니오"))
+                secondaryButton: .cancel(Text("취소"))
             )
         }
     }
