@@ -82,18 +82,24 @@ struct EditProfileView: View {
                             } else {
                                 if profileViewModel.profile?.profilePicture != nil {
                                     AsyncImage(url: URL(string: profileViewModel.profile!.profilePicture!)) { image in
-                                        image.resizable()
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 128, height: 128)
+                                            .clipShape(Circle())
                                     } placeholder: {
                                         Image("ImageDefaultProfile")
                                             .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 128, height: 128)
+                                            .clipShape(Circle())
                                     }
-                                    .scaledToFill()
-                                    .frame(width: 128, height: 128)
                                 } else {
                                     Image("ImageDefaultProfile")
                                         .resizable()
                                         .scaledToFill()
                                         .frame(width: 128, height: 128)
+                                        .clipShape(Circle())
                                 }
                             }
                         }
@@ -198,6 +204,7 @@ struct EditProfileView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.cheekBackgroundTeritory)
             
             if viewModel.isLoading {
                 LoadingView()
