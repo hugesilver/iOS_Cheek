@@ -50,6 +50,9 @@ struct ContentView: View {
             authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
             authViewModel.isInit = true
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+        }
         .alert(isPresented: $authViewModel.showAlert) {
             Alert(title: Text("재로그인이 필요합니다."), dismissButton: .default(Text("확인")))
         }
