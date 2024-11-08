@@ -29,30 +29,7 @@ class SetProfileViewModel: ObservableObject {
         }
     }
     
-    func getEmail(completion: @escaping (String?) -> Void) {
-        guard let socialMedia: String = Keychain().read(key: "MEMBER_TYPE") else {
-            completion(nil)
-            return
-        }
-        
-        switch socialMedia {
-        case "KAKAO":
-            KakaoAuthViewModel().checkToken() { haveToken in
-                if haveToken {
-                    KakaoAuthViewModel().getEmail() { email in
-                        completion(email)
-                    }
-                }
-            }
-            break
-            
-        default:
-            print("getEmail 함수 실행 중 socialMedia를 찾을 수 없음")
-            completion(nil)
-            break
-        }
-    }
-    
+    // 닉네임 중복 확인
     func checkUniqueNickname(nickname: String, completion: @escaping (Bool) -> Void) {
         var components = URLComponents(string: "\(ip)/member/check-nickname")!
         
@@ -85,6 +62,7 @@ class SetProfileViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    // 프로필 설정
     func setProfile(profilePicture: UIImage?, nickname: String, information: String, isMentor: Bool, completion: @escaping (Bool) -> Void) {
         let url = URL(string: "\(self.ip)/member/profile")!
         
@@ -153,6 +131,7 @@ class SetProfileViewModel: ObservableObject {
             .store(in: &self.cancellables)
     }
     
+    // 프로필 수정
     func editProfile(profilePicture: UIImage?, nickname: String, information: String, description: String, completion: @escaping (Bool) -> Void) {
         let url = URL(string: "\(ip)/member/profile")!
         

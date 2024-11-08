@@ -55,68 +55,6 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
-    // 소셜 로그인 및 회원가입
-    func oAuthLogin(accessToken: String, memberType: String, completion: @escaping (Bool?) -> Void) {
-        print("\(memberType) 로그인 시도")
-        
-        let url = URL(string: "\(ip)/oauth/login")!
-        
-        // Header 세팅
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-        
-        // Body 세팅
-        let bodyData: [String: Any] = [
-            "memberType": memberType
-        ]
-        
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: bodyData, options: [])
-        } catch {
-            print("OAuth Login JSON 변환 중 오류: \(error)")
-            completion(nil)
-            return
-        }
-        
-        URLSession.shared.dataTaskPublisher(for: request)
-            .tryMap() { data, response in
-                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
-                    print("응답 코드: \(response)")
-                }
-                
-                // 디버깅
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print(dataString)
-                }
-                
-                return data
-            }
-            .retry(1)
-            .eraseToAnyPublisher()
-            .decode(type: OAuthLoginResponseModel.self, decoder: JSONDecoder())
-            .sink(receiveCompletion: { isComplete in
-                switch isComplete {
-                case .finished:
-                    print("oauthLogin 함수 실행 중 요청 성공")
-                case .failure(let error):
-                    print("oauthLogin 함수 실행 중 요청 실패: \(error)")
-                    completion(nil)
-                }
-            }, receiveValue: { data in
-                Keychain().create(key: "MEMBER_TYPE", value: memberType)
-                Keychain().create(key: "MEMBER_ID", value: "\(data.memberId)")
-                Keychain().create(key: "ACCESS_TOKEN", value: data.accessToken)
-                Keychain().create(key: "ACCESS_TOKEN_EXPIRE_TIME", value: data.accessTokenExpireTime)
-                Keychain().create(key: "REFRESH_TOKEN", value: data.refreshToken)
-                Keychain().create(key: "REFRESH_TOKEN_EXPIRE_TIME", value: data.refreshTokenExpireTime)
-                
-                completion(data.profileComplete)
-            })
-            .store(in: &cancellables)
-    }
-    
     func serverLogout() {
         let url = URL(string: "\(ip)/member/logout")!
         

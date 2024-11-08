@@ -7,18 +7,15 @@
 
 import SwiftUI
 
-
 struct WelcomeView: View {
     @ObservedObject var authViewModel: AuthenticationViewModel
     
     @State private var navPath: NavigationPath = NavigationPath()
     
     @StateObject private var kakaoAuthViewModel: KakaoAuthViewModel = KakaoAuthViewModel()
+    @StateObject private var appleAuthViewModel: AppleAuthViewModel = AppleAuthViewModel()
     
     @State var isMentor: Bool?
-    
-    @State private var isLoading: Bool = false
-    @State private var showAlert: Bool = false
     
     var body: some View {
         NavigationStack(path: $navPath) {
@@ -57,35 +54,35 @@ struct WelcomeView: View {
                             bgColor: .kakaoYellow
                         )
                         .onTapGesture {
-                            onTapKakaoLogin()
+                            kakaoAuthViewModel.signIn()
                         }
                         
-                        /*
-                         // 애플 로그인
-                         WelcomeViewSocialButton(
-                         text: "애플로 시작하기",
-                         textColor: .appleWhite,
-                         isSystemImage: true,
-                         image: "apple.logo",
-                         systemImageColor: .appleWhite,
-                         bgColor: .appleBlack
-                         )
-                         .onTapGesture {
-                         }
-                         */
+                        // 애플 로그인
+                        WelcomeViewSocialButton(
+                            text: "Apple로 시작하기",
+                            textColor: .appleWhite,
+                            isSystemImage: true,
+                            image: "apple.logo",
+                            systemImageColor: .appleWhite,
+                            bgColor: .appleBlack
+                        )
+                        .onTapGesture {
+                            appleAuthViewModel.signIn()
+                        }
                     }
                     .padding(.bottom, 31)
                 }
-                
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                
-                if isLoading {
-                    LoadingView()
-                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
+            .onChange(of: kakaoAuthViewModel.profileComplete) { profileComplete in
+                isProfileComplete(profileComplete: profileComplete)
+            }
+            .onChange(of: appleAuthViewModel.profileComplete) { profileComplete in
+                isProfileComplete(profileComplete: profileComplete)
+            }
             .navigationDestination(for: String.self) { path in
                 switch path {
                 case "MentorMenteeView":
@@ -93,7 +90,7 @@ struct WelcomeView: View {
                     
                 case "VerifyMentorView":
                     VerifyMentorView(navPath: $navPath)
-                
+                    
                 case "SetProfileView":
                     SetProfileView(authViewModel: authViewModel, navPath: $navPath, isMentor: isMentor!)
                     
@@ -103,46 +100,19 @@ struct WelcomeView: View {
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-        .alert(isPresented: $showAlert) {
-            Alert(
-                title: Text("오류"),
-                message: Text("인증에 실패하였습니다."),
-                dismissButton: .default(
-                    Text("확인"),
-                    action: {
-                        isLoading = false
-                    }
-                )
-            )
-        }
     }
     
-    func onTapKakaoLogin() {
-        isLoading = true
-        
-        kakaoAuthViewModel.kakaoAuth() { accessToken in
-            if let accessToken {
-                authViewModel.oAuthLogin(accessToken: accessToken, memberType: "KAKAO") { isSet in
-                    if isSet != nil {
-                        // 메인 페이지로 변경
-                        DispatchQueue.main.async {
-                            authViewModel.isRefreshTokenValid = true
-                        }
-                        
-                        navPath.append("MentorMenteeView")
-                        isLoading = false
-                    } else {
-                        showAlert = true
-                    }
+    func isProfileComplete(profileComplete: Bool?) {
+        if profileComplete != nil {
+            if profileComplete! {
+                // 메인 페이지로 변경
+                DispatchQueue.main.async {
+                    authViewModel.isRefreshTokenValid = true
                 }
             } else {
-                isLoading = false
+                navPath.append("MentorMenteeView")
             }
         }
-    }
-    
-    func onTapAppleLogin() {
-        
     }
 }
 
