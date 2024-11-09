@@ -154,6 +154,10 @@ class AuthenticationViewModel: ObservableObject {
         }
         
         Keychain().delete(key: "MEMBER_TYPE")
+        
+        DispatchQueue.main.async {
+            self.isRefreshTokenValid = false
+        }
     }
     
     func serverLogout() {
@@ -180,8 +184,6 @@ class AuthenticationViewModel: ObservableObject {
             })
             .store(in: &self.cancellables)
         
-        DispatchQueue.main.async {
-            self.isRefreshTokenValid = false
-        }
+        self.logOut()
     }
 }
