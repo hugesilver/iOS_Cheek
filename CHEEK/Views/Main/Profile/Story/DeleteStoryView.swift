@@ -147,7 +147,7 @@ struct DeleteStoryView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
         }
         .alert(isPresented: $showAlert) {
             switch deleteMode {

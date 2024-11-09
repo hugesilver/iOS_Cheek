@@ -88,7 +88,7 @@ struct FeedView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             getFeed()
         }
         .onChange(of: selectedCategory) { _ in

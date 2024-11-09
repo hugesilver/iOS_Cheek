@@ -26,7 +26,7 @@ struct RequestMentorView: View {
         .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true).onAppear {
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
         }
     }
     

@@ -140,7 +140,7 @@ struct SetHighlightView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
         .onAppear {
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
         }
         .alert(isPresented: $highlightViewModel.showAlert) {
             Alert(

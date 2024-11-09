@@ -107,7 +107,7 @@ struct AccountPreferencesView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
         }
         .alert(isPresented: $showAlert) {
             switch alertMode {

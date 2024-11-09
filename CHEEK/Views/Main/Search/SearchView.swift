@@ -197,7 +197,7 @@ struct SearchView: View {
         .onAppear {
             UINavigationBar.setAnimationsEnabled(false)
             
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             
             if catetory != nil {
                 selectedCategory = catetory

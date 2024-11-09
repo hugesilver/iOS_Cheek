@@ -13,16 +13,26 @@ class CombinePublishers: ObservableObject {
     private var cancellable: AnyCancellable?
     private var isAlreadyRequesting = false
     
+    func checkRefreshTokenValid() -> Bool {
+        guard let _ = Keychain().read(key: "REFRESH_TOKEN"),
+              let refreshTokenExpireTime = Keychain().read(key: "REFRESH_TOKEN_EXPIRE_TIME"),
+              let refreshTokenExpireTimeToDate = Utils().convertTokenTime(timeString: refreshTokenExpireTime) else {
+            return false
+        }
+        
+        return refreshTokenExpireTimeToDate >= Date()
+    }
+    
     func urlSession(req: URLRequest) -> AnyPublisher<Data, Error> {
         // combine urlsession
         guard let accessToken: String = Keychain().read(key: "ACCESS_TOKEN") else {
             print("ACCESS_TOKEN 불러오기 실패")
-            return Fail(error: URLError(.clientCertificateRejected)).eraseToAnyPublisher()
+            return Fail(error: URLError(.clientCertificateRequired)).eraseToAnyPublisher()
         }
         
-        if !AuthenticationViewModel().checkRefreshTokenValid() {
+        if !self.checkRefreshTokenValid() {
             print("REFRESH_TOKEN 만료")
-            return Fail(error: URLError(.clientCertificateRejected)).eraseToAnyPublisher()
+            return Fail(error: URLError(.clientCertificateRequired)).eraseToAnyPublisher()
         }
         
         var request: URLRequest = req
@@ -59,6 +69,8 @@ class CombinePublishers: ObservableObject {
                 
                 return self.reissueAccessToken()
                     .handleEvents(receiveOutput: { data in
+                        self.isAlreadyRequesting = false
+                        
                         if let decodedData = try? JSONDecoder().decode(AccessTokenModel.self, from: data) {
                             Keychain().create(key: "ACCESS_TOKEN", value: decodedData.accessToken)
                             Keychain().create(key: "ACCESS_TOKEN_EXPIRE_TIME", value: decodedData.accessTokenExpireTime)
@@ -74,12 +86,11 @@ class CombinePublishers: ObservableObject {
             .eraseToAnyPublisher()
     }
     
-    
     // 액세스 토큰 재발급
     func reissueAccessToken() -> AnyPublisher<Data, Error> {
-        if !AuthenticationViewModel().checkRefreshTokenValid() {
+        if !self.checkRefreshTokenValid() {
             print("REFRESH_TOKEN이 유효하지 않음")
-            return Fail(error: URLError(.clientCertificateRejected)).eraseToAnyPublisher()
+            return Fail(error: URLError(.clientCertificateRequired)).eraseToAnyPublisher()
         }
         
         guard let refreshToken = Keychain().read(key: "REFRESH_TOKEN"),
@@ -87,7 +98,7 @@ class CombinePublishers: ObservableObject {
               let accessTokenExpireTime = Keychain().read(key: "ACCESS_TOKEN_EXPIRE_TIME"),
               let _ = Utils().convertTokenTime(timeString: accessTokenExpireTime) else {
             print("토큰 정보가 유효하지 않음")
-            return Fail(error: URLError(.clientCertificateRejected)).eraseToAnyPublisher()
+            return Fail(error: URLError(.clientCertificateRequired)).eraseToAnyPublisher()
         }
         
         let url = URL(string: "\(ip)/token/access-token/issue")!

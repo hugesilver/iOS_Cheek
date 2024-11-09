@@ -6,23 +6,15 @@
 //
 
 import SwiftUI
-import KakaoSDKCommon
 import KakaoSDKAuth
 
 struct ContentView: View {
-    let appKeyKakao = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as! String
-    
-    @StateObject var authViewModel: AuthenticationViewModel = AuthenticationViewModel()
-    
-    init() {
-        // Kakao SDK 초기화
-        KakaoSDK.initSDK(appKey: appKeyKakao)
-    }
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     var body: some View {
         Group {
             if authViewModel.isInit {
-                if authViewModel.isRefreshTokenValid {
+                if authViewModel.isRefreshTokenValid == true {
                     MainView(authViewModel: authViewModel)
                 } else {
                     WelcomeView(authViewModel: authViewModel)
@@ -40,25 +32,12 @@ struct ContentView: View {
                 .background(.cheekBackgroundTeritory)
             }
         }
-        .onChange(of: authViewModel.isRefreshTokenValid) { isValid in
-            if authViewModel.isInit && !isValid {
-                authViewModel.showAlert = true
-                authViewModel.logOut()
-            }
-        }
         .onAppear {
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
             authViewModel.isInit = true
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
-        }
-        .alert(isPresented: $authViewModel.showAlert) {
-            Alert(title: Text("재로그인이 필요합니다."), dismissButton: .default(Text("확인")))
         }
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(authViewModel: AuthenticationViewModel())
 }

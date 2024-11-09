@@ -82,7 +82,7 @@ struct NotificationView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             notificationViewModel.getNotifications()
             notificationViewModel.getReadNotifications()
         }

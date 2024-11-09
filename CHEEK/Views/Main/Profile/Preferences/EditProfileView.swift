@@ -219,7 +219,7 @@ struct EditProfileView: View {
             Utils().hideKeyboard()
         }
         .onAppear {
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             
             if profileViewModel.profile != nil {
                 nickname = profileViewModel.profile!.nickname

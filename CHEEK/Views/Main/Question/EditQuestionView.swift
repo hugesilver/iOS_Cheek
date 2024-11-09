@@ -110,7 +110,7 @@ struct EditQuestionView: View {
         .onAppear {
             UINavigationBar.setAnimationsEnabled(false)
             
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             question = content
         }
         .onDisappear {

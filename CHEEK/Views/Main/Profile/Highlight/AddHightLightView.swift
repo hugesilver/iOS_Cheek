@@ -178,7 +178,7 @@ struct AddHighlightView: View {
             )
         }
         .onAppear {
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             
             if highlightViewModel.isDone {
                 dismiss()

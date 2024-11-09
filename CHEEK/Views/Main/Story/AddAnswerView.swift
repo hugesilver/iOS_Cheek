@@ -106,7 +106,7 @@ struct AddAnswerView: View {
         .onAppear {
             UINavigationBar.setAnimationsEnabled(false)
             
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
         }
         .onDisappear {
             UINavigationBar.setAnimationsEnabled(true)

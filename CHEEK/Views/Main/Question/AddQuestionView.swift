@@ -109,7 +109,7 @@ struct AddQuestionView: View {
         .onAppear {
             UINavigationBar.setAnimationsEnabled(false)
             
-            authViewModel.isRefreshTokenValid = authViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
         }
         .onDisappear {
             UINavigationBar.setAnimationsEnabled(true)
