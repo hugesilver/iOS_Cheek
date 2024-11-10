@@ -17,6 +17,9 @@ struct WelcomeView: View {
     
     @State var isMentor: Bool?
     
+    @State private var isLoading: Bool = false
+    @State private var showAlert: Bool = false
+    
     var body: some View {
         NavigationStack(path: $navPath) {
             ZStack {
@@ -54,6 +57,7 @@ struct WelcomeView: View {
                             bgColor: .kakaoYellow
                         )
                         .onTapGesture {
+                            isLoading = true
                             kakaoAuthViewModel.signIn()
                         }
                         
@@ -74,15 +78,13 @@ struct WelcomeView: View {
                 }
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                
+                if isLoading {
+                    LoadingView()
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
-            .onChange(of: kakaoAuthViewModel.profileComplete) { profileComplete in
-                isProfileComplete(profileComplete: profileComplete)
-            }
-            .onChange(of: appleAuthViewModel.profileComplete) { profileComplete in
-                isProfileComplete(profileComplete: profileComplete)
-            }
             .navigationDestination(for: String.self) { path in
                 switch path {
                 case "MentorMenteeView":
@@ -100,6 +102,33 @@ struct WelcomeView: View {
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
+        .onReceive(kakaoAuthViewModel.$isComplete) { isComplete in
+            if isLoading && isComplete == false {
+                showAlert = true
+            }
+        }
+        .onReceive(appleAuthViewModel.$isComplete) { isComplete in
+            if isLoading && isComplete == false {
+                showAlert = true
+            }
+        }
+        .onChange(of: kakaoAuthViewModel.profileComplete) { profileComplete in
+            isProfileComplete(profileComplete: profileComplete)
+        }
+        .onChange(of: appleAuthViewModel.profileComplete) { profileComplete in
+            isProfileComplete(profileComplete: profileComplete)
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("인증에 실패했습니다."),
+                dismissButton: .default(
+                    Text("확인"),
+                    action: {
+                        isLoading = false
+                    }
+                )
+            )
+        }
     }
     
     func isProfileComplete(profileComplete: Bool?) {

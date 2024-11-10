@@ -69,6 +69,10 @@ class AuthenticationViewModel: ObservableObject {
     // 프로필 완료 확인
     func getProfileDone() {
         isProfileDone = UserDefaults.standard.bool(forKey: "profileDone")
+        
+        if isProfileDone == false {
+            serverLogout()
+        }
     }
     
     // 리프레시 토큰 유효성 체크
@@ -192,7 +196,5 @@ class AuthenticationViewModel: ObservableObject {
                 }
             })
             .store(in: &self.cancellables)
-        
-        self.logOut()
     }
 }

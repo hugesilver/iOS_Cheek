@@ -17,6 +17,7 @@ class KakaoAuthViewModel: ObservableObject {
     private let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
     private var cancellables = Set<AnyCancellable>()
     
+    @Published var isComplete: Bool? = nil
     @Published var profileComplete: Bool? = nil
     
     // 카카오 로그인
@@ -25,6 +26,7 @@ class KakaoAuthViewModel: ObservableObject {
             UserApi.shared.loginWithKakaoTalk { (oauthToken, error) in
                 if let error = error {
                     print("카카오톡 앱을 통하여 로그인 중 오류: \(error)")
+                    self.isComplete = false
                 }
                 
                 if oauthToken != nil {
@@ -41,6 +43,7 @@ class KakaoAuthViewModel: ObservableObject {
             UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
                 if let error = error {
                     print("카카오톡 웹사이트를 통하여 로그인 중 오류: \(error)")
+                    self.isComplete = false
                 }
                 
                 if oauthToken != nil {
@@ -77,6 +80,7 @@ class KakaoAuthViewModel: ObservableObject {
             request.httpBody = try JSONSerialization.data(withJSONObject: bodyData, options: [])
         } catch {
             print("OAuth Login JSON 변환 중 오류: \(error)")
+            self.isComplete = false
             return
         }
         
@@ -102,6 +106,7 @@ class KakaoAuthViewModel: ObservableObject {
                     print("oauthLogin 함수 실행 중 요청 성공")
                 case .failure(let error):
                     print("oauthLogin 함수 실행 중 요청 실패: \(error)")
+                    self.isComplete = false
                 }
             }, receiveValue: { data in
                 Keychain().create(key: "MEMBER_TYPE", value: "KAKAO")
@@ -113,6 +118,7 @@ class KakaoAuthViewModel: ObservableObject {
                 
                 DispatchQueue.main.async {
                     self.profileComplete = data.profileComplete
+                    self.isComplete = true
                 }
             })
             .store(in: &cancellables)

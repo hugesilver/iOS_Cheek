@@ -17,6 +17,7 @@ class AppleAuthViewModel: NSObject, ObservableObject, ASAuthorizationControllerD
     private let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
     private var cancellables = Set<AnyCancellable>()
     
+    @Published var isComplete: Bool? = nil
     @Published var profileComplete: Bool? = nil
     
     // 난수 생성
@@ -70,21 +71,24 @@ class AppleAuthViewModel: NSObject, ObservableObject, ASAuthorizationControllerD
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
             guard let nonce = currentNonce else {
                 print("Invalid state: A login callback was received, but no login request was sent.")
+                self.isComplete = false
                 return
             }
             guard let appleIDToken = appleIDCredential.identityToken else {
                 print("Unable to fetch identity token")
+                self.isComplete = false
                 return
             }
             guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
                 print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
+                self.isComplete = false
                 return
             }
             
             oAuthLogin(token: idTokenString)
             UIPasteboard.general.string = idTokenString
         } else {
-            
+            self.isComplete = false
         }
     }
     
@@ -109,6 +113,7 @@ class AppleAuthViewModel: NSObject, ObservableObject, ASAuthorizationControllerD
             request.httpBody = try JSONSerialization.data(withJSONObject: bodyData, options: [])
         } catch {
             print("OAuth Login JSON 변환 중 오류: \(error)")
+            self.isComplete = false
             return
         }
         
@@ -134,6 +139,7 @@ class AppleAuthViewModel: NSObject, ObservableObject, ASAuthorizationControllerD
                     print("oauthLogin 함수 실행 중 요청 성공")
                 case .failure(let error):
                     print("oauthLogin 함수 실행 중 요청 실패: \(error)")
+                    self.isComplete = false
                 }
             }, receiveValue: { data in
                 Keychain().create(key: "MEMBER_TYPE", value: "APPLE")
@@ -145,6 +151,7 @@ class AppleAuthViewModel: NSObject, ObservableObject, ASAuthorizationControllerD
                 
                 DispatchQueue.main.async {
                     self.profileComplete = data.profileComplete
+                    self.isComplete = true
                 }
             })
             .store(in: &cancellables)
