@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct HighlightView: View {
     @Environment(\.dismiss) private var dismiss
@@ -35,21 +36,25 @@ struct HighlightView: View {
                     ZStack(alignment: .top) {
                         if storyViewModel.isAllLoaded {
                             if !storyViewModel.stories.isEmpty {
-                                AsyncImage(url: URL(string: storyViewModel.stories[storyViewModel.currentIndex].storyPicture)) { image in
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                        .background(.cheekMainNormal)
-                                        .clipped()
-                                } placeholder: {
-                                    Color.clear
-                                }
-                                .frame(
-                                    width: UIScreen.main.bounds.width,
-                                    height: (UIScreen.main.bounds.width / 9) * 16
-                                )
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                KFImage(URL(string: storyViewModel.stories[storyViewModel.currentIndex].storyPicture))
+                                    .placeholder {
+                                        Color.clear
+                                    }
+                                    .retry(maxCount: 2, interval: .seconds(2))
+                                    .onSuccess { result in
+                                        
+                                    }
+                                    .onFailure { error in
+                                        print("이미지 불러오기 실패: \(error)")
+                                    }
+                                    .resizable()
+                                    .cancelOnDisappear(true)
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(
+                                        width: UIScreen.main.bounds.width,
+                                        height: (UIScreen.main.bounds.width / 9) * 16
+                                    )
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
                                 
                                 HStack(spacing: 4) {
                                     ForEach(storyViewModel.stories.indices, id: \.self) { index in

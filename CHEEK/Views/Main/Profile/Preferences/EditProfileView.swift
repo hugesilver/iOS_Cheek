@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PhotosUI
+import Kingfisher
 
 struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
@@ -72,7 +73,7 @@ struct EditProfileView: View {
                 ScrollView {
                     VStack {
                         // 프로필 사진 선택
-                        PhotosPicker(selection: $photosPickerItem, matching: .images) {
+                        ZStack {
                             if let image = selectImage {
                                 Image(uiImage: image)
                                     .resizable()
@@ -81,19 +82,22 @@ struct EditProfileView: View {
                                     .clipShape(Circle())
                             } else {
                                 if profileViewModel.profile?.profilePicture != nil {
-                                    AsyncImage(url: URL(string: profileViewModel.profile!.profilePicture!)) { image in
-                                        image
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 128, height: 128)
-                                            .clipShape(Circle())
-                                    } placeholder: {
-                                        Image("ImageDefaultProfile")
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 128, height: 128)
-                                            .clipShape(Circle())
-                                    }
+                                    KFImage(URL(string: profileViewModel.profile!.profilePicture!))
+                                        .placeholder {
+                                            Image("ImageDefaultProfile")
+                                        }
+                                        .retry(maxCount: 2, interval: .seconds(2))
+                                        .onSuccess { result in
+                                            
+                                        }
+                                        .onFailure { error in
+                                            print("이미지 불러오기 실패: \(error)")
+                                        }
+                                        .resizable()
+                                        .cancelOnDisappear(true)
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 128, height: 128)
+                                        .clipShape(Circle())
                                 } else {
                                     Image("ImageDefaultProfile")
                                         .resizable()
@@ -102,14 +106,19 @@ struct EditProfileView: View {
                                         .clipShape(Circle())
                                 }
                             }
-                        }
-                        .onChange(of: photosPickerItem) { image in
-                            Task {
-                                guard let data = try? await image?.loadTransferable(type: Data.self) else { return }
-                                selectImage = UIImage(data: data)
-                            }
                             
-                            photosPickerItem = nil
+                            PhotosPicker(selection: $photosPickerItem, matching: .images) {
+                                Color.clear
+                                    .frame(width: 128, height: 128)
+                            }
+                            .onChange(of: photosPickerItem) { image in
+                                Task {
+                                    guard let data = try? await image?.loadTransferable(type: Data.self) else { return }
+                                    selectImage = UIImage(data: data)
+                                }
+                                
+                                photosPickerItem = nil
+                            }
                         }
                         .overlay(
                             Circle()
@@ -230,6 +239,24 @@ struct EditProfileView: View {
         .alert(isPresented: $viewModel.showAlert) {
             Alert(title: Text("오류"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")))
         }
+    }
+    
+    @MainActor
+    private func loadImage() -> some View {
+        KFImage(URL(string: profileViewModel.profile!.profilePicture!))
+            .placeholder {
+                Image("ImageDefaultProfile")
+            }
+            .retry(maxCount: 2, interval: .seconds(2))
+            .onSuccess { result in }
+            .onFailure { error in
+                print("이미지 불러오기 실패: \(error)")
+            }
+            .resizable()
+            .cancelOnDisappear(true)
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 128, height: 128)
+            .clipShape(Circle())
     }
     
     // 닉네임 폼 중복 확인

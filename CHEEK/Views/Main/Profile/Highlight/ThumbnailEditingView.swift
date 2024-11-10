@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PhotosUI
+import Kingfisher
 
 fileprivate let ratio: CGFloat = 0.814
 fileprivate let size: CGSize = .init(width: UIScreen.main.bounds.width * ratio, height: UIScreen.main.bounds.width * ratio)
@@ -125,26 +126,30 @@ struct ThumbnailEditingView: View {
                                 }
                             
                             ForEach(highlightViewModel.selectedStories) { story in
-                                AsyncImage(url: URL(string: story.storyPicture)) { image in
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 160, height: 240)
-                                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(.cheekMainNormal, lineWidth: selectedThumbnail != nil && selectedThumbnail!.storyId == story.storyId ? 4 : 0)
-                                        )
-                                        .onTapGesture {
-                                            selectedThumbnail = story
-                                            
-                                            highlightViewModel.convertUIImage(url: story.storyPicture)
-                                        }
-                                } placeholder: {
-                                    Color.cheekLineAlternative
-                                        .frame(width: 160, height: 240)
-                                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                                }
+                                KFImage(URL(string: story.storyPicture))
+                                    .placeholder {
+                                        Color.cheekLineAlternative
+                                    }
+                                    .retry(maxCount: 2, interval: .seconds(2))
+                                    .onSuccess { result in
+                                        
+                                    }
+                                    .onFailure { error in
+                                        print("이미지 불러오기 실패: \(error)")
+                                    }
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 160, height: 240)
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .strokeBorder(.cheekMainNormal, lineWidth: selectedThumbnail != nil && selectedThumbnail!.storyId == story.storyId ? 4 : 0)
+                                    )
+                                    .onTapGesture {
+                                        selectedThumbnail = story
+                                        
+                                        highlightViewModel.convertUIImage(url: story.storyPicture)
+                                    }
                             }
                         }
                         .padding(.horizontal, 16)

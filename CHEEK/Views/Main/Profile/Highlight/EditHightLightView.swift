@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 fileprivate let vGridSpacing: CGFloat = 4
 
@@ -62,17 +63,21 @@ struct EditHighlightView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(highlightViewModel.selectedStories) { story in
-                        AsyncImage(url: URL(string: story.storyPicture)) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 159, height: 281)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                        } placeholder: {
-                            Color.cheekLineAlternative
-                                .frame(width: 159, height: 281)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                        }
+                        KFImage(URL(string: story.storyPicture))
+                            .placeholder {
+                                Color.cheekLineAlternative
+                            }
+                            .retry(maxCount: 2, interval: .seconds(2))
+                            .onSuccess { result in
+                                
+                            }
+                            .onFailure { error in
+                                print("이미지 불러오기 실패: \(error)")
+                            }
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 159, height: 281)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
                     
                     RoundedRectangle(cornerRadius: 16)
@@ -88,18 +93,24 @@ struct EditHighlightView: View {
                 LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: vGridSpacing), count: 3), spacing: 4) {
                     ForEach(profileViewModel.stories) { story in
                         ZStack(alignment: .leading) {
-                            AsyncImage(url: URL(string: story.storyPicture)) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(
-                                        width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
-                                        height: 156
-                                    )
-                                    .clipped()
-                            } placeholder: {
-                                Color.cheekLineAlternative
-                            }
+                            KFImage(URL(string: story.storyPicture))
+                                .placeholder {
+                                    Color.cheekLineAlternative
+                                }
+                                .retry(maxCount: 2, interval: .seconds(2))
+                                .onSuccess { result in
+                                    
+                                }
+                                .onFailure { error in
+                                    print("이미지 불러오기 실패: \(error)")
+                                }
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(
+                                    width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
+                                    height: 156
+                                )
+                                .clipped()
                             
                             if highlightViewModel.selectedStories.contains(story) {
                                 Rectangle()

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct RankingCard: View {
     @ObservedObject var authViewModel: AuthenticationViewModel
@@ -282,28 +283,27 @@ struct StoryCard: View {
     @Binding var selectedStories: [Int64]
     
     var body: some View {
-        AsyncImage(url: URL(string: storyPicture)) { image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(
-                    width: 160,
-                    height: 240
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-        } placeholder: {
-            Color.cheekMainNormal
-                .frame(
-                    width: 160,
-                    height: 240
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            selectedStories = [storyId]
-            isStoryOpen = true
-        }
+        KFImage(URL(string: storyPicture))
+            .placeholder {
+                Color.cheekMainNormal
+            }
+            .retry(maxCount: 2, interval: .seconds(2))
+            .onSuccess { result in
+                
+            }
+            .onFailure { error in
+                print("\(storyPicture) 이미지 불러오기 실패: \(error)")
+            }
+            .resizable()
+            .cancelOnDisappear(true)
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 160, height: 240)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .contentShape(Rectangle())
+            .onTapGesture {
+                selectedStories = [storyId]
+                isStoryOpen = true
+            }
     }
 }
 

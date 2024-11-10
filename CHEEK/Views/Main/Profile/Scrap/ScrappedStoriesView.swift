@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 fileprivate let vGridSpacing: CGFloat = 4
 
@@ -94,18 +95,25 @@ struct ScrappedStoriesView: View {
                         LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 4), count: 3), spacing: 4) {
                             ForEach(scrapViewModel.collections) { collection in
                                 ZStack(alignment: .leading) {
-                                    AsyncImage(url: URL(string: collection.storyPicture)) { image in
-                                        image
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(
-                                                width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
-                                                height: 156
-                                            )
-                                            .clipped()
-                                    } placeholder: {
-                                        Color.cheekLineAlternative
-                                    }
+                                    KFImage(URL(string: collection.storyPicture))
+                                        .placeholder {
+                                            Color.cheekLineAlternative
+                                        }
+                                        .retry(maxCount: 2, interval: .seconds(2))
+                                        .onSuccess { result in
+                                            
+                                        }
+                                        .onFailure { error in
+                                            print("이미지 불러오기 실패: \(error)")
+                                        }
+                                        .resizable()
+                                        .cancelOnDisappear(true)
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(
+                                            width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
+                                            height: 156
+                                        )
+                                        .clipped()
                                     
                                     if selectedCollections.contains(collection) {
                                         Rectangle()
@@ -203,18 +211,25 @@ struct ScrappedStoriesView: View {
                         LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 4), count: 3), spacing: 4) {
                             ForEach(scrapViewModel.collections) { collection in
                                 ZStack(alignment: .leading) {
-                                    AsyncImage(url: URL(string: collection.storyPicture)) { image in
-                                        image
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(
-                                                width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
-                                                height: 156
-                                            )
-                                            .clipped()
-                                    } placeholder: {
-                                        Color.cheekLineAlternative
-                                    }
+                                    KFImage(URL(string: collection.storyPicture))
+                                        .placeholder {
+                                            Color.cheekLineAlternative
+                                        }
+                                        .retry(maxCount: 2, interval: .seconds(2))
+                                        .onSuccess { result in
+                                            
+                                        }
+                                        .onFailure { error in
+                                            print("이미지 불러오기 실패: \(error)")
+                                        }
+                                        .resizable()
+                                        .cancelOnDisappear(true)
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(
+                                            width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
+                                            height: 156
+                                        )
+                                        .clipped()
                                     
                                     VStack {
                                         Spacer()

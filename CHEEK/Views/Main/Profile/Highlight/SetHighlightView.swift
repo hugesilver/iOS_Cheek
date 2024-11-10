@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct SetHighlightView: View {
     @Environment(\.dismiss) private var dismiss
@@ -54,20 +55,30 @@ struct SetHighlightView: View {
                     if highlightViewModel.originalThumbnail != nil {
                         Group {
                             if highlightViewModel.selectedStories.last?.storyPicture != nil {
-                                AsyncImage(url: URL(string: highlightViewModel.selectedStories.last!.storyPicture)) { image in
-                                    image
-                                        .resizable()
-                                } placeholder: {
-                                    Image("ImageDefaultProfile")
-                                        .resizable()
-                                }
+                                KFImage(URL(string: highlightViewModel.selectedStories.last!.storyPicture))
+                                    .placeholder {
+                                        Image("ImageDefaultProfile")
+                                    }
+                                    .retry(maxCount: 2, interval: .seconds(2))
+                                    .onSuccess { result in
+                                        
+                                    }
+                                    .onFailure { error in
+                                        print("이미지 불러오기 실패: \(error)")
+                                    }
+                                    .resizable()
+                                    .cancelOnDisappear(true)
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 128, height: 128)
+                                    .clipShape(Circle())
                             } else {
                                 Image("ImageDefaultProfile")
                                     .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 128, height: 128)
+                                    .clipShape(Circle())
                             }
                         }
-                        .frame(width: 128, height: 128)
-                        .clipShape(Circle())
                     } else {
                         if highlightViewModel.thumbnail != nil {
                             Image(uiImage: highlightViewModel.thumbnail!)
@@ -78,16 +89,28 @@ struct SetHighlightView: View {
                         } else {
                             Group {
                                 if highlightViewModel.selectedStories.first?.storyPicture != nil {
-                                    AsyncImage(url: URL(string: highlightViewModel.selectedStories.first!.storyPicture)) { image in
-                                        image
-                                            .resizable()
-                                    } placeholder: {
-                                        Image("ImageDefaultProfile")
-                                            .resizable()
-                                    }
+                                    KFImage(URL(string: highlightViewModel.selectedStories.first!.storyPicture))
+                                        .placeholder {
+                                            Image("ImageDefaultProfile")
+                                        }
+                                        .retry(maxCount: 2, interval: .seconds(2))
+                                        .onSuccess { result in
+                                            
+                                        }
+                                        .onFailure { error in
+                                            print("이미지 불러오기 실패: \(error)")
+                                        }
+                                        .resizable()
+                                        .cancelOnDisappear(true)
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 128, height: 128)
+                                        .clipShape(Circle())
                                 } else {
                                     Image("ImageDefaultProfile")
                                         .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 128, height: 128)
+                                        .clipShape(Circle())
                                 }
                             }
                             .frame(width: 128, height: 128)

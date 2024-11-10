@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct NotificationView: View {
     @Environment(\.dismiss) private var dismiss
@@ -159,17 +160,22 @@ struct NotificationBlock: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             
             if thumbnailPicture != nil {
-                AsyncImage(url: URL(string: thumbnailPicture!)) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } placeholder: {
-                    Image("ImageDefaultProfile")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                }
-                .frame(width: 48, height: 48)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
+                KFImage(URL(string: thumbnailPicture!))
+                    .placeholder {
+                        Image("ImageDefaultProfile")
+                    }
+                    .retry(maxCount: 2, interval: .seconds(2))
+                    .onSuccess { result in
+                        
+                    }
+                    .onFailure { error in
+                        print("\(thumbnailPicture!) 이미지 불러오기 실패: \(error)")
+                    }
+                    .resizable()
+                    .cancelOnDisappear(true)
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 48, height: 48)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
             }
         }
         .padding(16)
