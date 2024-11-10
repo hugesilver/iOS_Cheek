@@ -196,5 +196,7 @@ class AuthenticationViewModel: ObservableObject {
                 }
             })
             .store(in: &self.cancellables)
+        
+        self.logOut()
     }
 }

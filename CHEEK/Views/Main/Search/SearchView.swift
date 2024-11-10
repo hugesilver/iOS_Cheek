@@ -195,8 +195,6 @@ struct SearchView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            UINavigationBar.setAnimationsEnabled(false)
-            
             authViewModel.checkRefreshTokenValid()
             
             if catetory != nil {
@@ -205,9 +203,6 @@ struct SearchView: View {
             
             viewModel.getRecentSearched()
             viewModel.getTrendingKeywords()
-        }
-        .onDisappear {
-            UINavigationBar.setAnimationsEnabled(true)
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {

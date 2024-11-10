@@ -105,11 +105,13 @@ struct AddAnswerView: View {
         .navigationBarHidden(true)
         .onAppear {
             UINavigationBar.setAnimationsEnabled(false)
+            AppState.shared.swipeEnabled = false
             
             authViewModel.checkRefreshTokenValid()
         }
         .onDisappear {
             UINavigationBar.setAnimationsEnabled(true)
+            AppState.shared.swipeEnabled = true
         }
         .alert(isPresented: $viewModel.showAlert) {
             Alert(

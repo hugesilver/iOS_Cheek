@@ -69,7 +69,7 @@ class AppleAuthViewModel: NSObject, ObservableObject, ASAuthorizationControllerD
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-            guard let nonce = currentNonce else {
+            guard currentNonce != nil else {
                 print("Invalid state: A login callback was received, but no login request was sent.")
                 self.isComplete = false
                 return

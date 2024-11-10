@@ -94,6 +94,7 @@
 		E2C562172CDBE3DB00276F44 /* AdminMemberInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C562162CDBE3DB00276F44 /* AdminMemberInfoModel.swift */; };
 		E2C562192CDC89F500276F44 /* AppleAuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C562182CDC89F500276F44 /* AppleAuthViewModel.swift */; };
 		E2C5621B2CE0BD1100276F44 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C5621A2CE0BD1100276F44 /* Alert.swift */; };
+		E2C5621F2CE0CD5900276F44 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C5621E2CE0CD5900276F44 /* AppState.swift */; };
 		E2D5577F2CA575A3005285BE /* RegisterDomainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5577E2CA575A3005285BE /* RegisterDomainViewModel.swift */; };
 		E2D557812CAB0AC5005285BE /* CombinePublishers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D557802CAB0AC5005285BE /* CombinePublishers.swift */; };
 		E2D8BE092CC0D9960064E344 /* SetHighlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE082CC0D9960064E344 /* SetHighlightView.swift */; };
@@ -221,6 +222,7 @@
 		E2C562162CDBE3DB00276F44 /* AdminMemberInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminMemberInfoModel.swift; sourceTree = "<group>"; };
 		E2C562182CDC89F500276F44 /* AppleAuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuthViewModel.swift; sourceTree = "<group>"; };
 		E2C5621A2CE0BD1100276F44 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		E2C5621E2CE0CD5900276F44 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		E2D5577E2CA575A3005285BE /* RegisterDomainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDomainViewModel.swift; sourceTree = "<group>"; };
 		E2D557802CAB0AC5005285BE /* CombinePublishers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePublishers.swift; sourceTree = "<group>"; };
 		E2D8BE082CC0D9960064E344 /* SetHighlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetHighlightView.swift; sourceTree = "<group>"; };
@@ -409,7 +411,6 @@
 			isa = PBXGroup;
 			children = (
 				E2C562082CD69C3700276F44 /* Profile */,
-				E2D557802CAB0AC5005285BE /* CombinePublishers.swift */,
 				E2BD4D9C2C29499D00E1B783 /* Authentication */,
 				E2F376102C1A1D8200A727C7 /* Main */,
 				E28365272C034EF0002D4624 /* Welcome */,
@@ -762,8 +763,10 @@
 				E2E740E22C00B289003B510B /* CHEEKApp.swift */,
 				E2E740E62C00B28B003B510B /* Assets.xcassets */,
 				E2E740E82C00B28B003B510B /* Preview Content */,
-				E218779E2CBB1A5700DD541C /* Utils.swift */,
 				E2D8BE3E2CCA33940064E344 /* AppDelegate.swift */,
+				E2C5621E2CE0CD5900276F44 /* AppState.swift */,
+				E2D557802CAB0AC5005285BE /* CombinePublishers.swift */,
+				E218779E2CBB1A5700DD541C /* Utils.swift */,
 			);
 			path = CHEEK;
 			sourceTree = "<group>";
@@ -958,6 +961,7 @@
 				E27EF56D2C7C74E50047E6EC /* SearchView.swift in Sources */,
 				E2F376142C1AAECD00A727C7 /* ErrorModel.swift in Sources */,
 				E2D557812CAB0AC5005285BE /* CombinePublishers.swift in Sources */,
+				E2C5621F2CE0CD5900276F44 /* AppState.swift in Sources */,
 				E2E740E32C00B289003B510B /* CHEEKApp.swift in Sources */,
 				E2F3D0F92CB7BC8E00323C0D /* FollowModel.swift in Sources */,
 				E29CF8262C5A1E9C00929437 /* Buttons.swift in Sources */,

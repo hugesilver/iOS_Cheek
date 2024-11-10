@@ -109,12 +109,14 @@ struct EditQuestionView: View {
         }
         .onAppear {
             UINavigationBar.setAnimationsEnabled(false)
+            AppState.shared.swipeEnabled = false
             
             authViewModel.checkRefreshTokenValid()
             question = content
         }
         .onDisappear {
             UINavigationBar.setAnimationsEnabled(true)
+            AppState.shared.swipeEnabled = true
         }
         .alert(isPresented: $viewModel.showAlert) {
             Alert(
