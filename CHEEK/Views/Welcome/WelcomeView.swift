@@ -108,6 +108,8 @@ struct WelcomeView: View {
                 // 메인 페이지로 변경
                 DispatchQueue.main.async {
                     authViewModel.isRefreshTokenValid = true
+                    authViewModel.isProfileDone = true
+                    UserDefaults.standard.set(true, forKey: "profileDone")
                 }
             } else {
                 navPath.append("MentorMenteeView")

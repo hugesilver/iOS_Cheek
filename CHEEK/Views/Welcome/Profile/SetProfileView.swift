@@ -207,7 +207,11 @@ struct SetProfileView: View {
                     isMentor: isMentor) { success in
                         if success {
                             // 메인으로 이동
-                            authViewModel.isRefreshTokenValid = true
+                            DispatchQueue.main.async {
+                                authViewModel.isRefreshTokenValid = true
+                                authViewModel.isProfileDone = true
+                                UserDefaults.standard.set(true, forKey: "profileDone")
+                            }
                             // 웰컴 페이지 초기 페이지로 이동
                             navPath = NavigationPath()
                         } else {

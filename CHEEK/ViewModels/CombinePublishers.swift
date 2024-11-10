@@ -93,10 +93,7 @@ class CombinePublishers: ObservableObject {
             return Fail(error: URLError(.clientCertificateRequired)).eraseToAnyPublisher()
         }
         
-        guard let refreshToken = Keychain().read(key: "REFRESH_TOKEN"),
-              let _ = Keychain().read(key: "ACCESS_TOKEN"),
-              let accessTokenExpireTime = Keychain().read(key: "ACCESS_TOKEN_EXPIRE_TIME"),
-              let _ = Utils().convertTokenTime(timeString: accessTokenExpireTime) else {
+        guard let refreshToken = Keychain().read(key: "REFRESH_TOKEN") else {
             print("토큰 정보가 유효하지 않음")
             return Fail(error: URLError(.clientCertificateRequired)).eraseToAnyPublisher()
         }

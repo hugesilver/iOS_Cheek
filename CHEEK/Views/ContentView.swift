@@ -13,8 +13,8 @@ struct ContentView: View {
     
     var body: some View {
         Group {
-            if authViewModel.isInit {
-                if authViewModel.isRefreshTokenValid == true {
+            if authViewModel.isInit && authViewModel.isProfileDone != nil {
+                if authViewModel.isRefreshTokenValid == true && authViewModel.isProfileDone! {
                     MainView(authViewModel: authViewModel)
                 } else {
                     WelcomeView(authViewModel: authViewModel)
@@ -34,6 +34,7 @@ struct ContentView: View {
         }
         .onAppear {
             authViewModel.isInit = true
+            authViewModel.getProfileDone()
         }
     }
 }

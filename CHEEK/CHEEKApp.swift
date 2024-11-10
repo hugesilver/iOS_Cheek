@@ -36,9 +36,10 @@ struct CHEEKApp: App {
                     if isConnected == false {
                         alertType = .connection
                         showAlert = true
+                        authViewModel.logOut()
                     }
                 }
-                .onReceive(authViewModel.$isRefreshTokenValid) { isValid in
+                .onChange(of: authViewModel.isRefreshTokenValid) { isValid in
                     if authViewModel.isInit && isValid == false {
                         alertType = .refreshToken
                         showAlert = true
@@ -50,9 +51,7 @@ struct CHEEKApp: App {
                     case .refreshToken:
                         Alert(title: Text("재로그인이 필요합니다."), dismissButton: .default(Text("확인")))
                     case .connection:
-                        Alert(title: Text("서버에 연결을 할 수 없습니다."), dismissButton: .default(Text("확인"), action: {
-                            authViewModel.logOut()
-                        }))
+                        Alert(title: Text("서버에 연결을 할 수 없습니다."), dismissButton: .default(Text("확인")))
                     }
                 }
         }

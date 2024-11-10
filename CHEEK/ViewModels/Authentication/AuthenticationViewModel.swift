@@ -15,12 +15,14 @@ class AuthenticationViewModel: ObservableObject {
     @Published var isInit: Bool = false
     @Published var isRefreshTokenValid: Bool? = nil
     @Published var isConnected: Bool? = nil
+    @Published var isProfileDone: Bool? = nil
     
     init() {
         checkRefreshTokenValid()
         checkServerConnection()
     }
     
+    // 서버 연결상태 확인
     func checkServerConnection() {
         let url = URL(string: "\(ip)/token/access-token/issue")!
         
@@ -62,6 +64,11 @@ class AuthenticationViewModel: ObservableObject {
                 }
             })
             .store(in: &self.cancellables)
+    }
+    
+    // 프로필 완료 확인
+    func getProfileDone() {
+        isProfileDone = UserDefaults.standard.bool(forKey: "profileDone")
     }
     
     // 리프레시 토큰 유효성 체크
@@ -157,6 +164,8 @@ class AuthenticationViewModel: ObservableObject {
         
         DispatchQueue.main.async {
             self.isRefreshTokenValid = false
+            UserDefaults.standard.removeObject(forKey: "profileDone")
+            self.isProfileDone = false
         }
     }
     
