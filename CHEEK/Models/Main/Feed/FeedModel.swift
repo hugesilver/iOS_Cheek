@@ -14,7 +14,7 @@ struct FeedModel: Identifiable, Codable {
     let storyDto: StoryDto?
     let questionDto: QuestionDto?
     
-    var id: String {
-        modifiedAt + "\(memberDto.memberId)" + type
+    var id: UUID {
+        UUID()
     }
 }
