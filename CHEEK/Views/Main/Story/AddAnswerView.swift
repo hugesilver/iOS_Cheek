@@ -276,6 +276,8 @@ struct DrawPaletteView: View {
             HStack {
                 Text("취소")
                     .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 12)
                     .onTapGesture {
                         viewModel.userInteractState = .save
                     }
@@ -328,12 +330,14 @@ struct DrawPaletteView: View {
                 
                 Text("확인")
                     .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 12)
                     .onTapGesture {
                         viewModel.userInteractState = .save
                     }
             }
-            .padding(.horizontal, 28)
-            .padding(.top, 28)
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
             .frame(maxHeight: .infinity, alignment: .top)
             
             VStack(spacing: 10) {
@@ -365,32 +369,34 @@ struct DrawPaletteView: View {
                     }
                     .tag(0)
                     
-                    HStack(spacing: 14) {
-                        ForEach(paletteGreyscales, id: \.self) { color in
-                            Circle()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(color)
-                                .overlay(
-                                    Circle()
-                                        .stroke(.cheekWhite, lineWidth: 1)
-                                    
-                                )
-                                .onTapGesture {
-                                    viewModel.isDraw = true
-                                    viewModel.inkColor = color
-                                }
+                    if viewModel.inkType == .pen {
+                        HStack(spacing: 14) {
+                            ForEach(paletteGreyscales, id: \.self) { color in
+                                Circle()
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(color)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(.cheekWhite, lineWidth: 1)
+                                        
+                                    )
+                                    .onTapGesture {
+                                        viewModel.isDraw = true
+                                        viewModel.inkColor = color
+                                    }
+                            }
                         }
-                    }
-                    .background(
-                        GeometryReader { geometry in
-                            Color.clear
-                                .preference(key: HeightPreferenceKey.self, value: geometry.size.height)
+                        .background(
+                            GeometryReader { geometry in
+                                Color.clear
+                                    .preference(key: HeightPreferenceKey.self, value: geometry.size.height)
+                            }
+                        )
+                        .onPreferenceChange(HeightPreferenceKey.self) { value in
+                            tabViewHeight = value
                         }
-                    )
-                    .onPreferenceChange(HeightPreferenceKey.self) { value in
-                        tabViewHeight = value
+                        .tag(1)
                     }
-                    .tag(1)
                 }
                 .frame(height: tabViewHeight)
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -400,13 +406,21 @@ struct DrawPaletteView: View {
                         .frame(width: 8, height: 8)
                         .foregroundColor(selectedTab == 0 ? .cheekTextAlternative : .cheekGrey200)
                     
-                    Circle()
-                        .frame(width: 8, height: 8)
-                        .foregroundColor(selectedTab == 1 ? .cheekTextAlternative : .cheekGrey200)
                     
+                    if viewModel.inkType == .pen {
+                        Circle()
+                            .frame(width: 8, height: 8)
+                            .foregroundColor(selectedTab == 1 ? .cheekTextAlternative : .cheekGrey200)
+                    }
                 }
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
+            .onChange(of: viewModel.inkType) { inkType in
+                if inkType == .marker {
+                    selectedTab = 0
+                    viewModel.inkColor = paletteColors[0]
+                }
+            }
         }
     }
 }
@@ -433,6 +447,8 @@ struct BackgroundColorPaletteView: View {
             HStack {
                 Text("취소")
                     .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 12)
                     .onTapGesture {
                         viewModel.userInteractState = .save
                     }
@@ -441,12 +457,14 @@ struct BackgroundColorPaletteView: View {
                 
                 Text("확인")
                     .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 12)
                     .onTapGesture {
                         viewModel.userInteractState = .save
                     }
             }
-            .padding(.horizontal, 28)
-            .padding(.top, 28)
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
             .frame(maxHeight: .infinity, alignment: .top)
             
             VStack(spacing: 10) {
@@ -562,6 +580,8 @@ struct AddTextObjectView: View {
             HStack {
                 Text("취소")
                     .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 12)
                     .onTapGesture {
                         viewModel.cancelTextView()
                         viewModel.userInteractState = .save
@@ -571,14 +591,16 @@ struct AddTextObjectView: View {
                 
                 Text("확인")
                     .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 12)
                     .onTapGesture {
                         viewModel.addTextObject = false
                         viewModel.canvas.becomeFirstResponder()
                         viewModel.userInteractState = .save
                     }
             }
-            .padding(.horizontal, 28)
-            .padding(.top, 28)
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
             .frame(maxHeight: .infinity, alignment: .top)
         }
     }
@@ -624,7 +646,9 @@ struct EditTextObjectView: View {
             
             HStack {
                 Text("취소")
-                    .label2(font: "SUIT", color: .cheekBackgroundTeritory, bold: true)
+                    .label1(font: "SUIT", color: .cheekBackgroundTeritory, bold: true)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 12)
                     .onTapGesture {
                         viewModel.cancelTextView()
                     }
@@ -632,7 +656,9 @@ struct EditTextObjectView: View {
                 Spacer()
                 
                 Text("완료")
-                    .label2(font: "SUIT", color: .cheekBackgroundTeritory, bold: true)
+                    .label1(font: "SUIT", color: .cheekBackgroundTeritory, bold: true)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 12)
                     .onTapGesture {
                         viewModel.editTextObject = false
                         
@@ -640,8 +666,8 @@ struct EditTextObjectView: View {
                         viewModel.canvas.becomeFirstResponder()
                     }
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 24)
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
             .frame(maxHeight: .infinity, alignment: .top)
         }
     }
