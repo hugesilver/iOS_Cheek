@@ -14,7 +14,7 @@ struct AccountPreferencesView: View {
     @ObservedObject var profileViewModel: ProfileViewModel
     
     enum alertModeTypes {
-        case logout, delete
+        case logout, delete, deleted, deletedError
     }
     
     @State var alertMode: alertModeTypes = .logout
@@ -81,6 +81,10 @@ struct AccountPreferencesView: View {
                         Text("회원 탈퇴")
                             .title1(font: "SUIT", color: .cheekStatusAlert, bold: true)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .onTapGesture {
+                                alertMode = .delete
+                                showAlert = true
+                            }
                        
                         
                         if profileViewModel.profile != nil && profileViewModel.profile!.role == "MENTEE" {
@@ -122,13 +126,40 @@ struct AccountPreferencesView: View {
                 )
             case .delete:
                 Alert(
-                    title: Text("정말 회원 탈퇴하시겠습니까?"),
-                    primaryButton: .destructive(Text("네")) {
-                        
+                    title: Text("정말 회원 탈퇴하시겠습니까?\n모든 데이터가 삭제됩니다."),
+                    primaryButton: .destructive(Text("탈퇴")) {
+                        deleteAccount()
                     },
-                    secondaryButton: .cancel(Text("아니오"))
+                    secondaryButton: .cancel(Text("취소"))
+                )
+            case .deleted:
+                Alert(
+                    title: Text("회원 탈퇴가 완료되었습니다.\n이용해주셔서 감사합니다."),
+                    dismissButton: .default(Text("확인")) {
+                        authViewModel.logOut()
+                    }
+                )
+            case .deletedError:
+                Alert(
+                    title: Text("회원 탈퇴 중 오류가 발생하였습니다."),
+                    dismissButton: .default(Text("확인")) {
+                        authViewModel.logOut()
+                    }
                 )
             }
+        }
+    }
+    
+    // 회원 탈퇴
+    func deleteAccount() {
+        authViewModel.deleteAccount() { isDone in
+            if isDone {
+                alertMode = .deleted
+            } else {
+                alertMode = .deletedError
+            }
+            
+            showAlert = true
         }
     }
 }

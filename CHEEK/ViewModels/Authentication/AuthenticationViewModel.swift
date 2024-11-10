@@ -24,7 +24,7 @@ class AuthenticationViewModel: ObservableObject {
     
     // 서버 연결상태 확인
     func checkServerConnection() {
-        let url = URL(string: "\(ip)/token/access-token/issue")!
+        let url = URL(string: "\(ip)/health")!
         
         // Header 세팅
         var request = URLRequest(url: url)
@@ -57,10 +57,8 @@ class AuthenticationViewModel: ObservableObject {
             }, receiveValue: { data in
                 let dataString = String(data: data, encoding: .utf8)
                 
-                if dataString == "ok" {
-                    DispatchQueue.main.async {
-                        self.isConnected = true
-                    }
+                DispatchQueue.main.async {
+                    self.isConnected = dataString == "ok"
                 }
             })
             .store(in: &self.cancellables)
@@ -173,6 +171,7 @@ class AuthenticationViewModel: ObservableObject {
         }
     }
     
+    // 로그아웃 요청
     func serverLogout() {
         let url = URL(string: "\(ip)/member/logout")!
         
@@ -198,5 +197,30 @@ class AuthenticationViewModel: ObservableObject {
             .store(in: &self.cancellables)
         
         self.logOut()
+    }
+    
+    // 회원 탈퇴
+    func deleteAccount(completion: @escaping (Bool) -> Void) {
+        let url = URL(string: "\(ip)/member")!
+        
+        // Header 세팅
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        CombinePublishers().urlSession(req: request)
+            .sink(receiveCompletion: { iscomplete in
+                switch iscomplete {
+                case .finished:
+                    print("deleteAccount 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("deleteAccount 함수 실행 중 요청 실패: \(error)")
+                    completion(false)
+                }
+            }, receiveValue: { data in
+                let dataString = String(data: data, encoding: .utf8)
+                
+                completion(dataString == "ok")
+            })
+            .store(in: &self.cancellables)
     }
 }
