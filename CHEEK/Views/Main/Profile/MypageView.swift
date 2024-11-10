@@ -167,21 +167,21 @@ struct MypageView: View {
                                     NavigationLink(destination: AddHighlightView(
                                         authViewModel: authViewModel,
                                         profileViewModel: profileViewModel)) {
-                                        VStack(spacing: 12) {
-                                            Image("IconPlus")
-                                                .resizable()
-                                                .foregroundColor(.cheekTextNormal)
-                                                .frame(width: 24, height: 24)
-                                                .padding(24)
-                                                .background(
-                                                    Circle()
-                                                        .foregroundColor(.cheekMainStrong)
-                                                )
-                                            
-                                            Text("새로 만들기")
-                                                .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                            VStack(spacing: 12) {
+                                                Image("IconPlus")
+                                                    .resizable()
+                                                    .foregroundColor(.cheekTextNormal)
+                                                    .frame(width: 24, height: 24)
+                                                    .padding(24)
+                                                    .background(
+                                                        Circle()
+                                                            .foregroundColor(.cheekMainStrong)
+                                                    )
+                                                
+                                                Text("새로 만들기")
+                                                    .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                            }
                                         }
-                                    }
                                 }
                                 .padding(.horizontal, 16)
                             }
@@ -219,16 +219,16 @@ struct MypageView: View {
                             ProfileQuestionsView(
                                 authViewModel: authViewModel,
                                 questions: profileViewModel.questions)
-                                .background(
-                                    GeometryReader { geometry in
-                                        Color.clear
-                                            .preference(key: HeightPreferenceKey.self, value: geometry.size.height)
-                                    }
-                                )
-                                .onPreferenceChange(HeightPreferenceKey.self) { value in
-                                    tabViewHeights[profileViewModel.isMentor ? 1 : 0] = value
+                            .background(
+                                GeometryReader { geometry in
+                                    Color.clear
+                                        .preference(key: HeightPreferenceKey.self, value: geometry.size.height)
                                 }
-                                .tag(profileViewModel.isMentor ? 1 : 0)
+                            )
+                            .onPreferenceChange(HeightPreferenceKey.self) { value in
+                                tabViewHeights[profileViewModel.isMentor ? 1 : 0] = value
+                            }
+                            .tag(profileViewModel.isMentor ? 1 : 0)
                         }
                         .frame(height: tabViewHeights[selectedTab])
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -304,18 +304,15 @@ struct MypageView: View {
     
     // 회원 데이터 조회
     func getMyData() {
-        if let myId = Keychain().read(key: "MEMBER_ID") {
-            profileViewModel.getProfile(targetMemberId: Int64(myId)!)
-            
-            if profileViewModel.isMentor {
-                profileViewModel.getHighlights(targetMemberId: Int64(myId)!)
-                profileViewModel.getStories(targetMemberId: Int64(myId)!)
-            }
-            
-            // 질문
-            profileViewModel.getQuestions(targetMemberId: Int64(myId)!)
-        } else {
+        profileViewModel.getProfile(targetMemberId: nil)
+        
+        if profileViewModel.isMentor {
+            profileViewModel.getHighlights(targetMemberId: nil)
+            profileViewModel.getStories(targetMemberId: nil)
         }
+        
+        // 질문
+        profileViewModel.getQuestions(targetMemberId: nil)
     }
 }
 

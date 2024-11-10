@@ -18,8 +18,6 @@ struct AnsweredQuestionView: View {
     @State private var isStoryOpen: Bool = false
     @State private var selectedStories: [Int64] = []
     
-    @State private var myMemberId: Int64?
-    
     var body: some View {
         VStack(spacing: 0) {
             HStack {
@@ -44,7 +42,7 @@ struct AnsweredQuestionView: View {
             
             ScrollView {
                 VStack(spacing: 24) {
-                    if viewModel.questionModel != nil && myMemberId != nil {
+                    if viewModel.questionModel != nil {
                         UserQuestionCardWithoutOption(
                             authViewModel: authViewModel,
                             questionId: viewModel.questionModel!.questionId,
@@ -73,8 +71,6 @@ struct AnsweredQuestionView: View {
         .onAppear {
             authViewModel.checkRefreshTokenValid()
             
-            getMyMemberId()
-            
             viewModel.getQuestion(questionId: questionId)
             viewModel.getAnsweredQuestions(questionId: questionId)
         }
@@ -85,12 +81,6 @@ struct AnsweredQuestionView: View {
             } else {
                 StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
-        }
-    }
-    
-    func getMyMemberId() {
-        if let myId = Keychain().read(key: "MEMBER_ID") {
-            myMemberId = Int64(myId)!
         }
     }
 }

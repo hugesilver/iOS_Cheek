@@ -123,7 +123,7 @@ struct MainView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            getMyProfile()
+            profileViewModel.getProfile(targetMemberId: nil)
             notificationViewModel.isNotificationEnabledAndFCMReady()
         }
         .onOpenURL { url in
@@ -133,11 +133,6 @@ struct MainView: View {
         }
     }
     
-    func getMyProfile() {
-        if let myMemberId = Keychain().read(key: "MEMBER_ID") {
-            profileViewModel.getProfile(targetMemberId: Int64(myMemberId)!)
-        }
-    }
 }
 
 #Preview {
