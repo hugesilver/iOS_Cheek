@@ -17,7 +17,7 @@ struct DeleteStoryView: View {
     @ObservedObject var profileViewModel: ProfileViewModel
     
     enum deleteModeTypes {
-        case delete, none
+        case delete, none, error
     }
     
     @State var deleteMode: deleteModeTypes = .delete
@@ -174,13 +174,23 @@ struct DeleteStoryView: View {
                     title: Text("알림"),
                     message: Text("스토리를 선택해주세요.")
                 )
+            case .error:
+                Alert(
+                    title: Text("오류"),
+                    message: Text("스토리를 삭제하지 못 했습니다.")
+                )
             }
         }
     }
     
     // 스토리 삭제
     func deleteStories() {
-        profileViewModel.deleteStories()
+        profileViewModel.deleteStories() { isDone in
+            if !isDone {
+                deleteMode = .error
+                showAlert = true
+            }
+        }
     }
 }
 

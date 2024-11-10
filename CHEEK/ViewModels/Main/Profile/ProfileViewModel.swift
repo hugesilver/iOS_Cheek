@@ -141,7 +141,7 @@ class ProfileViewModel: ObservableObject {
     }
     
     // 스토리 삭제
-    func deleteStories() {
+    func deleteStories(completion: @escaping (Bool) -> Void) {
         let storyIds = selectedStoriesForDelete.map { $0.storyId }
         
         let url = URL(string: "\(ip)/story")!
@@ -160,6 +160,7 @@ class ProfileViewModel: ObservableObject {
             request.httpBody = try JSONSerialization.data(withJSONObject: bodyData, options: [])
         } catch {
             print("스토리 삭제 JSON 변환 중 오류: \(error)")
+            completion(false)
             return
         }
         
@@ -170,9 +171,12 @@ class ProfileViewModel: ObservableObject {
                     print("deleteStories 함수 실행 중 요청 성공")
                 case .failure(let error):
                     print("deleteStories 함수 실행 중 요청 실패: \(error)")
+                    completion(false)
                 }
             }, receiveValue: { data in
                 let dataString = String(data: data, encoding: .utf8)
+                
+                completion(dataString == "ok")
                 
                 if dataString == "ok" {
                     DispatchQueue.main.async {
