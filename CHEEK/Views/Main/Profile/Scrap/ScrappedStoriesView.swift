@@ -181,6 +181,7 @@ struct ScrappedStoriesView: View {
                     // 상단바
                     HStack {
                         Image("IconChevronLeft")
+                            .resizable()
                             .foregroundColor(.cheekTextNormal)
                             .frame(width: 32, height: 32)
                             .padding(8)

@@ -91,7 +91,7 @@ struct AnswerQuestionBlock: View {
             HStack(spacing: 8) {
                 ProfileXS(url: data.memberDto.profilePicture)
                 
-                Text(data.memberDto.nickname)
+                Text(data.memberDto.nickname ?? "알 수 없는 사용자")
                     .body2(font: "SUIT", color: .cheekTextStrong, bold: true)
                 
                 Spacer()

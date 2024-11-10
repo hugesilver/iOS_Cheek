@@ -25,6 +25,7 @@ struct SetHighlightView: View {
             VStack(spacing: 0) {
                 HStack {
                     Image("IconChevronLeft")
+                        .resizable()
                         .foregroundColor(.cheekTextNormal)
                         .frame(width: 32, height: 32)
                         .onTapGesture {
@@ -45,7 +46,7 @@ struct SetHighlightView: View {
                 }
                 .overlay(
                     Text("스토리 선택")
-                        .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                        .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
                     , alignment: .center
                 )
                 .padding(.top, 8)
@@ -58,6 +59,7 @@ struct SetHighlightView: View {
                                 KFImage(URL(string: highlightViewModel.selectedStories.last!.storyPicture))
                                     .placeholder {
                                         Image("ImageDefaultProfile")
+                                            .resizable()
                                     }
                                     .retry(maxCount: 2, interval: .seconds(2))
                                     .onSuccess { result in
@@ -74,7 +76,6 @@ struct SetHighlightView: View {
                             } else {
                                 Image("ImageDefaultProfile")
                                     .resizable()
-                                    .aspectRatio(contentMode: .fill)
                                     .frame(width: 128, height: 128)
                                     .clipShape(Circle())
                             }
@@ -92,6 +93,7 @@ struct SetHighlightView: View {
                                     KFImage(URL(string: highlightViewModel.selectedStories.first!.storyPicture))
                                         .placeholder {
                                             Image("ImageDefaultProfile")
+                                                .resizable()
                                         }
                                         .retry(maxCount: 2, interval: .seconds(2))
                                         .onSuccess { result in
@@ -108,7 +110,6 @@ struct SetHighlightView: View {
                                 } else {
                                     Image("ImageDefaultProfile")
                                         .resizable()
-                                        .aspectRatio(contentMode: .fill)
                                         .frame(width: 128, height: 128)
                                         .clipShape(Circle())
                                 }

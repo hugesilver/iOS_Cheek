@@ -24,6 +24,7 @@ struct AdminView: View {
             // 상단바
             HStack {
                 Image("IconChevronLeft")
+                    .resizable()
                     .foregroundColor(.cheekTextNormal)
                     .frame(width: 32, height: 32)
                     .onTapGesture {
@@ -35,7 +36,7 @@ struct AdminView: View {
             }
             .overlay(
                 Text("관리자 페이지")
-                    .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                    .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
                 , alignment: .center
             )
             .padding(.top, 8)

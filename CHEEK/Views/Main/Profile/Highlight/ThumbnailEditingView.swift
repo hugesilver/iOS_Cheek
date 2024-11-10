@@ -37,6 +37,7 @@ struct ThumbnailEditingView: View {
         VStack(spacing: 0) {
             HStack {
                 Image("IconChevronLeft")
+                    .resizable()
                     .foregroundColor(.cheekTextNormal)
                     .frame(width: 32, height: 32)
                     .onTapGesture {
@@ -70,7 +71,7 @@ struct ThumbnailEditingView: View {
             }
             .overlay(
                 Text("스토리 선택")
-                    .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                    .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
                 , alignment: .center
             )
             .padding(.top, 8)

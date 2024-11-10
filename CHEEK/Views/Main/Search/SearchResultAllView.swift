@@ -26,7 +26,7 @@ struct SearchResultAllView: View {
                 HStack {
                     HStack(spacing: 8) {
                         Text("프로필")
-                            .title1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                            .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
                         
                         Text("\(Utils().formatKoreanNumber(number: searchViewModel.searchResult!.memberResCnt))")
                             .label2(font: "SUIT", color: .cheekTextStrong, bold: false)
@@ -66,7 +66,7 @@ struct SearchResultAllView: View {
                 HStack {
                     HStack(spacing: 8) {
                         Text("스토리")
-                            .title1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                            .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
                         
                         Text("\(Utils().formatKoreanNumber(number: searchViewModel.searchResult!.storyResCnt))")
                             .label2(font: "SUIT", color: .cheekTextStrong, bold: false)
@@ -99,7 +99,7 @@ struct SearchResultAllView: View {
                 HStack {
                     HStack(spacing: 8) {
                         Text("질문")
-                            .title1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                            .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
                         
                         Text("\(Utils().formatKoreanNumber(number: searchViewModel.searchResult!.questionResCnt))")
                             .label2(font: "SUIT", color: .cheekTextStrong, bold: false)
@@ -153,7 +153,9 @@ struct SearchResultAllView: View {
             searchViewModel.searchResult!.memberDto[followerIndex].following = true
         }
         
-        followViewModel.follow(toMemberId: data.memberId)
+        if data.memberId != nil {
+            followViewModel.follow(toMemberId: data.memberId!)
+        }
     }
     
     func onTapUnfollow(data: FollowModel) {
@@ -163,6 +165,8 @@ struct SearchResultAllView: View {
             searchViewModel.searchResult!.memberDto[followerIndex].following = false
         }
         
-        followViewModel.unfollow(toMemberId: data.memberId)
+        if data.memberId != nil {
+            followViewModel.unfollow(toMemberId: data.memberId!)
+        }
     }
 }

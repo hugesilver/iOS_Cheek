@@ -26,6 +26,7 @@ struct NotificationView: View {
             // 상단바
             HStack {
                 Image("IconChevronLeft")
+                    .resizable()
                     .foregroundColor(.cheekTextNormal)
                     .frame(width: 32, height: 32)
                     .onTapGesture {
@@ -36,7 +37,7 @@ struct NotificationView: View {
                 Spacer()
                 
                 Text("모두 삭제")
-                    .title1(font: "SUIT", color: .cheekMainStrong, bold: true)
+                    .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
                     .padding(.horizontal, 2)
                     .padding(.vertical, 12)
                     .onTapGesture {
@@ -45,7 +46,7 @@ struct NotificationView: View {
             }
             .overlay(
                 Text("활동")
-                    .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                    .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
                 , alignment: .center
             )
             .padding(.top, 8)
@@ -163,6 +164,7 @@ struct NotificationBlock: View {
                 KFImage(URL(string: thumbnailPicture!))
                     .placeholder {
                         Image("ImageDefaultProfile")
+                            .resizable()
                     }
                     .retry(maxCount: 2, interval: .seconds(2))
                     .onSuccess { result in

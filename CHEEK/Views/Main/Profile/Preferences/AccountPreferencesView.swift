@@ -26,6 +26,7 @@ struct AccountPreferencesView: View {
                 // 상단바
                 HStack {
                     Image("IconChevronLeft")
+                        .resizable()
                         .foregroundColor(.cheekTextNormal)
                         .frame(width: 32, height: 32)
                         .onTapGesture {
@@ -37,7 +38,7 @@ struct AccountPreferencesView: View {
                 }
                 .overlay(
                     Text("계정 설정")
-                        .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                        .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
                     , alignment: .center
                 )
                 .padding(.top, 8)

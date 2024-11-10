@@ -10,6 +10,8 @@ import SwiftUI
 struct FAB: View {
     var body: some View {
         Image("IconTalkFAB")
+            .resizable()
+            .scaledToFit()
             .foregroundColor(.cheekWhite)
             .frame(width: 32)
             .padding(.horizontal, 24)

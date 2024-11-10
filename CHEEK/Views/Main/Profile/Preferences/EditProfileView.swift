@@ -46,6 +46,7 @@ struct EditProfileView: View {
                 // 상단바
                 HStack {
                     Image("IconChevronLeft")
+                        .resizable()
                         .foregroundColor(.cheekTextNormal)
                         .frame(width: 32, height: 32)
                         .onTapGesture {
@@ -64,7 +65,7 @@ struct EditProfileView: View {
                 }
                 .overlay(
                     Text("계정 편집")
-                        .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                        .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
                     , alignment: .center
                 )
                 .padding(.top, 8)
@@ -85,6 +86,7 @@ struct EditProfileView: View {
                                     KFImage(URL(string: profileViewModel.profile!.profilePicture!))
                                         .placeholder {
                                             Image("ImageDefaultProfile")
+                                                .resizable()
                                         }
                                         .retry(maxCount: 2, interval: .seconds(2))
                                         .onSuccess { result in
@@ -246,6 +248,7 @@ struct EditProfileView: View {
         KFImage(URL(string: profileViewModel.profile!.profilePicture!))
             .placeholder {
                 Image("ImageDefaultProfile")
+                    .resizable()
             }
             .retry(maxCount: 2, interval: .seconds(2))
             .onSuccess { result in }

@@ -16,14 +16,14 @@ struct RankingCard: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            NavigationLink(destination: ProfileView(targetMemberId: data.memberId, authViewModel: authViewModel)) {
+            NavigationLink(destination: ProfileView(targetMemberId: data.memberId ?? 0, authViewModel: authViewModel)) {
                 HStack(spacing: 8) {
                     Ranking(rank: rank)
                     
                     ProfileS(url: data.profilePicture)
                     
                     VStack(alignment: .leading) {
-                        Text(data.nickname)
+                        Text(data.nickname ?? "알 수 없는 사용자")
                             .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
                             .lineLimit(1)
                         
@@ -37,7 +37,7 @@ struct RankingCard: View {
                 }
             }
             
-            Text(data.information)
+            Text(data.information ?? "")
                 .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
                 .fixedSize(horizontal: false, vertical: true)
                 .lineLimit(2)
@@ -64,12 +64,12 @@ struct UserFollowCard: View {
     var body: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 6) {
-                NavigationLink(destination: ProfileView(targetMemberId: data.memberId, authViewModel: authViewModel)) {
+                NavigationLink(destination: ProfileView(targetMemberId: data.memberId ?? 0, authViewModel: authViewModel)) {
                     HStack(spacing: 8) {
                         ProfileS(url: data.profilePicture)
                         
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(data.nickname)
+                            Text(data.nickname ?? "알 수 없는 사용자")
                                 .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
                                 .lineLimit(1)
                             
@@ -82,7 +82,7 @@ struct UserFollowCard: View {
                     }
                 }
                 
-                Text(data.information)
+                Text(data.information ?? "")
                     .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
                     .fixedSize(horizontal: false, vertical: true)
                     .lineLimit(1)
@@ -147,7 +147,7 @@ struct QuestionCard: View {
     let questionId: Int64
     let content: String
     let storyCnt: Int64
-    let memberId: Int64
+    let memberId: Int64?
     
     @State var showAlert: Bool = false
     
@@ -178,14 +178,6 @@ struct QuestionCard: View {
                         NavigationLink(destination: EditQuestionView(authViewModel: authViewModel, questionId: questionId, content: content)) {
                             Text("질문 수정")
                         }
-                        
-                        /*
-                         Button(role: .destructive, action: {
-                         
-                         }) {
-                         Text("질문 삭제")
-                         }
-                         */
                     } label: {
                         Image("IconMore")
                             .resizable()
@@ -206,7 +198,7 @@ struct QuestionCard: View {
 struct QuestionCardWithoutOption: View {
     let questionId: Int64
     let content: String
-    let memberId: Int64
+    let memberId: Int64?
     
     @State var isEditQuestionOpen: Bool = false
     @State var showAlert: Bool = false
@@ -241,9 +233,9 @@ struct UserQuestionCard: View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
                 authViewModel: authViewModel,
-                memberId: memberDto.memberId,
+                memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
-                title: "\(memberDto.nickname)님의 질문입니다!",
+                title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 질문입니다!",
                 date: Utils().timeAgo(dateString: modifiedAt)
             )
             
@@ -264,9 +256,9 @@ struct UserQuestionCardWithoutOption: View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
                 authViewModel: authViewModel,
-                memberId: memberDto.memberId,
+                memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
-                title: "\(memberDto.nickname)님의 질문입니다!",
+                title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 질문입니다!",
                 date: Utils().timeAgo(dateString: modifiedAt)
             )
             
@@ -322,9 +314,9 @@ struct UserStoryCard: View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
                 authViewModel: authViewModel,
-                memberId: memberDto.memberId,
+                memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
-                title: "\(memberDto.nickname)님의 답변입니다!",
+                title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 답변입니다!",
                 date: Utils().timeAgo(dateString: modifiedAt)
             )
             

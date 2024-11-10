@@ -8,12 +8,12 @@
 import Foundation
 
 struct FollowModel: Identifiable, Codable {
-    let memberId: Int64
+    let memberId: Int64?
     let profilePicture: String?
     var following: Bool
-    let nickname: String
-    let information: String
+    let nickname: String?
+    let information: String?
     var followerCnt: Int64
     
-    var id : Int64 { memberId }
+    var id : Int64 { memberId ?? 0 }
 }

@@ -39,6 +39,7 @@ struct SetProfileView: View {
             VStack(spacing: 0) {
                 HStack {
                     Image("IconChevronLeft")
+                        .resizable()
                         .foregroundColor(.cheekTextNormal)
                         .frame(width: 40, height: 40)
                         .onTapGesture {
@@ -65,7 +66,6 @@ struct SetProfileView: View {
                     } else {
                         Image("ImageDefaultProfile")
                             .resizable()
-                            .scaledToFill()
                             .frame(width: 128, height: 128)
                     }
                 }

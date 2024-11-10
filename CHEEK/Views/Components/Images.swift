@@ -17,6 +17,7 @@ struct ProfileBtnnav: View {
                 KFImage(URL(string: url))
                     .placeholder {
                         Image("ImageDefaultProfile")
+                            .resizable()
                     }
                     .retry(maxCount: 2, interval: .seconds(2))
                     .onSuccess { result in
@@ -32,7 +33,6 @@ struct ProfileBtnnav: View {
             } else {
                 Image("ImageDefaultProfile")
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
                     .frame(width: 25, height: 25)
                     .clipShape(Circle())
             }
@@ -49,6 +49,7 @@ struct ProfileXS: View {
                 KFImage(URL(string: url))
                     .placeholder {
                         Image("ImageDefaultProfile")
+                            .resizable()
                     }
                     .retry(maxCount: 2, interval: .seconds(2))
                     .onSuccess { result in
@@ -64,7 +65,6 @@ struct ProfileXS: View {
             } else {
                 Image("ImageDefaultProfile")
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
                     .frame(width: 32, height: 32)
                     .clipShape(Circle())
             }
@@ -81,6 +81,7 @@ struct ProfileS: View {
                 KFImage(URL(string: url))
                     .placeholder {
                         Image("ImageDefaultProfile")
+                            .resizable()
                     }
                     .retry(maxCount: 2, interval: .seconds(2))
                     .onSuccess { result in
@@ -96,7 +97,6 @@ struct ProfileS: View {
             } else {
                 Image("ImageDefaultProfile")
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
                     .frame(width: 40, height: 40)
                     .clipShape(Circle())
             }
@@ -113,6 +113,7 @@ struct ProfileM: View {
                 KFImage(URL(string: url))
                     .placeholder {
                         Image("ImageDefaultProfile")
+                            .resizable()
                     }
                     .retry(maxCount: 2, interval: .seconds(2))
                     .onSuccess { result in
@@ -128,7 +129,6 @@ struct ProfileM: View {
             } else {
                 Image("ImageDefaultProfile")
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
                     .frame(width: 48, height: 48)
                     .clipShape(Circle())
             }
@@ -145,6 +145,7 @@ struct ProfileL: View {
                 KFImage(URL(string: url))
                     .placeholder {
                         Image("ImageDefaultProfile")
+                            .resizable()
                     }
                     .retry(maxCount: 2, interval: .seconds(2))
                     .onSuccess { result in
@@ -160,7 +161,6 @@ struct ProfileL: View {
             } else {
                 Image("ImageDefaultProfile")
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
                     .frame(width: 72, height: 72)
                     .clipShape(Circle())
             }
@@ -177,6 +177,7 @@ struct ProfileXL: View {
                 KFImage(URL(string: url))
                     .placeholder {
                         Image("ImageDefaultProfile")
+                            .resizable()
                     }
                     .retry(maxCount: 2, interval: .seconds(2))
                     .onSuccess { result in
@@ -192,7 +193,6 @@ struct ProfileXL: View {
             } else {
                 Image("ImageDefaultProfile")
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
                     .frame(width: 80, height: 80)
                     .clipShape(Circle())
             }

@@ -34,7 +34,8 @@ struct TabsText: View {
                     ZStack(alignment: .bottomLeading) {
                         DividerSmall()
                         
-                        Rectangle()                            .fill(.cheekMainStrong)
+                        Rectangle()
+                            .fill(.cheekMainStrong)
                             .frame(width: tabWidth, height: 4)
                             .offset(x: CGFloat(selectedTab) * tabWidth)
                             .animation(.easeInOut(duration: 0.3), value: selectedTab)
@@ -66,6 +67,7 @@ struct TabsIcon: View {
                         ForEach(tabs.indices, id: \.self) { index in
                             HStack {
                                 Image(tabs[index])
+                                    .resizable()
                                     .foregroundColor(selectedTab == index ? .cheekMainStrong : .cheekTextAssitive)
                                     .frame(width: 40, height: 40)
                                     .padding(.bottom, 8)
@@ -82,7 +84,8 @@ struct TabsIcon: View {
                     ZStack(alignment: .bottomLeading) {
                         DividerSmall()
                         
-                        Rectangle()                            .fill(.cheekMainStrong)
+                        Rectangle()
+                            .fill(.cheekMainStrong)
                             .frame(maxWidth: tabWidth)
                             .frame(height: 4)
                             .offset(x: CGFloat(selectedTab) * tabWidth)

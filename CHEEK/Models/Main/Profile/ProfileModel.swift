@@ -26,16 +26,16 @@ struct ProfileModel: Identifiable, Codable, Equatable {
 
 // 카드에 쓰이는 프로필 모델
 struct MemberProfileModel: Codable {
-    let memberId: Int64
-    let nickname: String
-    let information: String
+    let memberId: Int64?
+    let nickname: String?
+    let information: String?
     let description: String?
     let profilePicture: String?
 }
 
 // 간략 프로필 정보 모델
 struct MemberDto: Codable, Equatable {
-    let memberId: Int64
-    let nickname: String
+    let memberId: Int64?
+    let nickname: String?
     let profilePicture: String?
 }

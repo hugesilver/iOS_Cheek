@@ -91,7 +91,7 @@ struct StoryView: View {
                             HStack(spacing: 8) {
                                 ProfileXS(url: viewModel.stories[viewModel.currentIndex].memberDto.profilePicture)
                                 
-                                Text(viewModel.stories[viewModel.currentIndex].memberDto.nickname)
+                                Text(viewModel.stories[viewModel.currentIndex].memberDto.nickname ?? "알 수 없는 사용자")
                                     .body2(font: "SUIT", color: .cheekWhite, bold: true)
                                 
                                 Spacer()

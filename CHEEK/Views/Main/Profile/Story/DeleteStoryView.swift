@@ -28,6 +28,7 @@ struct DeleteStoryView: View {
             // 상단바
             HStack {
                 Image("IconChevronLeft")
+                    .resizable()
                     .foregroundColor(.cheekTextNormal)
                     .frame(width: 32, height: 32)
                     .onTapGesture {
@@ -62,7 +63,7 @@ struct DeleteStoryView: View {
             }
             .overlay(
                 Text("내 스토리 삭제")
-                    .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                    .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
                 , alignment: .center
             )
             .padding(.top, 8)

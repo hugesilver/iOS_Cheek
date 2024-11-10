@@ -127,7 +127,7 @@ class CertificateEmailMentorViewModel: ObservableObject {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         // Body 세팅
-        let bodyData: VefiryEmailModel = VefiryEmailModel(email: email)!
+        let bodyData: VefiryEmailModel = VefiryEmailModel(email: email)
         
         do {
             request.httpBody = try JSONEncoder().encode(bodyData)
@@ -190,7 +190,7 @@ class CertificateEmailMentorViewModel: ObservableObject {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         // Body 세팅
-        let bodyData: VerifyCodesModel = VerifyCodesModel(email: email, verificationCode: verificationCode)!
+        let bodyData: VerifyCodesModel = VerifyCodesModel(email: email, verificationCode: verificationCode)
         
         do {
             request.httpBody = try JSONEncoder().encode(bodyData)

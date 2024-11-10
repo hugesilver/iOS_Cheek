@@ -8,15 +8,5 @@
 import Foundation
 
 struct VefiryEmailModel: Codable {
-    var email: String
-    
-    init?(email: String?) {
-        guard let email = email
-        else {
-            print("VefiryEmailModel init 실패")
-            return nil
-        }
-        
-        self.email = email
-    }
+    let email: String
 }

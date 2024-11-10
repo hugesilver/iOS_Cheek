@@ -56,7 +56,9 @@ struct SearchResultProfileView: View {
             searchViewModel.searchResult!.memberDto[followerIndex].following = true
         }
         
-        followViewModel.follow(toMemberId: data.memberId)
+        if data.memberId != nil {
+            followViewModel.follow(toMemberId: data.memberId!)
+        }
     }
     
     func onTapUnfollow(data: FollowModel) {
@@ -66,7 +68,9 @@ struct SearchResultProfileView: View {
             searchViewModel.searchResult!.memberDto[followerIndex].following = false
         }
         
-        followViewModel.unfollow(toMemberId: data.memberId)
+        if data.memberId != nil {
+            followViewModel.unfollow(toMemberId: data.memberId!)
+        }
     }
 }
 

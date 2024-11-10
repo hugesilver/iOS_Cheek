@@ -47,6 +47,7 @@ struct MypageView: View {
                 HStack(spacing: 8) {
                     NavigationLink(destination: DeleteStoryView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
                         Image("IconPost")
+                            .resizable()
                             .foregroundColor(.cheekTextNormal)
                             .frame(width: 32, height: 32)
                             .padding(8)
@@ -54,9 +55,9 @@ struct MypageView: View {
                     
                     NavigationLink(destination: AccountPreferencesView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
                         Image("IconPreference")
+                            .resizable()
                             .foregroundColor(.cheekTextNormal)
-                            .frame(width: 32, height: 32)
-                            .padding(8)
+                            .frame(width: 48, height: 48)
                     }
                 }
             }

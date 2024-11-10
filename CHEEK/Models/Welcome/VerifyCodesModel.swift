@@ -8,18 +8,6 @@
 import Foundation
 
 struct VerifyCodesModel: Codable {
-    var email: String
-    var verificationCode: String
-    
-    init?(email: String?, verificationCode: String?) {
-        guard let email = email,
-              let verificationCode = verificationCode
-        else {
-            print("VefiryCodesModel init 실패")
-            return nil
-        }
-        
-        self.email = email
-        self.verificationCode = verificationCode
-    }
+    let email: String
+    let verificationCode: String
 }

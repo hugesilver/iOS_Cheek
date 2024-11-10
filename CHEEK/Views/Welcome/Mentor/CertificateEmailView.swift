@@ -32,6 +32,7 @@ struct CertificateEmailView: View {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     Image("IconChevronLeft")
+                        .resizable()
                         .foregroundColor(.cheekTextNormal)
                         .frame(width: 40, height: 40)
                         .onTapGesture {

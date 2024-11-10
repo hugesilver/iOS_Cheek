@@ -53,7 +53,6 @@ struct SelectScrappedFolderView: View {
                                                     .foregroundColor(.cheekLineNormal)
                                             )
                                         
-                                        
                                         Text("새로운 폴더")
                                             .body2(font: "SUIT", color: .cheekTextNormal, bold: true)
                                         

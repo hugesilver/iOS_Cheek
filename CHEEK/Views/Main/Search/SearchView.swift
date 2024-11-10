@@ -28,6 +28,7 @@ struct SearchView: View {
             // 뒤로가기와 검색
             HStack {
                 Image("IconChevronLeft")
+                    .resizable()
                     .foregroundColor(.cheekTextNormal)
                     .frame(width: 32, height: 32)
                     .onTapGesture {

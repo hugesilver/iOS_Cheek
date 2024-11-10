@@ -59,7 +59,7 @@ struct AddHighlightView: View {
             }
             .overlay(
                 Text("스토리 선택")
-                    .title1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                    .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
                 , alignment: .center
             )
             .padding(.top, 8)

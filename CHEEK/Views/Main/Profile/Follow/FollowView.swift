@@ -22,8 +22,9 @@ struct FollowView: View {
         VStack(spacing: 0) {
             HStack {
                 Image("IconChevronLeft")
+                    .resizable()
                     .foregroundColor(.cheekTextNormal)
-                    .frame(width: 40, height: 40)
+                    .frame(width: 32, height: 32)
                     .onTapGesture {
                         dismiss()
                     }
@@ -106,7 +107,9 @@ struct FollowView: View {
             viewModel.followings[followingIndex].following = true
         }
         
-        viewModel.follow(toMemberId: data.memberId)
+        if data.memberId != nil {
+            viewModel.follow(toMemberId: data.memberId!)
+        }
     }
     
     func onTapUnfollow(data: FollowModel) {
@@ -121,7 +124,9 @@ struct FollowView: View {
             viewModel.followings[followingIndex].following = false
         }
         
-        viewModel.unfollow(toMemberId: data.memberId)
+        if data.memberId != nil {
+            viewModel.unfollow(toMemberId: data.memberId!)
+        }
     }
 }
 

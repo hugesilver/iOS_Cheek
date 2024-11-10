@@ -9,7 +9,7 @@ import Foundation
 
 struct PostStoryModel: Codable {
     let categoryId: Int64
-    let memberId: Int64
+    let memberId: Int64?
     let questionId: Int64
     let text: String
 }

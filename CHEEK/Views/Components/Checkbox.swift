@@ -17,7 +17,9 @@ struct Checkbox: View {
                 .frame(width: 20, height: 20)
                 .overlay(
                     Image("IconCheck")
+                        .resizable()
                         .frame(height: 8)
+                        .scaledToFit()
                         .tint(.cheekTextNormal)
                 )
         } else {
