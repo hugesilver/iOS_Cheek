@@ -94,7 +94,7 @@ struct WelcomeView: View {
                     VerifyMentorView(navPath: $navPath)
                     
                 case "SetProfileView":
-                    SetProfileView(authViewModel: authViewModel, navPath: $navPath, isMentor: isMentor!)
+                    SetProfileView(authViewModel: authViewModel, navPath: $navPath, isMentor: $isMentor)
                     
                 default: EmptyView()
                 }

@@ -13,7 +13,7 @@ struct SetProfileView: View {
     
     @ObservedObject var authViewModel: AuthenticationViewModel
     @Binding var navPath: NavigationPath
-    let isMentor: Bool
+    @Binding var isMentor: Bool?
     
     @StateObject private var viewModel = SetProfileViewModel()
     
@@ -197,34 +197,36 @@ struct SetProfileView: View {
         
         viewModel.isLoading = true
         
-        viewModel.checkUniqueNickname(nickname: nickname) {
-            response in
-            if response {
-                viewModel.setProfile(
-                    profilePicture: selectImage,
-                    nickname: nickname,
-                    information: information,
-                    isMentor: isMentor) { success in
-                        if success {
-                            // 메인으로 이동
-                            DispatchQueue.main.async {
-                                authViewModel.isRefreshTokenValid = true
-                                authViewModel.isProfileDone = true
-                                UserDefaults.standard.set(true, forKey: "profileDone")
+        if isMentor != nil {
+            viewModel.checkUniqueNickname(nickname: nickname) {
+                response in
+                if response {
+                    viewModel.setProfile(
+                        profilePicture: selectImage,
+                        nickname: nickname,
+                        information: information,
+                        isMentor: isMentor!) { success in
+                            if success {
+                                // 메인으로 이동
+                                DispatchQueue.main.async {
+                                    authViewModel.isRefreshTokenValid = true
+                                    authViewModel.isProfileDone = true
+                                    UserDefaults.standard.set(true, forKey: "profileDone")
+                                }
+                                // 웰컴 페이지 초기 페이지로 이동
+                                navPath = NavigationPath()
+                            } else {
+                                viewModel.showError(message: "프로필 설정 중 오류가 발생했습니다.")
                             }
-                            // 웰컴 페이지 초기 페이지로 이동
-                            navPath = NavigationPath()
-                        } else {
-                            viewModel.showError(message: "프로필 설정 중 오류가 발생했습니다.")
                         }
-                    }
-            } else {
-                viewModel.showError(message: "이미 등록된 닉네임입니다.")
+                } else {
+                    viewModel.showError(message: "이미 등록된 닉네임입니다.")
+                }
             }
         }
     }
 }
 
 #Preview {
-    SetProfileView(authViewModel: AuthenticationViewModel(), navPath: .constant(NavigationPath()), isMentor: true)
+    SetProfileView(authViewModel: AuthenticationViewModel(), navPath: .constant(NavigationPath()), isMentor: .constant(true))
 }
