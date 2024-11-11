@@ -11,7 +11,7 @@ struct ProfileView: View {
     @Environment(\.dismiss) private var dismiss
     
     let targetMemberId: Int64
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     @State private var myMemberId: Int64?
     
@@ -71,7 +71,7 @@ struct ProfileView: View {
                                     }
                                     
                                     NavigationLink(destination:
-                                                    FollowView(authViewModel: authViewModel, targetMemberId: targetMemberId, selectedTab: 0)) {
+                                                    FollowView(stateViewModel: stateViewModel, targetMemberId: targetMemberId, selectedTab: 0)) {
                                         VStack(spacing: 2) {
                                             Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followerCnt ?? 0))
                                                 .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
@@ -88,7 +88,7 @@ struct ProfileView: View {
                                         .padding(.horizontal, 8)
                                     
                                     NavigationLink(destination:
-                                                    FollowView(authViewModel: authViewModel, targetMemberId: targetMemberId, selectedTab: 1)) {
+                                                    FollowView(stateViewModel: stateViewModel, targetMemberId: targetMemberId, selectedTab: 1)) {
                                         VStack(spacing: 2) {
                                             Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followingCnt ?? 0))
                                                 .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
@@ -194,7 +194,8 @@ struct ProfileView: View {
                             }
                             
                             ProfileQuestionsView(
-                                authViewModel: authViewModel,
+                                stateViewModel: stateViewModel,
+                                profileViewModel: profileViewModel,
                                 questions: profileViewModel.questions)
                             .background(
                                 GeometryReader { geometry in
@@ -214,15 +215,6 @@ struct ProfileView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.cheekBackgroundTeritory)
-                .onChange(of: profileViewModel.questions) { _ in
-                    proxy.scrollTo(0, anchor: .top)
-                }
-                .onChange(of: profileViewModel.stories) { _ in
-                    proxy.scrollTo(0, anchor: .top)
-                }
-                .onAppear {
-                    proxy.scrollTo(0, anchor: .top)
-                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -248,10 +240,10 @@ struct ProfileView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
             }
         }
     }
@@ -338,5 +330,5 @@ struct ButtonUnfollow: View {
 }
 
 #Preview {
-    ProfileView(targetMemberId: 1, authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
+    ProfileView(targetMemberId: 1, stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
 }

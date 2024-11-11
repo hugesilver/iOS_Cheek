@@ -10,7 +10,8 @@ import SwiftUI
 struct AddQuestionView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var profileViewModel: ProfileViewModel
     
     let categoryId: Int64
     
@@ -57,16 +58,17 @@ struct AddQuestionView: View {
                 .background(.cheekWhite)
                 .cornerRadius(16)
                 .overlay(
-                    ProfileL(url: "")
+                    ProfileL(url: profileViewModel.profile?.profilePicture)
                         .alignmentGuide(.top) { $0[VerticalAlignment.center] }
                     , alignment: .top
                 )
                 
-                Text("멘토 회원님 모두가 답변할 수 있어요!")
+                Text("멘토, 멘티 모두가 질문할 수 있어요!")
                     .label1(font: "SUIT", color: .cheekTextAssitive, bold: false)
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.cheekTextNormal)
             .padding(.horizontal, 16)
             
             // 닫기
@@ -98,11 +100,11 @@ struct AddQuestionView: View {
                 LoadingView()
             }
         }
-        .background(.cheekTextNormal)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.bottom, isFocused ? 30 : 0)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.bottom, isFocused ? 30 : 0)
+        .background(.cheekTextNormal)
         .onTapGesture {
             Utils().hideKeyboard()
         }
@@ -110,7 +112,7 @@ struct AddQuestionView: View {
             UINavigationBar.setAnimationsEnabled(false)
             AppState.shared.swipeEnabled = false
             
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
         }
         .onDisappear {
             UINavigationBar.setAnimationsEnabled(true)
@@ -149,5 +151,5 @@ struct AddQuestionView: View {
 }
 
 #Preview {
-    AddQuestionView(authViewModel: AuthenticationViewModel(), categoryId: 1)
+    AddQuestionView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), categoryId: 1)
 }

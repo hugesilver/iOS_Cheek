@@ -11,7 +11,7 @@ import PhotosUI
 struct SetProfileView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @Binding var navPath: NavigationPath
     @Binding var isMentor: Bool?
     
@@ -209,8 +209,8 @@ struct SetProfileView: View {
                             if success {
                                 // 메인으로 이동
                                 DispatchQueue.main.async {
-                                    authViewModel.isRefreshTokenValid = true
-                                    authViewModel.isProfileDone = true
+                                    stateViewModel.isRefreshTokenValid = true
+                                    stateViewModel.isProfileDone = true
                                     UserDefaults.standard.set(true, forKey: "profileDone")
                                 }
                                 // 웰컴 페이지 초기 페이지로 이동
@@ -228,5 +228,5 @@ struct SetProfileView: View {
 }
 
 #Preview {
-    SetProfileView(authViewModel: AuthenticationViewModel(), navPath: .constant(NavigationPath()), isMentor: .constant(true))
+    SetProfileView(stateViewModel: StateViewModel(), navPath: .constant(NavigationPath()), isMentor: .constant(true))
 }

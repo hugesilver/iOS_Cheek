@@ -10,7 +10,7 @@ import SwiftUI
 struct FollowView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     let targetMemberId: Int64
     @State var selectedTab: Int
     
@@ -42,7 +42,7 @@ struct FollowView: View {
                     VStack(spacing: 32) {
                         ForEach(viewModel.followers) { follower in
                             UserFollowCard(
-                                authViewModel: authViewModel,
+                                stateViewModel: stateViewModel,
                                 data: follower,
                                 isMe: myMemberId == follower.memberId,
                                 onTapFollow: { onTapFollow(data: follower) },
@@ -57,7 +57,7 @@ struct FollowView: View {
                     VStack(spacing: 32) {
                         ForEach(viewModel.followings) { following in
                             UserFollowCard(
-                                authViewModel: authViewModel,
+                                stateViewModel: stateViewModel,
                                 data: following,
                                 isMe: myMemberId == following.memberId,
                                 onTapFollow: { onTapFollow(data: following) },
@@ -76,7 +76,7 @@ struct FollowView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             
             getFollowers()
             getFollowings()
@@ -131,5 +131,5 @@ struct FollowView: View {
 }
 
 #Preview {
-    FollowView(authViewModel: AuthenticationViewModel(), targetMemberId: 1, selectedTab: 0)
+    FollowView(stateViewModel: StateViewModel(), targetMemberId: 1, selectedTab: 0)
 }

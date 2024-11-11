@@ -10,7 +10,7 @@ import SwiftUI
 struct AccountPreferencesView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     enum alertModeTypes {
@@ -47,7 +47,7 @@ struct AccountPreferencesView: View {
                 ScrollView {
                     VStack(spacing: 16) {
                         // 계정 편집
-                        NavigationLink(destination: EditProfileView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
+                        NavigationLink(destination: EditProfileView(stateViewModel: stateViewModel, profileViewModel: profileViewModel)) {
                             Text("계정 편집")
                                 .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -68,7 +68,7 @@ struct AccountPreferencesView: View {
                         
                         // 관리자 페이지
                         if profileViewModel.profile != nil && profileViewModel.profile!.role == "ADMIN" {
-                            NavigationLink(destination: AdminView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
+                            NavigationLink(destination: AdminView(stateViewModel: stateViewModel, profileViewModel: profileViewModel)) {
                                 Text("관리자 페이지")
                                     .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
                                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -88,7 +88,7 @@ struct AccountPreferencesView: View {
                        
                         
                         if profileViewModel.profile != nil && profileViewModel.profile!.role == "MENTEE" {
-                            NavigationLink(destination: RequestMentorView(authViewModel: authViewModel)) {
+                            NavigationLink(destination: RequestMentorView(stateViewModel: stateViewModel)) {
                                 ButtonActive(text: "멘토 회원 전환")
                                     .padding(.top, 8)
                             }
@@ -100,19 +100,13 @@ struct AccountPreferencesView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.cheekBackgroundTeritory)
-            
-            if showAlert {
-                Color.cheekBlack.opacity(0.4)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .ignoresSafeArea()
-            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
         }
         .alert(isPresented: $showAlert) {
             switch alertMode {
@@ -120,7 +114,7 @@ struct AccountPreferencesView: View {
                 Alert(
                     title: Text("로그아웃 하시겠습니까?"),
                     primaryButton: .destructive(Text("네")) {
-                        authViewModel.serverLogout()
+                        stateViewModel.serverLogout()
                     },
                     secondaryButton: .cancel(Text("아니오"))
                 )
@@ -136,14 +130,14 @@ struct AccountPreferencesView: View {
                 Alert(
                     title: Text("회원 탈퇴가 완료되었습니다.\n이용해주셔서 감사합니다."),
                     dismissButton: .default(Text("확인")) {
-                        authViewModel.logOut()
+                        stateViewModel.logOut()
                     }
                 )
             case .deletedError:
                 Alert(
                     title: Text("회원 탈퇴 중 오류가 발생하였습니다."),
                     dismissButton: .default(Text("확인")) {
-                        authViewModel.logOut()
+                        stateViewModel.logOut()
                     }
                 )
             }
@@ -152,7 +146,7 @@ struct AccountPreferencesView: View {
     
     // 회원 탈퇴
     func deleteAccount() {
-        authViewModel.deleteAccount() { isDone in
+        stateViewModel.deleteAccount() { isDone in
             if isDone {
                 alertMode = .deleted
             } else {
@@ -165,5 +159,5 @@ struct AccountPreferencesView: View {
 }
 
 #Preview {
-    AccountPreferencesView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
+    AccountPreferencesView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
 }

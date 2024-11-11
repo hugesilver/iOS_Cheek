@@ -11,7 +11,7 @@ import Kingfisher
 struct HighlightView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     @Binding var highlightId: Int64
@@ -131,7 +131,7 @@ struct HighlightView: View {
                     
                     if storyViewModel.isAllLoaded {
                         HStack(spacing: 8) {
-                            NavigationLink(destination: EditHighlightView(authViewModel: authViewModel, profileViewModel: profileViewModel, highlightViewModel: highlightViewModel)) {
+                            NavigationLink(destination: EditHighlightView(stateViewModel: stateViewModel, profileViewModel: profileViewModel, highlightViewModel: highlightViewModel)) {
                                 Text("하이라이트 수정")
                                     .body1(font: "SUIT", color: .cheekTextAssitive, bold: true)
                             }
@@ -188,7 +188,7 @@ struct HighlightView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             
             onInit()
             
@@ -268,5 +268,5 @@ struct HighlightView: View {
 }
 
 #Preview {
-    HighlightView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), highlightId: .constant(0), highlightThumbnail: .constant(""), highlightSubject: .constant(""))
+    HighlightView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), highlightId: .constant(0), highlightThumbnail: .constant(""), highlightSubject: .constant(""))
 }

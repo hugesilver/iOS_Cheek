@@ -13,7 +13,7 @@ fileprivate let vGridSpacing: CGFloat = 4
 struct ScrappedStoriesView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var scrapViewModel: ScrapViewModel
     var folderModel: ScrapFolderModel
     
@@ -89,6 +89,7 @@ struct ScrappedStoriesView: View {
                     )
                     .padding(.top, 8)
                     .padding(.horizontal, 16)
+                    .background(.cheekBackgroundTeritory)
                     
                     // 컬렉션 모음
                     ScrollView {
@@ -206,6 +207,7 @@ struct ScrappedStoriesView: View {
                     )
                     .padding(.top, 8)
                     .padding(.horizontal, 16)
+                    .background(.cheekBackgroundTeritory)
                     
                     // 컬렉션 모음
                     ScrollView {
@@ -255,10 +257,12 @@ struct ScrappedStoriesView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             
             scrapViewModel.getCollections(folderId: folderModel.folderId)
         }
@@ -267,10 +271,10 @@ struct ScrappedStoriesView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
             }
         }
         .alert(isPresented: $showAlert) {
@@ -318,6 +322,8 @@ struct ScrappedStoriesView: View {
                 scrapViewModel.collections = scrapViewModel.collections.filter {
                     !selectedCollections.contains($0)
                 }
+                
+                selectedStories = []
             }
         }
     }
@@ -338,5 +344,5 @@ struct ScrappedStoriesView: View {
 }
 
 #Preview {
-    ScrappedStoriesView(authViewModel: AuthenticationViewModel(), scrapViewModel: ScrapViewModel(), folderModel: ScrapFolderModel(folderId: 1, folderName: "", thumbnailPicture: ""))
+    ScrappedStoriesView(stateViewModel: StateViewModel(), scrapViewModel: ScrapViewModel(), folderModel: ScrapFolderModel(folderId: 1, folderName: "", thumbnailPicture: ""))
 }

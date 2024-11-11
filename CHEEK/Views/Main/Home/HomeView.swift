@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var notificationViewModel: NotificationViewModel
     
@@ -31,7 +31,7 @@ struct HomeView: View {
                     .frame(height: reader.safeAreaInsets.top, alignment: .top)
                 
                 HStack(spacing: 0) {
-                    NavigationLink(destination: SearchView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
+                    NavigationLink(destination: SearchView(stateViewModel: stateViewModel, profileViewModel: profileViewModel)) {
                         HStack(spacing: 0) {
                             Text("회사, 사람 키워드로 검색")
                                 .label1(font: "SUIT", color: .cheekTextAssitive, bold: false)
@@ -45,7 +45,7 @@ struct HomeView: View {
                         )
                     }
                     
-                    NavigationLink(destination: NotificationView(authViewModel: authViewModel, notificationViewModel: notificationViewModel)) {
+                    NavigationLink(destination: NotificationView(stateViewModel: stateViewModel, notificationViewModel: notificationViewModel)) {
                         Image("IconBell")
                             .resizable()
                             .foregroundColor(.cheekTextNormal)
@@ -132,7 +132,7 @@ struct HomeView: View {
                         HStack(spacing: 16) {
                             ForEach(Array(viewModel.topMembers.enumerated()), id: \.offset) { index, data in
                                 RankingCard(
-                                    authViewModel: authViewModel,
+                                    stateViewModel: stateViewModel,
                                     rank: index + 1,
                                     data: data)
                             }
@@ -148,7 +148,7 @@ struct HomeView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             viewModel.getTopMembers()
         }
         .background(.cheekBackgroundTeritory)
@@ -158,5 +158,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), notificationViewModel: NotificationViewModel(), currentMainIndex: .constant(0), selectedCategory: .constant(1))
+    HomeView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), notificationViewModel: NotificationViewModel(), currentMainIndex: .constant(0), selectedCategory: .constant(1))
 }

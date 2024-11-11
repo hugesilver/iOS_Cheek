@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FeedView: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     @Binding var selectedCategory: Int64
@@ -45,7 +45,7 @@ struct FeedView: View {
                     
                     Spacer()
                     
-                    NavigationLink(destination: SearchView(authViewModel: authViewModel, profileViewModel: profileViewModel, catetory: CategoryModels().categories[Int(selectedCategory) - 1].id)) {
+                    NavigationLink(destination: SearchView(stateViewModel: stateViewModel, profileViewModel: profileViewModel, catetory: CategoryModels().categories[Int(selectedCategory) - 1].id)) {
                         Image("IconSearch")
                             .resizable()
                             .frame(width: 32, height: 32)
@@ -60,10 +60,10 @@ struct FeedView: View {
                     .padding(.top, 16)
                 
                 TabView(selection: $selectedTab) {
-                    FeedNewestView(authViewModel: authViewModel, profileViewModel: profileViewModel, feedViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, onRefresh: { getFeed() })
+                    FeedNewestView(stateViewModel: stateViewModel, profileViewModel: profileViewModel, feedViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, onRefresh: { getFeed() })
                         .tag(0)
                     
-                    FeedPopularityView(authViewModel: authViewModel, profileViewModel: profileViewModel, feedViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, onRefresh: { getFeed() })
+                    FeedPopularityView(stateViewModel: stateViewModel, profileViewModel: profileViewModel, feedViewModel: viewModel, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, onRefresh: { getFeed() })
                         .tag(1)
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -78,7 +78,7 @@ struct FeedView: View {
                 HStack {
                     Spacer()
                     
-                    NavigationLink(destination: AddQuestionView(authViewModel: authViewModel, categoryId: selectedCategory)) {
+                    NavigationLink(destination: AddQuestionView(stateViewModel: stateViewModel, profileViewModel: profileViewModel, categoryId: selectedCategory)) {
                         FAB()
                     }
                 }
@@ -88,7 +88,7 @@ struct FeedView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             getFeed()
         }
         .onChange(of: selectedCategory) { _ in
@@ -96,10 +96,10 @@ struct FeedView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
             }
         }
     }
@@ -110,5 +110,5 @@ struct FeedView: View {
 }
 
 #Preview {
-    FeedView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), selectedCategory: .constant(0))
+    FeedView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), selectedCategory: .constant(0))
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchResultProfileView: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var searchViewModel: SearchViewModel
     
     @StateObject var followViewModel = FollowViewModel()
@@ -21,7 +21,7 @@ struct SearchResultProfileView: View {
                 ForEach(Array(searchViewModel.searchResult!.memberDto.prefix(3).enumerated()), id: \.offset) { index, memberDto in
                     VStack(spacing: 16) {
                         UserFollowCard(
-                            authViewModel: authViewModel,
+                            stateViewModel: stateViewModel,
                             data: memberDto,
                             isMe: myMemberId == memberDto.memberId,
                             onTapFollow: { onTapFollow(data: memberDto) },
@@ -75,5 +75,5 @@ struct SearchResultProfileView: View {
 }
 
 #Preview {
-    SearchResultProfileView(authViewModel: AuthenticationViewModel(), searchViewModel: SearchViewModel())
+    SearchResultProfileView(stateViewModel: StateViewModel(), searchViewModel: SearchViewModel())
 }

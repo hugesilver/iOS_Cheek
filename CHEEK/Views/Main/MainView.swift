@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     @StateObject var profileViewModel: ProfileViewModel = ProfileViewModel()
     @StateObject var notificationViewModel: NotificationViewModel = NotificationViewModel()
@@ -27,19 +27,19 @@ struct MainView: View {
                     switch currentIndex {
                     case 0:
                         HomeView(
-                            authViewModel: authViewModel,
+                            stateViewModel: stateViewModel,
                             profileViewModel: profileViewModel,
                             notificationViewModel: notificationViewModel,
                             currentMainIndex: $currentIndex,
                             selectedCategory: $selectedCategory)
                     case 1:
                         FeedView(
-                            authViewModel: authViewModel,
+                            stateViewModel: stateViewModel,
                             profileViewModel: profileViewModel,
                             selectedCategory: $selectedCategory)
                     case 2:
                         MypageView(
-                            authViewModel: authViewModel,
+                            stateViewModel: stateViewModel,
                             profileViewModel: profileViewModel)
                     default: EmptyView()
                     }
@@ -114,7 +114,7 @@ struct MainView: View {
             .background(.cheekBackgroundTeritory)
             .navigationDestination(for: String.self) { path in
                 switch path {
-                case "NotificationView": NotificationView(authViewModel: authViewModel, notificationViewModel: notificationViewModel)
+                case "NotificationView": NotificationView(stateViewModel: stateViewModel, notificationViewModel: notificationViewModel)
                 default:
                     EmptyView()
                 }
@@ -136,5 +136,5 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
+    MainView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
 }

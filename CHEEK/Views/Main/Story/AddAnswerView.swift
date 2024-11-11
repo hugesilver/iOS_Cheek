@@ -34,7 +34,7 @@ let paletteGreyscales: [Color] = [
 struct AddAnswerView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     var questionId: Int64
     
@@ -107,7 +107,7 @@ struct AddAnswerView: View {
             UINavigationBar.setAnimationsEnabled(false)
             AppState.shared.swipeEnabled = false
             
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
         }
         .onDisappear {
             UINavigationBar.setAnimationsEnabled(true)
@@ -674,5 +674,5 @@ struct EditTextObjectView: View {
 }
 
 #Preview {
-    AddAnswerView(authViewModel: AuthenticationViewModel(), questionId: 1)
+    AddAnswerView(stateViewModel: StateViewModel(), questionId: 1)
 }

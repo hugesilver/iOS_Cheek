@@ -11,7 +11,7 @@ import Kingfisher
 struct NotificationView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var notificationViewModel: NotificationViewModel
     
     enum DestinationType {
@@ -56,12 +56,7 @@ struct NotificationView: View {
             List(notificationViewModel.notifications) { notification in
                 NotificationBlock(
                     isRead: notificationViewModel.readNotifications.contains(notification.notificationId),
-                    /*
-                     isLike: notification.type == "MEMBER_CONNECTION" || notification.type == "UPVOTE",
-                     profilePicture: notification.profilePicture,
-                     */
                     message: notification.body,
-                    // date: notification.time,
                     thumbnailPicture: notification.picture,
                     onTapBakcground: {
                         onTapBackground(notification: notification)
@@ -84,7 +79,7 @@ struct NotificationView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             notificationViewModel.getNotifications()
             notificationViewModel.getReadNotifications()
         }
@@ -93,10 +88,10 @@ struct NotificationView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
             }
         }
     }
@@ -131,32 +126,19 @@ struct NotificationBlock: View {
                 Circle()
                     .frame(width: 6, height: 6)
                     .foregroundColor(isRead ? .clear : .cheekStatusCaution)
-                
-                /*
-                 ZStack(alignment: .bottomTrailing) {
-                 ProfileM(url: profilePicture)
-                 
-                 Image("IconLike")
-                 .frame(width: 20, height: 20)
-                 }
-                 .frame(width: 48, height: 48)
-                 */
             }
             
             HStack(spacing: 0) {
-                Text(splitedMessage.first ?? "")
-                    .body2(font: "SUIT", color: .cheekTextNormal, bold: true)
-                
-                Text("님이" + (splitedMessage.last ?? ""))
-                    .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
-                
-                /*
-                 Text("  ")
-                 .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
-                 
-                 Text(Utils().timeAgo(dateString: date) ?? "")
-                 .body2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                 */
+                if splitedMessage.count == 2 {
+                    Text(splitedMessage.first ?? "")
+                        .body2(font: "SUIT", color: .cheekTextNormal, bold: true)
+                    
+                    Text("님이" + (splitedMessage.last ?? ""))
+                        .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
+                } else {
+                    Text(message)
+                        .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
@@ -182,7 +164,7 @@ struct NotificationBlock: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity)
-        .background(isRead ? .clear : Color(red: 0.96, green: 0.98, blue: 1))
+        .background(isRead ? .cheekBackgroundTeritory : Color(red: 0.96, green: 0.98, blue: 1))
         .onTapGesture {
             onTapBakcground()
         }
@@ -193,5 +175,5 @@ struct NotificationBlock: View {
 }
 
 #Preview {
-    NotificationView(authViewModel: AuthenticationViewModel(), notificationViewModel: NotificationViewModel())
+    NotificationView(stateViewModel: StateViewModel(), notificationViewModel: NotificationViewModel())
 }

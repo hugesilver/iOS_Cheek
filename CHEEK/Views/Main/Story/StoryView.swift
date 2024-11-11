@@ -11,7 +11,7 @@ import Kingfisher
 struct StoryView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @Binding var storyIds: [Int64]
     
     @StateObject private var viewModel: StoryViewModel = StoryViewModel()
@@ -202,8 +202,12 @@ struct StoryView: View {
             viewModel.stopTimer()
         }
         .sheet(isPresented: $isScrapOpen) {
-            SelectScrappedFolderView(authViewModel: authViewModel, storyModel: viewModel.stories[viewModel.currentIndex], isScrapOpen: $isScrapOpen, isKeyboardUp: $isScrapKeyboardUp)
-                .presentationDragIndicator(.visible)
+            SelectScrappedFolderView(
+                stateViewModel: stateViewModel,
+                storyModel: viewModel.stories[viewModel.currentIndex],
+                isScrapOpen: $isScrapOpen,
+                isKeyboardUp: $isScrapKeyboardUp)
+                .presentationDragIndicator(.hidden)
                 .presentationDetents([.fraction((isScrapKeyboardUp ? 0.17 : 0.63))])
                 .onDisappear {
                     isScrapKeyboardUp = false
@@ -241,5 +245,5 @@ struct StoryView: View {
 }
 
 #Preview {
-    StoryView(authViewModel: AuthenticationViewModel(), storyIds: .constant([1, 2]))
+    StoryView(stateViewModel: StateViewModel(), storyIds: .constant([1, 2]))
 }

@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct SearchResultAllView: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var searchViewModel: SearchViewModel
     
     @Binding var selectedTab: Int
@@ -48,7 +49,7 @@ struct SearchResultAllView: View {
                 ForEach(Array(searchViewModel.searchResult!.memberDto.prefix(3).enumerated()), id: \.offset) { index, memberDto in
                     VStack(spacing: 16) {
                         UserFollowCard(
-                            authViewModel: authViewModel,
+                            stateViewModel: stateViewModel,
                             data: memberDto,
                             isMe: myMemberId == memberDto.memberId,
                             onTapFollow: { onTapFollow(data: memberDto) },
@@ -121,7 +122,7 @@ struct SearchResultAllView: View {
                 if myMemberId != nil {
                     ForEach(Array(searchViewModel.searchResult!.questionDto.prefix(3).enumerated()), id: \.offset) { index, questionDto in
                         VStack(spacing: 16) {
-                            UserQuestionCard(authViewModel: authViewModel, myId: myMemberId!, questionId: questionDto.questionId, content: questionDto.content, storyCnt: questionDto.storyCnt!, modifiedAt: questionDto.modifiedAt!, memberDto: questionDto.memberDto)
+                            UserQuestionCard(stateViewModel: stateViewModel, profileViewModel: profileViewModel, myId: myMemberId!, questionId: questionDto.questionId, content: questionDto.content, storyCnt: questionDto.storyCnt!, modifiedAt: questionDto.modifiedAt!, memberDto: questionDto.memberDto)
                                 .padding(.horizontal, 16)
                             
                             if index < searchViewModel.searchResult!.questionDto.prefix(3).count - 1 {

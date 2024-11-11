@@ -81,7 +81,7 @@
 		E2A6262D2C106247005B28BE /* AuthenticationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A6262C2C106247005B28BE /* AuthenticationModel.swift */; };
 		E2A626312C137D84005B28BE /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A626302C137D84005B28BE /* ProfileModel.swift */; };
 		E2B1F8D72C8774B900B5743A /* AddHightLightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B1F8D62C8774B900B5743A /* AddHightLightView.swift */; };
-		E2B1F8E02C8F127B00B5743A /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B1F8DF2C8F127B00B5743A /* AuthenticationViewModel.swift */; };
+		E2B1F8E02C8F127B00B5743A /* StateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B1F8DF2C8F127B00B5743A /* StateViewModel.swift */; };
 		E2BD4D9E2C294B5B00E1B783 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */; };
 		E2BF98352C92072700213043 /* QuestionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BF98342C92072700213043 /* QuestionViewModel.swift */; };
 		E2BF98382C921E1B00213043 /* QuestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BF98372C921E1B00213043 /* QuestionModel.swift */; };
@@ -210,7 +210,7 @@
 		E2A6262C2C106247005B28BE /* AuthenticationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationModel.swift; sourceTree = "<group>"; };
 		E2A626302C137D84005B28BE /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		E2B1F8D62C8774B900B5743A /* AddHightLightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHightLightView.swift; sourceTree = "<group>"; };
-		E2B1F8DF2C8F127B00B5743A /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
+		E2B1F8DF2C8F127B00B5743A /* StateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateViewModel.swift; sourceTree = "<group>"; };
 		E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		E2BF98342C92072700213043 /* QuestionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionViewModel.swift; sourceTree = "<group>"; };
 		E2BF98372C921E1B00213043 /* QuestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionModel.swift; sourceTree = "<group>"; };
@@ -412,6 +412,7 @@
 		E2460E0E2C010D6000424739 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E2B1F8DF2C8F127B00B5743A /* StateViewModel.swift */,
 				E2C562082CD69C3700276F44 /* Profile */,
 				E2BD4D9C2C29499D00E1B783 /* Authentication */,
 				E2F376102C1A1D8200A727C7 /* Main */,
@@ -500,15 +501,6 @@
 			path = Welcome;
 			sourceTree = "<group>";
 		};
-		E28365282C034F4E002D4624 /* ThirdParties */ = {
-			isa = PBXGroup;
-			children = (
-				E283653C2C059DD8002D4624 /* KakaoAuthViewModel.swift */,
-				E2C562182CDC89F500276F44 /* AppleAuthViewModel.swift */,
-			);
-			path = ThirdParties;
-			sourceTree = "<group>";
-		};
 		E28BD7D52C861E6E006BBF4D /* Feed */ = {
 			isa = PBXGroup;
 			children = (
@@ -574,9 +566,8 @@
 		E2BD4D9C2C29499D00E1B783 /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
-				E28365282C034F4E002D4624 /* ThirdParties */,
-				E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */,
-				E2B1F8DF2C8F127B00B5743A /* AuthenticationViewModel.swift */,
+				E283653C2C059DD8002D4624 /* KakaoAuthViewModel.swift */,
+				E2C562182CDC89F500276F44 /* AppleAuthViewModel.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -754,6 +745,7 @@
 		E2E740E12C00B289003B510B /* CHEEK */ = {
 			isa = PBXGroup;
 			children = (
+				E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */,
 				E21877B72CBE475100DD541C /* CHEEK.entitlements */,
 				E21877B02CBE450E00DD541C /* GoogleService-Info.plist */,
 				E28365392C04ECAF002D4624 /* Secrets.xcconfig */,
@@ -1028,7 +1020,7 @@
 				E21877A62CBC250A00DD541C /* FeedModel.swift in Sources */,
 				E283653D2C059DD8002D4624 /* KakaoAuthViewModel.swift in Sources */,
 				E2D8BE4F2CCC11440064E344 /* ContentView.swift in Sources */,
-				E2B1F8E02C8F127B00B5743A /* AuthenticationViewModel.swift in Sources */,
+				E2B1F8E02C8F127B00B5743A /* StateViewModel.swift in Sources */,
 				E2D8BE282CC6ACF90064E344 /* ScrappedStoriesView.swift in Sources */,
 				E29CF8282C5A2B6800929437 /* SelectableCard.swift in Sources */,
 				E2BF98382C921E1B00213043 /* QuestionModel.swift in Sources */,
@@ -1200,7 +1192,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.4.0;
+				MARKETING_VERSION = 0.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hugesilver.CHEEK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1237,7 +1229,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.4.0;
+				MARKETING_VERSION = 0.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hugesilver.CHEEK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

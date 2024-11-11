@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MypageView: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     @State private var isInit: Bool = false
@@ -45,15 +45,17 @@ struct MypageView: View {
                 Spacer()
                 
                 HStack(spacing: 8) {
-                    NavigationLink(destination: DeleteStoryView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
-                        Image("IconPost")
-                            .resizable()
-                            .foregroundColor(.cheekTextNormal)
-                            .frame(width: 32, height: 32)
-                            .padding(8)
+                    if profileViewModel.isMentor {
+                        NavigationLink(destination: DeleteStoryView(stateViewModel: stateViewModel, profileViewModel: profileViewModel)) {
+                            Image("IconPost")
+                                .resizable()
+                                .foregroundColor(.cheekTextNormal)
+                                .frame(width: 32, height: 32)
+                                .padding(8)
+                        }
                     }
                     
-                    NavigationLink(destination: AccountPreferencesView(authViewModel: authViewModel, profileViewModel: profileViewModel)) {
+                    NavigationLink(destination: AccountPreferencesView(stateViewModel: stateViewModel, profileViewModel: profileViewModel)) {
                         Image("IconPreference")
                             .resizable()
                             .foregroundColor(.cheekTextNormal)
@@ -92,7 +94,7 @@ struct MypageView: View {
                                     }
                                     
                                     NavigationLink(destination: FollowView(
-                                        authViewModel: authViewModel,
+                                        stateViewModel: stateViewModel,
                                         targetMemberId: profileViewModel.profile?.memberId ?? 0,
                                         selectedTab: 0)) {
                                             VStack(spacing: 2) {
@@ -111,7 +113,7 @@ struct MypageView: View {
                                         .padding(.horizontal, 8)
                                     
                                     NavigationLink(destination: FollowView(
-                                        authViewModel: authViewModel,
+                                        stateViewModel: stateViewModel,
                                         targetMemberId: profileViewModel.profile?.memberId ?? 0,
                                         selectedTab: 1)) {
                                             VStack(spacing: 2) {
@@ -165,7 +167,7 @@ struct MypageView: View {
                                     }
                                     
                                     NavigationLink(destination: AddHighlightView(
-                                        authViewModel: authViewModel,
+                                        stateViewModel: stateViewModel,
                                         profileViewModel: profileViewModel)) {
                                             VStack(spacing: 12) {
                                                 Image("IconPlus")
@@ -188,7 +190,7 @@ struct MypageView: View {
                             .padding(.top, 24)
                         }
                         
-                        NavigationLink(destination: ScrappedFoldersView(authViewModel: authViewModel)) {
+                        NavigationLink(destination: ScrappedFoldersView(stateViewModel: stateViewModel)) {
                             ProfileButtonNarrowLine(text: "스크랩된 스토리")
                                 .padding(.top, 24)
                                 .padding(.horizontal, 16)
@@ -217,7 +219,8 @@ struct MypageView: View {
                             }
                             
                             ProfileQuestionsView(
-                                authViewModel: authViewModel,
+                                stateViewModel: stateViewModel,
+                                profileViewModel: profileViewModel,
                                 questions: profileViewModel.questions)
                             .background(
                                 GeometryReader { geometry in
@@ -256,23 +259,23 @@ struct MypageView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             
             initData()
             getMyData()
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
             }
         }
         .fullScreenCover(isPresented: $isHighlightOpen) {
             if #available(iOS 16.4, *) {
                 HighlightView(
-                    authViewModel: authViewModel,
+                    stateViewModel: stateViewModel,
                     profileViewModel: profileViewModel,
                     highlightId: $selectedHighlightId,
                     highlightThumbnail: $selectedHighlightThumbnail,
@@ -280,7 +283,7 @@ struct MypageView: View {
                 .presentationBackground(.clear)
             } else {
                 HighlightView(
-                    authViewModel: authViewModel,
+                    stateViewModel: stateViewModel,
                     profileViewModel: profileViewModel,
                     highlightId: $selectedHighlightId,
                     highlightThumbnail: $selectedHighlightThumbnail,
@@ -334,5 +337,5 @@ struct ProfileButtonNarrowLine: View {
 }
 
 #Preview {
-    MypageView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
+    MypageView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
 }

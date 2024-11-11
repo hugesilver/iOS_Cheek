@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FeedPopularityView: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var feedViewModel: FeedViewModel
     
@@ -24,7 +24,7 @@ struct FeedPopularityView: View {
             VStack(spacing: 24) {
                 ForEach(Array(feedViewModel.feedPopularity.enumerated()), id: \.offset) { index, data in
                     if data.type == "STORY" {
-                        UserStoryCard(authViewModel: authViewModel, storyId: data.storyDto!.storyId, storyPicture: data.storyDto!.storyPicture, modifiedAt: data.modifiedAt, memberDto: data.memberDto, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                        UserStoryCard(stateViewModel: stateViewModel, storyId: data.storyDto!.storyId, storyPicture: data.storyDto!.storyPicture, modifiedAt: data.modifiedAt, memberDto: data.memberDto, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
                         
                             .padding(.horizontal, 16)
                     }
@@ -32,10 +32,18 @@ struct FeedPopularityView: View {
                     if data.type == "QUESTION" {
                         if myMemberId != nil {
                             VStack(spacing: 16) {
-                                UserQuestionCard(authViewModel: authViewModel, myId: myMemberId!, questionId: data.questionDto!.questionId, content: data.questionDto!.content, storyCnt: data.questionDto!.storyCnt, modifiedAt: data.modifiedAt, memberDto: data.memberDto)
+                                UserQuestionCard(
+                                    stateViewModel: stateViewModel,
+                                    profileViewModel: profileViewModel,
+                                    myId: myMemberId!,
+                                    questionId: data.questionDto!.questionId,
+                                    content: data.questionDto!.content,
+                                    storyCnt: data.questionDto!.storyCnt,
+                                    modifiedAt: data.modifiedAt,
+                                    memberDto: data.memberDto)
                                 
                                 if profileViewModel.isMentor {
-                                    NavigationLink(destination: AddAnswerView(authViewModel: authViewModel, questionId: data.questionDto!.questionId)) {
+                                    NavigationLink(destination: AddAnswerView(stateViewModel: stateViewModel, questionId: data.questionDto!.questionId)) {
                                         ButtonNarrowFill(text: "답변하기")
                                     }
                                 }
@@ -70,5 +78,5 @@ struct FeedPopularityView: View {
 }
 
 #Preview {
-    FeedPopularityView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), feedViewModel: FeedViewModel(), isStoryOpen: .constant(false), selectedStories: .constant([]), onRefresh: {})
+    FeedPopularityView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), feedViewModel: FeedViewModel(), isStoryOpen: .constant(false), selectedStories: .constant([]), onRefresh: {})
 }

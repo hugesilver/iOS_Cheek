@@ -10,7 +10,7 @@ import SwiftUI
 struct AnsweredQuestionView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     let questionId: Int64
     
@@ -44,7 +44,7 @@ struct AnsweredQuestionView: View {
                 VStack(spacing: 24) {
                     if viewModel.questionModel != nil {
                         UserQuestionCardWithoutOption(
-                            authViewModel: authViewModel,
+                            stateViewModel: stateViewModel,
                             questionId: viewModel.questionModel!.questionId,
                             content: viewModel.questionModel!.content,
                             modifiedAt: viewModel.questionModel!.modifiedAt!,
@@ -56,7 +56,7 @@ struct AnsweredQuestionView: View {
                     
                     if viewModel.answeredUserStories.count > 0 {
                         ForEach(viewModel.answeredUserStories) { story in
-                            UserStoryCard(authViewModel: authViewModel, storyId: story.storyId, storyPicture: story.storyPicture, modifiedAt: story.modifiedAt, memberDto: story.memberDto, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
+                            UserStoryCard(stateViewModel: stateViewModel, storyId: story.storyId, storyPicture: story.storyPicture, modifiedAt: story.modifiedAt, memberDto: story.memberDto, isStoryOpen: $isStoryOpen, selectedStories: $selectedStories)
                                 .padding(.horizontal, 16)
                         }
                     }
@@ -69,22 +69,22 @@ struct AnsweredQuestionView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             
             viewModel.getQuestion(questionId: questionId)
             viewModel.getAnsweredQuestions(questionId: questionId)
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
             }
         }
     }
 }
 
 #Preview {
-    AnsweredQuestionView(authViewModel: AuthenticationViewModel(), questionId: 1)
+    AnsweredQuestionView(stateViewModel: StateViewModel(), questionId: 1)
 }

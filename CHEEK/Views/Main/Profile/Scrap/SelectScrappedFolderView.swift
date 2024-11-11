@@ -10,7 +10,7 @@ import SwiftUI
 struct SelectScrappedFolderView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     var storyModel: StoryModel
     
@@ -24,9 +24,13 @@ struct SelectScrappedFolderView: View {
             ZStack {
                 ScrollView {
                     VStack(spacing: 16) {
+                        Capsule()
+                            .frame(width: 32, height: 4)
+                            .foregroundColor(.cheekLineNormal)
+                        
+                        // 상단
                         Text("폴더 선택")
                             .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
-                            .padding(.top, 36)
                         
                         ScrollView {
                             VStack(spacing: 16) {
@@ -41,7 +45,7 @@ struct SelectScrappedFolderView: View {
                                     }
                                 }
                                 
-                                NavigationLink(destination: AddScrapFolderView(storyModel: storyModel, authViewModel: authViewModel, scrapViewModel: viewModel, isScrapOpen: $isScrapOpen, isKeyboardUp: $isKeyboardUp)) {
+                                NavigationLink(destination: AddScrapFolderView(storyModel: storyModel, stateViewModel: stateViewModel, scrapViewModel: viewModel, isScrapOpen: $isScrapOpen, isKeyboardUp: $isKeyboardUp)) {
                                     HStack(spacing: 12) {
                                         Image("IconPlus")
                                             .resizable()
@@ -64,6 +68,7 @@ struct SelectScrappedFolderView: View {
                             .padding(.bottom, 16)
                         }
                     }
+                    .padding(.top, 16)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.cheekBackgroundTeritory)
@@ -78,7 +83,7 @@ struct SelectScrappedFolderView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             
             isKeyboardUp = false
             getFolders()
@@ -97,5 +102,5 @@ struct SelectScrappedFolderView: View {
 }
 
 #Preview {
-    SelectScrappedFolderView(authViewModel: AuthenticationViewModel(), storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), isScrapOpen: .constant(true), isKeyboardUp: .constant(false))
+    SelectScrappedFolderView(stateViewModel: StateViewModel(), storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), isScrapOpen: .constant(true), isKeyboardUp: .constant(false))
 }

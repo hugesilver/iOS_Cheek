@@ -10,7 +10,7 @@ import SwiftUI
 struct ScrappedFoldersView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     @StateObject var viewModel: ScrapViewModel = ScrapViewModel()
     
@@ -42,7 +42,7 @@ struct ScrappedFoldersView: View {
                 VStack(spacing: 16) {
                     ForEach(Array(viewModel.scrappedFolders.enumerated()), id: \.offset) { index, folder in
                         VStack(spacing: 16) {
-                            NavigationLink(destination: ScrappedStoriesView(authViewModel: authViewModel, scrapViewModel: viewModel, folderModel: folder)) {
+                            NavigationLink(destination: ScrappedStoriesView(stateViewModel: stateViewModel, scrapViewModel: viewModel, folderModel: folder)) {
                                 Folder(folderModel: folder)
                             }
                             
@@ -64,7 +64,7 @@ struct ScrappedFoldersView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             
             getFolders()
         }
@@ -76,5 +76,5 @@ struct ScrappedFoldersView: View {
 }
 
 #Preview {
-    ScrappedFoldersView(authViewModel: AuthenticationViewModel())
+    ScrappedFoldersView(stateViewModel: StateViewModel())
 }

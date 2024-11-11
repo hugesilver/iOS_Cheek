@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ProfileQuestionsView: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var profileViewModel: ProfileViewModel
     var questions: [QuestionDto]
     
     @State private var myMemberId: Int64? = nil
@@ -17,7 +18,14 @@ struct ProfileQuestionsView: View {
         VStack(spacing: 12) {
             if myMemberId != nil {
                 ForEach(questions) { question in
-                    QuestionCard(authViewModel: authViewModel, myId: myMemberId!, questionId: question.questionId, content: question.content, storyCnt: question.storyCnt, memberId: myMemberId!)
+                    QuestionCard(
+                        stateViewModel: stateViewModel,
+                        profileViewModel: profileViewModel,
+                        myId: myMemberId!,
+                        questionId: question.questionId,
+                        content: question.content,
+                        storyCnt: question.storyCnt,
+                        memberId: myMemberId!)
                 }
             }
             
@@ -40,5 +48,5 @@ struct ProfileQuestionsView: View {
 }
 
 #Preview {
-    ProfileQuestionsView(authViewModel: AuthenticationViewModel(), questions: [])
+    ProfileQuestionsView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), questions: [])
 }

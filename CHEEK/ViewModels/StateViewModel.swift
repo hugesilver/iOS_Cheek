@@ -1,5 +1,5 @@
 //
-//  AuthenticationViewModel.swift
+//  StateViewModel.swift
 //  CHEEK
 //
 //  Created by 김태은 on 9/9/24.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class AuthenticationViewModel: ObservableObject {
+class StateViewModel: ObservableObject {
     private let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
     private var cancellables = Set<AnyCancellable>()
     

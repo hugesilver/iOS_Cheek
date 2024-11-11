@@ -9,14 +9,14 @@ import SwiftUI
 import Kingfisher
 
 struct RankingCard: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     var rank: Int
     var data: MemberProfileModel
     
     var body: some View {
         VStack(spacing: 16) {
-            NavigationLink(destination: ProfileView(targetMemberId: data.memberId ?? 0, authViewModel: authViewModel)) {
+            NavigationLink(destination: ProfileView(targetMemberId: data.memberId ?? 0, stateViewModel: stateViewModel)) {
                 HStack(spacing: 8) {
                     Ranking(rank: rank)
                     
@@ -54,7 +54,7 @@ struct RankingCard: View {
 }
 
 struct UserFollowCard: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     var data: FollowModel
     var isMe: Bool
@@ -64,7 +64,7 @@ struct UserFollowCard: View {
     var body: some View {
         HStack(spacing: 0) {
             VStack(alignment: .leading, spacing: 6) {
-                NavigationLink(destination: ProfileView(targetMemberId: data.memberId ?? 0, authViewModel: authViewModel)) {
+                NavigationLink(destination: ProfileView(targetMemberId: data.memberId ?? 0, stateViewModel: stateViewModel)) {
                     HStack(spacing: 8) {
                         ProfileS(url: data.profilePicture)
                         
@@ -110,7 +110,7 @@ struct UserFollowCard: View {
 }
 
 struct UserCardLarge: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     let memberId: Int64
     let profilePicture: String?
@@ -119,7 +119,7 @@ struct UserCardLarge: View {
     let date: String?
     
     var body: some View {
-        NavigationLink(destination: ProfileView(targetMemberId: memberId, authViewModel: authViewModel)) {
+        NavigationLink(destination: ProfileView(targetMemberId: memberId, stateViewModel: stateViewModel)) {
             HStack(spacing: 8) {
                 ProfileM(url: profilePicture)
                 
@@ -140,7 +140,8 @@ struct UserCardLarge: View {
 }
 
 struct QuestionCard: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var profileViewModel: ProfileViewModel
     
     let myId: Int64
     
@@ -159,7 +160,7 @@ struct QuestionCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             HStack {
-                NavigationLink(destination: AnsweredQuestionView(authViewModel: authViewModel, questionId: questionId)) {
+                NavigationLink(destination: AnsweredQuestionView(stateViewModel: stateViewModel, questionId: questionId)) {
                     Text("답변 \(storyCnt)")
                         .label1(font: "SUIT", color: .cheekTextAlternative, bold: true)
                         .overlay(
@@ -175,7 +176,7 @@ struct QuestionCard: View {
                 
                 if myId == memberId {
                     Menu {
-                        NavigationLink(destination: EditQuestionView(authViewModel: authViewModel, questionId: questionId, content: content)) {
+                        NavigationLink(destination: EditQuestionView(stateViewModel: stateViewModel, profileViewModel: profileViewModel, questionId: questionId, content: content)) {
                             Text("질문 수정")
                         }
                     } label: {
@@ -219,7 +220,8 @@ struct QuestionCardWithoutOption: View {
 }
 
 struct UserQuestionCard: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var profileViewModel: ProfileViewModel
     
     let myId: Int64
     
@@ -232,20 +234,20 @@ struct UserQuestionCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
-                authViewModel: authViewModel,
+                stateViewModel: stateViewModel,
                 memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 질문입니다!",
                 date: Utils().timeAgo(dateString: modifiedAt)
             )
             
-            QuestionCard(authViewModel: authViewModel, myId: myId, questionId: questionId, content: content, storyCnt: storyCnt, memberId: memberDto.memberId)
+            QuestionCard(stateViewModel: stateViewModel, profileViewModel: profileViewModel, myId: myId, questionId: questionId, content: content, storyCnt: storyCnt, memberId: memberDto.memberId)
         }
     }
 }
 
 struct UserQuestionCardWithoutOption: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     let questionId: Int64
     let content: String
@@ -255,7 +257,7 @@ struct UserQuestionCardWithoutOption: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
-                authViewModel: authViewModel,
+                stateViewModel: stateViewModel,
                 memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 질문입니다!",
@@ -300,7 +302,7 @@ struct StoryCard: View {
 }
 
 struct UserStoryCard: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     let storyId: Int64
     let storyPicture: String
@@ -313,7 +315,7 @@ struct UserStoryCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
-                authViewModel: authViewModel,
+                stateViewModel: stateViewModel,
                 memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 답변입니다!",

@@ -11,18 +11,18 @@ import KakaoSDKAuth
 struct ContentView: View {
     enum AlertType { case refreshToken, connection }
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     
     @State private var showAlert: Bool = false
     @State private var alertType: AlertType = .refreshToken
     
     var body: some View {
         ZStack {
-            if authViewModel.isInit && authViewModel.isProfileDone != nil {
-                if authViewModel.isRefreshTokenValid == true && authViewModel.isProfileDone! {
-                    MainView(authViewModel: authViewModel)
+            if stateViewModel.isInit && stateViewModel.isProfileDone != nil {
+                if stateViewModel.isRefreshTokenValid == true && stateViewModel.isProfileDone! {
+                    MainView(stateViewModel: stateViewModel)
                 } else {
-                    WelcomeView(authViewModel: authViewModel)
+                    WelcomeView(stateViewModel: stateViewModel)
                         .onOpenURL { url in
                             if (AuthApi.isKakaoTalkLoginUrl(url)) {
                                 _ = AuthController.handleOpenUrl(url: url)
@@ -54,26 +54,26 @@ struct ContentView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
-            authViewModel.isInit = true
-            authViewModel.getProfileDone()
+            stateViewModel.isInit = true
+            stateViewModel.getProfileDone()
         }
-        .onReceive(authViewModel.$isConnected) { isConnected in
+        .onReceive(stateViewModel.$isConnected) { isConnected in
             if isConnected == false {
                 alertType = .connection
                 showAlert = true
-                authViewModel.logOut()
+                stateViewModel.logOut()
             }
         }
-        .onChange(of: authViewModel.isRefreshTokenValid) { isValid in
-            if authViewModel.isInit && isValid == false {
+        .onChange(of: stateViewModel.isRefreshTokenValid) { isValid in
+            if stateViewModel.isInit && isValid == false {
                 alertType = .refreshToken
                 showAlert = true
-                authViewModel.logOut()
+                stateViewModel.logOut()
             }
         }
     }
 }
 
 #Preview {
-    ContentView(authViewModel: AuthenticationViewModel())
+    ContentView(stateViewModel: StateViewModel())
 }

@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct SearchResultQuestionView: View {
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var searchViewModel: SearchViewModel
     
     @State private var myMemberId: Int64?
@@ -19,7 +20,15 @@ struct SearchResultQuestionView: View {
                 if myMemberId != nil {
                     ForEach(Array(searchViewModel.searchResult!.questionDto.enumerated()), id: \.offset) { index, questionDto in
                         VStack(spacing: 16) {
-                            UserQuestionCard(authViewModel: authViewModel, myId: myMemberId!, questionId: questionDto.questionId, content: questionDto.content, storyCnt: questionDto.storyCnt!, modifiedAt: questionDto.modifiedAt!, memberDto: questionDto.memberDto)
+                            UserQuestionCard(
+                                stateViewModel: stateViewModel,
+                                profileViewModel: profileViewModel,
+                                myId: myMemberId!,
+                                questionId: questionDto.questionId,
+                                content: questionDto.content,
+                                storyCnt: questionDto.storyCnt!,
+                                modifiedAt: questionDto.modifiedAt!,
+                                memberDto: questionDto.memberDto)
                                 .padding(.horizontal, 16)
                             
                             if index < searchViewModel.searchResult!.questionDto.count - 1 {
@@ -46,5 +55,5 @@ struct SearchResultQuestionView: View {
 }
 
 #Preview {
-    SearchResultQuestionView(authViewModel: AuthenticationViewModel(), searchViewModel: SearchViewModel())
+    SearchResultQuestionView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), searchViewModel: SearchViewModel())
 }

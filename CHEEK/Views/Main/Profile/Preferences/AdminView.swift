@@ -10,7 +10,7 @@ import SwiftUI
 struct AdminView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     @StateObject var viewModel: AdminViewModel = AdminViewModel()
@@ -98,9 +98,10 @@ struct AdminView: View {
                     }
                 }
                 .padding(16)
-                .frame(maxWidth: .infinity)
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets())
+                .frame(maxWidth: .infinity)
+                .background(.cheekBackgroundTeritory)
             }
             .listStyle(.plain)
         }
@@ -109,7 +110,7 @@ struct AdminView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
         }
         .alert(isPresented: $showAlert) {
             Alert(
@@ -143,5 +144,5 @@ struct AdminView: View {
 }
 
 #Preview {
-    AdminView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
+    AdminView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
 }

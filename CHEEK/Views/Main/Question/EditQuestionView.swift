@@ -10,7 +10,8 @@ import SwiftUI
 struct EditQuestionView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var profileViewModel: ProfileViewModel
     
     let questionId: Int64
     var content: String
@@ -58,16 +59,17 @@ struct EditQuestionView: View {
                 .background(.cheekWhite)
                 .cornerRadius(16)
                 .overlay(
-                    ProfileL(url: "")
+                    ProfileL(url: profileViewModel.profile?.profilePicture)
                         .alignmentGuide(.top) { $0[VerticalAlignment.center] }
                     , alignment: .top
                 )
                 
-                Text("멘토 회원님 모두가 답변할 수 있어요!")
+                Text("멘토, 멘티 모두가 질문할 수 있어요!")
                     .label1(font: "SUIT", color: .cheekTextAssitive, bold: false)
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.cheekTextNormal)
             .padding(.horizontal, 16)
             
             // 닫기
@@ -101,9 +103,9 @@ struct EditQuestionView: View {
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
-        .background(.cheekTextNormal)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.bottom, isFocused ? 30 : 0)
+        .background(.cheekTextNormal)
         .onTapGesture {
             Utils().hideKeyboard()
         }
@@ -111,7 +113,7 @@ struct EditQuestionView: View {
             UINavigationBar.setAnimationsEnabled(false)
             AppState.shared.swipeEnabled = false
             
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             question = content
         }
         .onDisappear {
@@ -149,5 +151,5 @@ struct EditQuestionView: View {
 }
 
 #Preview {
-    EditQuestionView(authViewModel: AuthenticationViewModel(), questionId: 0, content: "")
+    EditQuestionView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), questionId: 0, content: "")
 }

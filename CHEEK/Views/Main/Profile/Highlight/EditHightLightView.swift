@@ -13,7 +13,7 @@ fileprivate let vGridSpacing: CGFloat = 4
 struct EditHighlightView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var highlightViewModel: HighlightViewModel
     
@@ -34,7 +34,7 @@ struct EditHighlightView: View {
                 
                 if highlightViewModel.selectedStories.count > 0 {
                     NavigationLink(destination: SetHighlightView(
-                        authViewModel: authViewModel,
+                        stateViewModel: stateViewModel,
                         profileViewModel: profileViewModel,
                         highlightViewModel: highlightViewModel)) {
                         HStack(spacing: 4) {
@@ -178,7 +178,7 @@ struct EditHighlightView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
             
             if highlightViewModel.isDone {
                 dismiss()
@@ -189,5 +189,5 @@ struct EditHighlightView: View {
 
 
 #Preview {
-    EditHighlightView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), highlightViewModel: HighlightViewModel())
+    EditHighlightView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), highlightViewModel: HighlightViewModel())
 }

@@ -61,6 +61,7 @@ class SearchViewModel: ObservableObject {
     // 최근 검색 전체 삭제
     func removeAllSearched() {
         defaults.removeObject(forKey: recentSearchedKey)
+        recentSearches = []
     }
     
     // 검색 조회

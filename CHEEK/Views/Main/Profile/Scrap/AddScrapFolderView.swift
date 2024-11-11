@@ -12,7 +12,7 @@ struct AddScrapFolderView: View {
     
     var storyModel: StoryModel
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var scrapViewModel: ScrapViewModel
     
     @Binding var isScrapOpen: Bool
@@ -26,25 +26,31 @@ struct AddScrapFolderView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     // 상단바
-                    HStack {
-                        Image("IconChevronLeft")
-                            .resizable()
-                            .foregroundColor(.cheekTextNormal)
-                            .frame(width: 32, height: 32)
-                            .onTapGesture {
-                                dismiss()
-                            }
-                            .padding(8)
+                    VStack(spacing: 4) {
+                        Capsule()
+                            .frame(width: 32, height: 4)
+                            .foregroundColor(.cheekLineNormal)
                         
-                        Spacer()
+                        HStack {
+                            Image("IconChevronLeft")
+                                .resizable()
+                                .foregroundColor(.cheekTextNormal)
+                                .frame(width: 32, height: 32)
+                                .onTapGesture {
+                                    dismiss()
+                                }
+                                .padding(8)
+                            
+                            Spacer()
+                        }
+                        .overlay(
+                            Text("이름 설정")
+                                .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                            , alignment: .center
+                        )
+                        .padding(.horizontal, 16)
                     }
-                    .overlay(
-                        Text("이름 설정")
-                            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
-                        , alignment: .center
-                    )
-                    .padding(.top, 24)
-                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
                     
                     HStack(spacing: 12) {
                         ProfileS(url: storyModel.storyPicture)
@@ -86,7 +92,7 @@ struct AddScrapFolderView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
         }
     }
     
@@ -100,5 +106,5 @@ struct AddScrapFolderView: View {
 }
 
 #Preview {
-    AddScrapFolderView(storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), authViewModel: AuthenticationViewModel(), scrapViewModel: ScrapViewModel(), isScrapOpen: .constant(true), isKeyboardUp: .constant(true))
+    AddScrapFolderView(storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), stateViewModel: StateViewModel(), scrapViewModel: ScrapViewModel(), isScrapOpen: .constant(true), isKeyboardUp: .constant(true))
 }

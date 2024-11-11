@@ -11,7 +11,7 @@ import Kingfisher
 struct SetHighlightView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var authViewModel: AuthenticationViewModel
+    @ObservedObject var stateViewModel: StateViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var highlightViewModel: HighlightViewModel
     
@@ -164,7 +164,7 @@ struct SetHighlightView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
         .onAppear {
-            authViewModel.checkRefreshTokenValid()
+            stateViewModel.checkRefreshTokenValid()
         }
         .alert(isPresented: $highlightViewModel.showAlert) {
             Alert(
@@ -219,5 +219,5 @@ struct SetHighlightView: View {
 }
 
 #Preview {
-    SetHighlightView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), highlightViewModel: HighlightViewModel())
+    SetHighlightView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), highlightViewModel: HighlightViewModel())
 }
