@@ -104,7 +104,7 @@ struct SetProfileView: View {
                         isFocused: $isNicknameFocused)
                     .onChange(of: nickname) { text in
                         if text.count > 8 {
-                            nickname = String(text.prefix(8))
+                            nickname = String(text.prefix(8)).replacingOccurrences(of: " ", with: "")
                         }
                     }
                     .onChange(of: isNicknameFocused) { _ in

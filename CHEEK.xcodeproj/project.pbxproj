@@ -97,7 +97,7 @@
 		E2C5621F2CE0CD5900276F44 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C5621E2CE0CD5900276F44 /* AppState.swift */; };
 		E2C562222CE0D23800276F44 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = E2C562212CE0D23800276F44 /* Kingfisher */; };
 		E2D5577F2CA575A3005285BE /* RegisterDomainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5577E2CA575A3005285BE /* RegisterDomainViewModel.swift */; };
-		E2D557812CAB0AC5005285BE /* CombinePublishers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D557802CAB0AC5005285BE /* CombinePublishers.swift */; };
+		E2D557812CAB0AC5005285BE /* CombinePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D557802CAB0AC5005285BE /* CombinePublisher.swift */; };
 		E2D8BE092CC0D9960064E344 /* SetHighlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE082CC0D9960064E344 /* SetHighlightView.swift */; };
 		E2D8BE102CC0EB4E0064E344 /* ThumbnailEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE0F2CC0EB4E0064E344 /* ThumbnailEditingView.swift */; };
 		E2D8BE162CC56D300064E344 /* EditHightLightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE152CC56D300064E344 /* EditHightLightView.swift */; };
@@ -225,7 +225,7 @@
 		E2C5621A2CE0BD1100276F44 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		E2C5621E2CE0CD5900276F44 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		E2D5577E2CA575A3005285BE /* RegisterDomainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDomainViewModel.swift; sourceTree = "<group>"; };
-		E2D557802CAB0AC5005285BE /* CombinePublishers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePublishers.swift; sourceTree = "<group>"; };
+		E2D557802CAB0AC5005285BE /* CombinePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePublisher.swift; sourceTree = "<group>"; };
 		E2D8BE082CC0D9960064E344 /* SetHighlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetHighlightView.swift; sourceTree = "<group>"; };
 		E2D8BE0F2CC0EB4E0064E344 /* ThumbnailEditingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailEditingView.swift; sourceTree = "<group>"; };
 		E2D8BE152CC56D300064E344 /* EditHightLightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditHightLightView.swift; sourceTree = "<group>"; };
@@ -745,7 +745,6 @@
 		E2E740E12C00B289003B510B /* CHEEK */ = {
 			isa = PBXGroup;
 			children = (
-				E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */,
 				E21877B72CBE475100DD541C /* CHEEK.entitlements */,
 				E21877B02CBE450E00DD541C /* GoogleService-Info.plist */,
 				E28365392C04ECAF002D4624 /* Secrets.xcconfig */,
@@ -759,7 +758,8 @@
 				E2E740E82C00B28B003B510B /* Preview Content */,
 				E2D8BE3E2CCA33940064E344 /* AppDelegate.swift */,
 				E2C5621E2CE0CD5900276F44 /* AppState.swift */,
-				E2D557802CAB0AC5005285BE /* CombinePublishers.swift */,
+				E2D557802CAB0AC5005285BE /* CombinePublisher.swift */,
+				E2BD4D9D2C294B5B00E1B783 /* Keychain.swift */,
 				E218779E2CBB1A5700DD541C /* Utils.swift */,
 			);
 			path = CHEEK;
@@ -956,7 +956,7 @@
 				E2F3760F2C1A152F00A727C7 /* AddAnswerView.swift in Sources */,
 				E27EF56D2C7C74E50047E6EC /* SearchView.swift in Sources */,
 				E2F376142C1AAECD00A727C7 /* ErrorModel.swift in Sources */,
-				E2D557812CAB0AC5005285BE /* CombinePublishers.swift in Sources */,
+				E2D557812CAB0AC5005285BE /* CombinePublisher.swift in Sources */,
 				E2C5621F2CE0CD5900276F44 /* AppState.swift in Sources */,
 				E2E740E32C00B289003B510B /* CHEEKApp.swift in Sources */,
 				E2F3D0F92CB7BC8E00323C0D /* FollowModel.swift in Sources */,

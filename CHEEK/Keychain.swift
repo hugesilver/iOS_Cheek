@@ -18,7 +18,7 @@ class Keychain: ObservableObject {
         
         let query: NSDictionary = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: key, // 저장할 Account Key
+            kSecAttrAccount as String: key, // 저장할 Key
             kSecValueData as String: valueData, // 저장할 value
         ]
         
