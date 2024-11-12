@@ -310,15 +310,15 @@ struct MypageView: View {
     
     // 회원 데이터 조회
     func getMyData() {
-        profileViewModel.getProfile(targetMemberId: nil)
+        profileViewModel.getProfile()
         
         if profileViewModel.isMentor {
-            profileViewModel.getHighlights(targetMemberId: nil)
-            profileViewModel.getStories(targetMemberId: nil)
+            profileViewModel.getHighlights()
+            profileViewModel.getStories()
         }
         
         // 질문
-        profileViewModel.getQuestions(targetMemberId: nil)
+        profileViewModel.getQuestions()
     }
 }
 

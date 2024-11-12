@@ -54,13 +54,15 @@ class Utils {
     }
     
     // 날짜 계산
-    func convertToKST(dateString: String) -> String? {
+    func convertToDate(dateString: String) -> String? {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
         
         guard let date = formatter.date(from: dateString) else {
             return nil
         }
+        
+        formatter.dateFormat = "yyyy-MM-dd"
         
         return formatter.string(from: date)
     }

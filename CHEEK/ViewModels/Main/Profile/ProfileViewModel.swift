@@ -31,7 +31,7 @@ class ProfileViewModel: ObservableObject {
     @Published var selectedStoriesForDelete: [StoryDto] = []
     
     // 프로필 조회
-    func getProfile(targetMemberId: Int64?) {
+    func getProfile(targetMemberId: Int64? = nil) {
         print("프로필 조회 시도")
         
         guard let myIdString = Keychain().read(key: "MEMBER_ID"),
@@ -66,7 +66,7 @@ class ProfileViewModel: ObservableObject {
     }
     
     // 하이라이트 조회
-    func getHighlights(targetMemberId: Int64?) {
+    func getHighlights(targetMemberId: Int64? = nil) {
         print("하이라이트 조회 시도")
         
         guard let myIdString = Keychain().read(key: "MEMBER_ID"),
@@ -99,7 +99,7 @@ class ProfileViewModel: ObservableObject {
     }
     
     // 스토리 조회
-    func getStories(targetMemberId: Int64?) {
+    func getStories(targetMemberId: Int64? = nil) {
         print("스토리 조회 시도")
         
         guard let myIdString = Keychain().read(key: "MEMBER_ID"),
@@ -132,7 +132,7 @@ class ProfileViewModel: ObservableObject {
     }
     
     // 질문 조회
-    func getQuestions(targetMemberId: Int64?) {
+    func getQuestions(targetMemberId: Int64? = nil) {
         print("질문 조회 시도")
         
         guard let myIdString = Keychain().read(key: "MEMBER_ID"),

@@ -241,7 +241,7 @@ struct UserQuestionCard: View {
                 memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 질문입니다!",
-                date: Utils().timeAgo(dateString: modifiedAt)
+                date: Utils().timeAgo(dateString: modifiedAt) ?? ""
             )
             
             QuestionCard(authViewModel: authViewModel, profileViewModel: profileViewModel, myId: myId, questionId: questionId, content: content, storyCnt: storyCnt, memberId: memberDto.memberId)
@@ -264,7 +264,7 @@ struct UserQuestionCardWithoutOption: View {
                 memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 질문입니다!",
-                date: Utils().timeAgo(dateString: modifiedAt)
+                date: Utils().timeAgo(dateString: modifiedAt) ?? ""
             )
             
             QuestionCardWithoutOption(questionId: questionId, content: content, memberId: memberDto.memberId)
@@ -322,7 +322,7 @@ struct UserStoryCard: View {
                 memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 답변입니다!",
-                date: Utils().timeAgo(dateString: modifiedAt)
+                date: Utils().timeAgo(dateString: modifiedAt) ?? ""
             )
             
             ScrollView(.horizontal) {

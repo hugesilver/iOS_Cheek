@@ -123,7 +123,7 @@ struct MainView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            profileViewModel.getProfile(targetMemberId: nil)
+            profileViewModel.getProfile()
             notificationViewModel.isNotificationEnabledAndFCMReady()
         }
         .onOpenURL { url in
