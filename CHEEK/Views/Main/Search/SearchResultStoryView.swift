@@ -8,7 +8,7 @@
 import SwiftUI
 import Kingfisher
 
-fileprivate let vGridSpacing: CGFloat = 4
+fileprivate let LAZY_V_GRID_SPACING: CGFloat = 4
 
 struct SearchResultStoryView: View {
     @ObservedObject var searchViewModel: SearchViewModel
@@ -36,7 +36,7 @@ struct SearchResultStoryView: View {
                             .cancelOnDisappear(true)
                             .aspectRatio(contentMode: .fill)
                             .frame(
-                                width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
+                                width: (UIScreen.main.bounds.width / 3) - (LAZY_V_GRID_SPACING / 2),
                                 height: 156
                             )
                             .clipped()

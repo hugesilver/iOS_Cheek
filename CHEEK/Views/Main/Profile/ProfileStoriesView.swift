@@ -8,7 +8,7 @@
 import SwiftUI
 import Kingfisher
 
-fileprivate let vGridSpacing: CGFloat = 4
+fileprivate let LAZY_V_GRID_SPACING: CGFloat = 4
 
 struct ProfileStoriesView: View {
     @Binding var isStoryOpen: Bool
@@ -17,7 +17,7 @@ struct ProfileStoriesView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: vGridSpacing), count: 3)) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: LAZY_V_GRID_SPACING), count: 3)) {
                 ForEach(stories) { story in
                     KFImage(URL(string: story.storyPicture))
                         .placeholder {
@@ -34,7 +34,7 @@ struct ProfileStoriesView: View {
                         .cancelOnDisappear(true)
                         .aspectRatio(contentMode: .fill)
                         .frame(
-                            width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
+                            width: (UIScreen.main.bounds.width / 3) - (LAZY_V_GRID_SPACING / 2),
                             height: 156
                         )
                         .clipped()

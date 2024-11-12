@@ -8,7 +8,7 @@
 import SwiftUI
 import Kingfisher
 
-fileprivate let vGridSpacing: CGFloat = 4
+fileprivate let LAZY_V_GRID_SPACING: CGFloat = 4
 
 struct AddHighlightView: View {
     @Environment(\.dismiss) private var dismiss
@@ -97,7 +97,7 @@ struct AddHighlightView: View {
             
             // 내 스토리 목록
             ScrollView {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: vGridSpacing), count: 3), spacing: 4) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: LAZY_V_GRID_SPACING), count: 3), spacing: 4) {
                     ForEach(profileViewModel.stories) { story in
                         ZStack(alignment: .leading) {
                             KFImage(URL(string: story.storyPicture))
@@ -115,7 +115,7 @@ struct AddHighlightView: View {
                                 .cancelOnDisappear(true)
                                 .aspectRatio(contentMode: .fill)
                                 .frame(
-                                    width: (UIScreen.main.bounds.width / 3) - (vGridSpacing / 2),
+                                    width: (UIScreen.main.bounds.width / 3) - (LAZY_V_GRID_SPACING / 2),
                                     height: 156
                                 )
                                 .clipped()
