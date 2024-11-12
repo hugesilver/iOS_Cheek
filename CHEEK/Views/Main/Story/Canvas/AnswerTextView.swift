@@ -13,20 +13,22 @@ struct AnswerTextView: View {
     
     var body: some View {
         Text(viewModel.stackItems[viewModel.currentIndex].id == object.id && (viewModel.addTextObject || viewModel.editTextObject) ? "" : object.text)
-            .label1(font: "SUIT", color: .cheekWhite, bold: true)
+            .body1(font: "SUIT", color: .cheekWhite, bold: true)
             .multilineTextAlignment(.center)
-            .padding(viewModel.stackItems[viewModel.currentIndex].id == object.id && (viewModel.addTextObject || viewModel.editTextObject) ? 0 : 16)
+            .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .foregroundColor(.cheekBlack.opacity(0.6))
             )
+            .opacity(viewModel.stackItems[viewModel.currentIndex].id == object.id && (viewModel.addTextObject || viewModel.editTextObject) ? 0 : 1)
+            .rotationEffect(object.rotation) // offset 위에 두어야 반영
+            .scaleEffect(object.scale < 0.5 ? 0.5 : object.scale) // offset 위에 두어야 반영
             .offset(object.offset)
-            .scaleEffect(object.scale < 0.4 ? 0.4 : object.scale)
-            .rotationEffect(object.rotation)
             .onTapGesture {
                 viewModel.currentIndex = getIndex(stackItem: object)
                 viewModel.tempTextObject = object
                 
+                viewModel.userInteractState = .text
                 viewModel.editTextObject = true
             }
             .onLongPressGesture(minimumDuration: 0.2) {
@@ -108,7 +110,7 @@ struct AnswerTextView: View {
 }
 
 /*
-#Preview {
-    AnswerTextView()
-}
-*/
+ #Preview {
+ AnswerTextView()
+ }
+ */

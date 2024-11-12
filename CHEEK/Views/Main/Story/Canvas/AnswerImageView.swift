@@ -13,10 +13,10 @@ struct AnswerImageView: View {
     
     var body: some View {
         object.view
+            .rotationEffect(object.rotation) // offset 위에 두어야 반영
+            .scaleEffect(object.scale < 0.5 ? 0.5 : object.scale) // offset 위에 두어야 반영
             .offset(object.offset)
-            .scaleEffect(object.scale < 0.4 ? 0.4 : object.scale)
-            .rotationEffect(object.rotation)
-            .onTapGesture(count: 2) {
+            .onLongPressGesture(minimumDuration: 0.2) {
                 deleteObject(stackItem: object)
             }
             .gesture(

@@ -48,7 +48,7 @@ struct ContentView: View {
                     showAlert: $showAlert,
                     title: "서버에 연결을 할 수 없습니다.",
                     buttonText: "확인",
-                    onTap: {}
+                    onTap: {stateViewModel.logOut()}
                 )
             }
         }
@@ -61,7 +61,6 @@ struct ContentView: View {
             if isConnected == false {
                 alertType = .connection
                 showAlert = true
-                stateViewModel.logOut()
             }
         }
         .onChange(of: stateViewModel.isRefreshTokenValid) { isValid in

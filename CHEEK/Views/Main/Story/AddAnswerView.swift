@@ -543,9 +543,8 @@ struct BackgroundColorPaletteView: View {
 // 텍스트 추가
 struct AddTextObjectView: View {
     @ObservedObject var viewModel: AddAnswerViewModel
+    @State private var frame = CGRect.zero
     @FocusState private var isFieldFocused: Bool
-    
-    let placeholderText: String = "텍스트를 입력하세요."
     
     var body: some View {
         ZStack {
@@ -553,28 +552,30 @@ struct AddTextObjectView: View {
             
             ZStack {
                 Text(viewModel.stackItems[viewModel.currentIndex].text)
-                    .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                    .body1(font: "SUIT", color: .cheekWhite, bold: true)
                     .multilineTextAlignment(.center)
                     .padding(16)
                     .background(
                         RoundedRectangle(cornerRadius: 8)
                             .foregroundColor(.cheekBlack.opacity(0.6))
                     )
+                    .background(rectReader($frame))
                 
                 TextField(
                     "",
                     text: $viewModel.stackItems[viewModel.currentIndex].text,
-                    axis: .vertical
-                )
-                .label1(font: "SUIT", color: .cheekWhite, bold: true)
-                .multilineTextAlignment(.center)
-                .lineLimit(nil)
-                .focused($isFieldFocused)
-                .autocorrectionDisabled()
-                .onSubmit {
-                    viewModel.stackItems[viewModel.currentIndex].text += "\n"
-                    isFieldFocused = true
-                }
+                    axis: .vertical)
+                    .body1(font: "SUIT", color: .clear, bold: true)
+                    .multilineTextAlignment(.center)
+                    .padding(16)
+                    .frame(width: max(frame.width, 20), height: max(frame.height, 40))
+                    .fixedSize()
+                    .focused($isFieldFocused)
+                    .autocorrectionDisabled()
+                    .onSubmit {
+                        viewModel.stackItems[viewModel.currentIndex].text += "\n"
+                        isFieldFocused = true
+                    }
             }
             
             HStack {
@@ -602,6 +603,19 @@ struct AddTextObjectView: View {
             .padding(.horizontal, 16)
             .padding(.top, 16)
             .frame(maxHeight: .infinity, alignment: .top)
+            .onAppear {
+                isFieldFocused = true
+            }
+        }
+    }
+    
+    func rectReader(_ binding: Binding<CGRect>, _ space: CoordinateSpace = .global) -> some View {
+        GeometryReader { (geometry) -> Color in
+            let rect = geometry.frame(in: space)
+            DispatchQueue.main.async {
+                binding.wrappedValue = rect
+            }
+            return .clear
         }
     }
 }
@@ -609,39 +623,39 @@ struct AddTextObjectView: View {
 // 텍스트 수정
 struct EditTextObjectView: View {
     @ObservedObject var viewModel: AddAnswerViewModel
+    @State private var frame = CGRect.zero
     @FocusState private var isFieldFocused: Bool
-    
-    let placeholderText: String = "텍스트를 입력하세요."
     
     var body: some View {
         ZStack {
-            Color.black.opacity(0.75)
+            Color.black.opacity(0.4)
             
             ZStack {
                 Text(viewModel.tempTextObject.text)
-                    .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                    .body1(font: "SUIT", color: .cheekWhite, bold: true)
                     .multilineTextAlignment(.center)
                     .padding(16)
                     .background(
                         RoundedRectangle(cornerRadius: 8)
                             .foregroundColor(.cheekBlack.opacity(0.6))
                     )
-                    .padding(.bottom, 4)
+                    .background(rectReader($frame))
                 
                 TextField(
                     "",
                     text: $viewModel.tempTextObject.text,
-                    axis: .vertical
-                )
-                .label1(font: "SUIT", color: .cheekWhite, bold: true)
-                .multilineTextAlignment(.center)
-                .lineLimit(nil)
-                .focused($isFieldFocused)
-                .autocorrectionDisabled()
-                .onSubmit {
-                    viewModel.tempTextObject.text += "\n"
-                    isFieldFocused = true
-                }
+                    axis: .vertical)
+                    .body1(font: "SUIT", color: .clear, bold: true)
+                    .multilineTextAlignment(.center)
+                    .padding(16)
+                    .frame(width: max(frame.width, 20), height: max(frame.height, 40))
+                    .fixedSize()
+                    .focused($isFieldFocused)
+                    .autocorrectionDisabled()
+                    .onSubmit {
+                        viewModel.stackItems[viewModel.currentIndex].text += "\n"
+                        isFieldFocused = true
+                    }
             }
             
             HStack {
@@ -651,6 +665,7 @@ struct EditTextObjectView: View {
                     .padding(.vertical, 12)
                     .onTapGesture {
                         viewModel.cancelTextView()
+                        viewModel.userInteractState = .save
                     }
                 
                 Spacer()
@@ -664,11 +679,25 @@ struct EditTextObjectView: View {
                         
                         viewModel.stackItems[viewModel.currentIndex] = viewModel.tempTextObject
                         viewModel.canvas.becomeFirstResponder()
+                        viewModel.userInteractState = .save
                     }
             }
             .padding(.horizontal, 16)
             .padding(.top, 16)
             .frame(maxHeight: .infinity, alignment: .top)
+            .onAppear {
+                isFieldFocused = true
+            }
+        }
+    }
+    
+    func rectReader(_ binding: Binding<CGRect>, _ space: CoordinateSpace = .global) -> some View {
+        GeometryReader { (geometry) -> Color in
+            let rect = geometry.frame(in: space)
+            DispatchQueue.main.async {
+                binding.wrappedValue = rect
+            }
+            return .clear
         }
     }
 }

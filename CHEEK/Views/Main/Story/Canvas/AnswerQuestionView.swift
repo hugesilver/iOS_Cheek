@@ -13,9 +13,9 @@ struct AnswerQuestionView: View {
     
     var body: some View {
         object.view
+            .rotationEffect(object.rotation) // offset 위에 두어야 반영
+            .scaleEffect(object.scale < 0.75 ? 0.75 : object.scale) // offset 위에 두어야 반영
             .offset(object.offset)
-            .scaleEffect(object.scale < 0.4 ? 0.4 : object.scale)
-            .rotationEffect(object.rotation)
             .gesture(
                 DragGesture()
                     .onChanged{ value in
