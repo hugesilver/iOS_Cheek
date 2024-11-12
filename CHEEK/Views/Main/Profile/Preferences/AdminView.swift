@@ -48,7 +48,7 @@ struct AdminView: View {
                         Text(member.nickname ?? "null")
                             .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
                         
-                        Text(member.email)
+                        Text(member.email + "(\(member.memberType))")
                             .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
                         
                         Text(member.role ?? "null")

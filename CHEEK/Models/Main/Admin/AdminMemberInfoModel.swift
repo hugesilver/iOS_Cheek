@@ -12,6 +12,7 @@ struct AdminMemberInfoModel: Identifiable, Codable {
     let nickname: String?
     let email: String
     var role: String?
+    let memberType: String
     
     var id: Int64 {
         memberId
