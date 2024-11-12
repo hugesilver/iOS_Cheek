@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     @State private var navPath: NavigationPath = NavigationPath()
     
@@ -94,7 +94,7 @@ struct WelcomeView: View {
                     VerifyMentorView(navPath: $navPath)
                     
                 case "SetProfileView":
-                    SetProfileView(stateViewModel: stateViewModel, navPath: $navPath, isMentor: $isMentor)
+                    SetProfileView(authViewModel: authViewModel, navPath: $navPath, isMentor: $isMentor)
                     
                 default: EmptyView()
                 }
@@ -139,8 +139,8 @@ struct WelcomeView: View {
             if profileComplete! {
                 // 메인 페이지로 변경
                 DispatchQueue.main.async {
-                    stateViewModel.isRefreshTokenValid = true
-                    stateViewModel.isProfileDone = true
+                    authViewModel.isRefreshTokenValid = true
+                    authViewModel.isProfileDone = true
                     UserDefaults.standard.set(true, forKey: "profileDone")
                 }
             } else {
@@ -186,5 +186,5 @@ struct WelcomeViewSocialButton: View {
 }
 
 #Preview {
-    WelcomeView(stateViewModel: StateViewModel())
+    WelcomeView(authViewModel: AuthenticationViewModel())
 }

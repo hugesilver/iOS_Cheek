@@ -10,7 +10,7 @@ import SwiftUI
 struct AddQuestionView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     let categoryId: Int64
@@ -112,7 +112,7 @@ struct AddQuestionView: View {
             UINavigationBar.setAnimationsEnabled(false)
             AppState.shared.swipeEnabled = false
             
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
         }
         .onDisappear {
             UINavigationBar.setAnimationsEnabled(true)
@@ -151,5 +151,5 @@ struct AddQuestionView: View {
 }
 
 #Preview {
-    AddQuestionView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), categoryId: 1)
+    AddQuestionView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), categoryId: 1)
 }

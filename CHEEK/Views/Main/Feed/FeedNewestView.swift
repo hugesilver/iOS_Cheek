@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FeedNewestView: View {
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var feedViewModel: FeedViewModel
     
@@ -25,7 +25,7 @@ struct FeedNewestView: View {
                 ForEach(Array(feedViewModel.feedNewest.enumerated()), id: \.offset) { index, data in
                     if data.type == "STORY" {
                         UserStoryCard(
-                            stateViewModel: stateViewModel,
+                            authViewModel: authViewModel,
                             storyId: data.storyDto!.storyId,
                             storyPicture: data.storyDto!.storyPicture,
                             modifiedAt: data.modifiedAt,
@@ -40,7 +40,7 @@ struct FeedNewestView: View {
                         if myMemberId != nil {
                             VStack(spacing: 16) {
                                 UserQuestionCard(
-                                    stateViewModel: stateViewModel,
+                                    authViewModel: authViewModel,
                                     profileViewModel: profileViewModel,
                                     myId: myMemberId!,
                                     questionId: data.questionDto!.questionId,
@@ -50,7 +50,7 @@ struct FeedNewestView: View {
                                     memberDto: data.memberDto)
                                 
                                 if profileViewModel.isMentor {
-                                    NavigationLink(destination: AddAnswerView(stateViewModel: stateViewModel, questionId: data.questionDto!.questionId)) {
+                                    NavigationLink(destination: AddAnswerView(authViewModel: authViewModel, questionId: data.questionDto!.questionId)) {
                                         ButtonNarrowFill(text: "답변하기")
                                     }
                                 }
@@ -85,5 +85,5 @@ struct FeedNewestView: View {
 }
 
 #Preview {
-    FeedNewestView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), feedViewModel: FeedViewModel(), isStoryOpen: .constant(false), selectedStories: .constant([]), onRefresh: {})
+    FeedNewestView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), feedViewModel: FeedViewModel(), isStoryOpen: .constant(false), selectedStories: .constant([]), onRefresh: {})
 }

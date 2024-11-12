@@ -12,7 +12,7 @@ import Kingfisher
 struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     @StateObject private var viewModel = SetProfileViewModel()
@@ -232,7 +232,7 @@ struct EditProfileView: View {
             Utils().hideKeyboard()
         }
         .onAppear {
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             
             if profileViewModel.profile != nil {
                 nickname = profileViewModel.profile!.nickname
@@ -331,5 +331,5 @@ struct EditProfileView: View {
 }
 
 #Preview {
-    EditProfileView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
+    EditProfileView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

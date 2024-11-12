@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SearchResultQuestionView: View {
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     @ObservedObject var searchViewModel: SearchViewModel
     
@@ -21,7 +21,7 @@ struct SearchResultQuestionView: View {
                     ForEach(Array(searchViewModel.searchResult!.questionDto.enumerated()), id: \.offset) { index, questionDto in
                         VStack(spacing: 16) {
                             UserQuestionCard(
-                                stateViewModel: stateViewModel,
+                                authViewModel: authViewModel,
                                 profileViewModel: profileViewModel,
                                 myId: myMemberId!,
                                 questionId: questionDto.questionId,
@@ -55,5 +55,5 @@ struct SearchResultQuestionView: View {
 }
 
 #Preview {
-    SearchResultQuestionView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), searchViewModel: SearchViewModel())
+    SearchResultQuestionView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), searchViewModel: SearchViewModel())
 }

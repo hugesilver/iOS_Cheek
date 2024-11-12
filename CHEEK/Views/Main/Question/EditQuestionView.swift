@@ -10,7 +10,7 @@ import SwiftUI
 struct EditQuestionView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     let questionId: Int64
@@ -113,7 +113,7 @@ struct EditQuestionView: View {
             UINavigationBar.setAnimationsEnabled(false)
             AppState.shared.swipeEnabled = false
             
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             question = content
         }
         .onDisappear {
@@ -151,5 +151,5 @@ struct EditQuestionView: View {
 }
 
 #Preview {
-    EditQuestionView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), questionId: 0, content: "")
+    EditQuestionView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), questionId: 0, content: "")
 }

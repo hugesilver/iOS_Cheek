@@ -11,7 +11,7 @@ struct ProfileView: View {
     @Environment(\.dismiss) private var dismiss
     
     let targetMemberId: Int64
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     @State private var myMemberId: Int64?
     
@@ -74,7 +74,7 @@ struct ProfileView: View {
                                 }
                                 
                                 NavigationLink(destination: FollowView(
-                                    stateViewModel: stateViewModel,
+                                    authViewModel: authViewModel,
                                     targetMemberId: profileViewModel.profile?.memberId ?? 0,
                                     selectedTab: 0)) {
                                         VStack(spacing: 2) {
@@ -88,7 +88,7 @@ struct ProfileView: View {
                                     }
                                 
                                 NavigationLink(destination: FollowView(
-                                    stateViewModel: stateViewModel,
+                                    authViewModel: authViewModel,
                                     targetMemberId: profileViewModel.profile?.memberId ?? 0,
                                     selectedTab: 1)) {
                                         VStack(spacing: 2) {
@@ -200,7 +200,7 @@ struct ProfileView: View {
                             }
                             
                             ProfileQuestionsView(
-                                stateViewModel: stateViewModel,
+                                authViewModel: authViewModel,
                                 profileViewModel: profileViewModel,
                                 questions: profileViewModel.questions)
                             .background(
@@ -246,10 +246,10 @@ struct ProfileView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
         }
     }
@@ -336,5 +336,5 @@ struct ButtonUnfollow: View {
 }
 
 #Preview {
-    ProfileView(targetMemberId: 1, stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
+    ProfileView(targetMemberId: 1, authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

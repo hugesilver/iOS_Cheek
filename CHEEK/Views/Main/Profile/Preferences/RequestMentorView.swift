@@ -10,7 +10,7 @@ import SwiftUI
 struct RequestMentorView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     @State private var isRegisterDomainView: Bool = false
     
@@ -26,7 +26,7 @@ struct RequestMentorView: View {
         .background(.cheekBackgroundTeritory)
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true).onAppear {
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
         }
     }
     
@@ -38,5 +38,5 @@ struct RequestMentorView: View {
 }
 
 #Preview {
-    RequestMentorView(stateViewModel: StateViewModel())
+    RequestMentorView(authViewModel: AuthenticationViewModel())
 }

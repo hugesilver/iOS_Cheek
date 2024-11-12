@@ -13,7 +13,7 @@ struct CHEEKApp: App {
     let appKeyKakao = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as! String
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @StateObject var stateViewModel: StateViewModel = StateViewModel()
+    @StateObject var authViewModel: AuthenticationViewModel = AuthenticationViewModel()
     
     init() {
         // Kakao SDK 초기화
@@ -22,10 +22,10 @@ struct CHEEKApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(stateViewModel: stateViewModel)
+            ContentView(authViewModel: authViewModel)
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-                    stateViewModel.checkServerConnection()
-                    stateViewModel.checkRefreshTokenValid()
+                    authViewModel.checkServerConnection()
+                    authViewModel.checkRefreshTokenValid()
                 }
         }
     }

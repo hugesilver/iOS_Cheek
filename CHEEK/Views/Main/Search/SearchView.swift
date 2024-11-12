@@ -10,7 +10,7 @@ import WrappingHStack
 
 struct SearchView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     @StateObject private var viewModel: SearchViewModel = SearchViewModel()
     
@@ -164,7 +164,7 @@ struct SearchView: View {
                     
                     TabView(selection: $selectedTab) {
                         SearchResultAllView(
-                            stateViewModel: stateViewModel,
+                            authViewModel: authViewModel,
                             profileViewModel: profileViewModel,
                             searchViewModel: viewModel,
                             selectedTab: $selectedTab,
@@ -173,7 +173,7 @@ struct SearchView: View {
                         .tag(0)
                         
                         SearchResultProfileView(
-                            stateViewModel: stateViewModel,
+                            authViewModel: authViewModel,
                             searchViewModel: viewModel)
                         .tag(1)
                         
@@ -184,7 +184,7 @@ struct SearchView: View {
                             .tag(2)
                         
                         SearchResultQuestionView(
-                            stateViewModel: stateViewModel,
+                            authViewModel: authViewModel,
                             profileViewModel: profileViewModel,
                             searchViewModel: viewModel)
                             .tag(3)
@@ -204,7 +204,7 @@ struct SearchView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             
             if catetory != nil {
                 selectedCategory = catetory
@@ -215,10 +215,10 @@ struct SearchView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
         }
     }
@@ -260,5 +260,5 @@ struct SearchCategoryBlock: View {
 }
 
 #Preview {
-    SearchView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
+    SearchView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

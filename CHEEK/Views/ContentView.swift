@@ -11,18 +11,18 @@ import KakaoSDKAuth
 struct ContentView: View {
     enum AlertType { case refreshToken, connection }
     
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     @State private var showAlert: Bool = false
     @State private var alertType: AlertType = .refreshToken
     
     var body: some View {
         ZStack {
-            if stateViewModel.isInit && stateViewModel.isProfileDone != nil {
-                if stateViewModel.isRefreshTokenValid == true && stateViewModel.isProfileDone! {
-                    MainView(stateViewModel: stateViewModel)
+            if authViewModel.isProfileDone != nil {
+                if authViewModel.isRefreshTokenValid == true && authViewModel.isProfileDone! {
+                    MainView(authViewModel: authViewModel)
                 } else {
-                    WelcomeView(stateViewModel: stateViewModel)
+                    WelcomeView(authViewModel: authViewModel)
                         .onOpenURL { url in
                             if (AuthApi.isKakaoTalkLoginUrl(url)) {
                                 _ = AuthController.handleOpenUrl(url: url)
@@ -48,31 +48,27 @@ struct ContentView: View {
                     showAlert: $showAlert,
                     title: "서버에 연결을 할 수 없습니다.",
                     buttonText: "확인",
-                    onTap: {stateViewModel.logOut()}
+                    onTap: {authViewModel.logOut()}
                 )
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onAppear {
-            stateViewModel.isInit = true
-            stateViewModel.getProfileDone()
-        }
-        .onReceive(stateViewModel.$isConnected) { isConnected in
+        .onReceive(authViewModel.$isConnected) { isConnected in
             if isConnected == false {
                 alertType = .connection
                 showAlert = true
             }
         }
-        .onChange(of: stateViewModel.isRefreshTokenValid) { isValid in
-            if stateViewModel.isInit && isValid == false {
+        .onChange(of: authViewModel.isRefreshTokenValid) { isValid in
+            if isValid == false {
                 alertType = .refreshToken
                 showAlert = true
-                stateViewModel.logOut()
+                authViewModel.logOut()
             }
         }
     }
 }
 
 #Preview {
-    ContentView(stateViewModel: StateViewModel())
+    ContentView(authViewModel: AuthenticationViewModel())
 }

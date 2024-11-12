@@ -10,7 +10,7 @@ import SwiftUI
 struct AdminView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     @StateObject var viewModel: AdminViewModel = AdminViewModel()
@@ -110,7 +110,7 @@ struct AdminView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
         }
         .alert(isPresented: $showAlert) {
             Alert(
@@ -144,5 +144,5 @@ struct AdminView: View {
 }
 
 #Preview {
-    AdminView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
+    AdminView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

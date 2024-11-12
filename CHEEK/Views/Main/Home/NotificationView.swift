@@ -11,7 +11,7 @@ import Kingfisher
 struct NotificationView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var notificationViewModel: NotificationViewModel
     
     enum DestinationType {
@@ -79,7 +79,7 @@ struct NotificationView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             notificationViewModel.getNotifications()
             notificationViewModel.getReadNotifications()
         }
@@ -88,10 +88,10 @@ struct NotificationView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
         }
     }
@@ -175,5 +175,5 @@ struct NotificationBlock: View {
 }
 
 #Preview {
-    NotificationView(stateViewModel: StateViewModel(), notificationViewModel: NotificationViewModel())
+    NotificationView(authViewModel: AuthenticationViewModel(), notificationViewModel: NotificationViewModel())
 }

@@ -1,5 +1,5 @@
 //
-//  StateViewModel.swift
+//  AuthenticationViewModel.swift
 //  CHEEK
 //
 //  Created by 김태은 on 9/9/24.
@@ -8,11 +8,10 @@
 import Foundation
 import Combine
 
-class StateViewModel: ObservableObject {
+class AuthenticationViewModel: ObservableObject {
     private let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
     private var cancellables = Set<AnyCancellable>()
     
-    @Published var isInit: Bool = false
     @Published var isRefreshTokenValid: Bool? = nil
     @Published var isConnected: Bool? = nil
     @Published var isProfileDone: Bool? = nil
@@ -20,6 +19,7 @@ class StateViewModel: ObservableObject {
     init() {
         checkRefreshTokenValid()
         checkServerConnection()
+        getProfileDone()
     }
     
     // 서버 연결상태 확인

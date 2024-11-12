@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfileQuestionsView: View {
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     var questions: [QuestionDto]
     
@@ -19,7 +19,7 @@ struct ProfileQuestionsView: View {
             if myMemberId != nil {
                 ForEach(questions) { question in
                     QuestionCard(
-                        stateViewModel: stateViewModel,
+                        authViewModel: authViewModel,
                         profileViewModel: profileViewModel,
                         myId: myMemberId!,
                         questionId: question.questionId,
@@ -48,5 +48,5 @@ struct ProfileQuestionsView: View {
 }
 
 #Preview {
-    ProfileQuestionsView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel(), questions: [])
+    ProfileQuestionsView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel(), questions: [])
 }

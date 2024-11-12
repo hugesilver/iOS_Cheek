@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MypageView: View {
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     @State private var isInit: Bool = false
@@ -47,7 +47,7 @@ struct MypageView: View {
                 HStack(spacing: 8) {
                     if profileViewModel.isMentor {
                         NavigationLink(destination: DeleteStoryView(
-                            stateViewModel: stateViewModel,
+                            authViewModel: authViewModel,
                             profileViewModel: profileViewModel)) {
                                 Image("IconPost")
                                     .resizable()
@@ -58,7 +58,7 @@ struct MypageView: View {
                     }
                     
                     NavigationLink(destination: AccountPreferencesView(
-                        stateViewModel: stateViewModel,
+                        authViewModel: authViewModel,
                         profileViewModel: profileViewModel)) {
                             Image("IconPreference")
                                 .resizable()
@@ -98,7 +98,7 @@ struct MypageView: View {
                                 }
                                 
                                 NavigationLink(destination: FollowView(
-                                    stateViewModel: stateViewModel,
+                                    authViewModel: authViewModel,
                                     targetMemberId: profileViewModel.profile?.memberId ?? 0,
                                     selectedTab: 0)) {
                                         VStack(spacing: 2) {
@@ -112,7 +112,7 @@ struct MypageView: View {
                                     }
                                 
                                 NavigationLink(destination: FollowView(
-                                    stateViewModel: stateViewModel,
+                                    authViewModel: authViewModel,
                                     targetMemberId: profileViewModel.profile?.memberId ?? 0,
                                     selectedTab: 1)) {
                                         VStack(spacing: 2) {
@@ -170,7 +170,7 @@ struct MypageView: View {
                                     }
                                     
                                     NavigationLink(destination: AddHighlightView(
-                                        stateViewModel: stateViewModel,
+                                        authViewModel: authViewModel,
                                         profileViewModel: profileViewModel)) {
                                             VStack(spacing: 12) {
                                                 Image("IconPlus")
@@ -193,7 +193,7 @@ struct MypageView: View {
                             .padding(.top, 24)
                         }
                         
-                        NavigationLink(destination: ScrappedFoldersView(stateViewModel: stateViewModel)) {
+                        NavigationLink(destination: ScrappedFoldersView(authViewModel: authViewModel)) {
                             ProfileButtonNarrowLine(text: "스크랩된 스토리")
                                 .padding(.top, 24)
                                 .padding(.horizontal, 16)
@@ -222,7 +222,7 @@ struct MypageView: View {
                             }
                             
                             ProfileQuestionsView(
-                                stateViewModel: stateViewModel,
+                                authViewModel: authViewModel,
                                 profileViewModel: profileViewModel,
                                 questions: profileViewModel.questions)
                             .background(
@@ -262,23 +262,23 @@ struct MypageView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             
             initData()
             getMyData()
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
         }
         .fullScreenCover(isPresented: $isHighlightOpen) {
             if #available(iOS 16.4, *) {
                 HighlightView(
-                    stateViewModel: stateViewModel,
+                    authViewModel: authViewModel,
                     profileViewModel: profileViewModel,
                     highlightId: $selectedHighlightId,
                     highlightThumbnail: $selectedHighlightThumbnail,
@@ -286,7 +286,7 @@ struct MypageView: View {
                 .presentationBackground(.clear)
             } else {
                 HighlightView(
-                    stateViewModel: stateViewModel,
+                    authViewModel: authViewModel,
                     profileViewModel: profileViewModel,
                     highlightId: $selectedHighlightId,
                     highlightThumbnail: $selectedHighlightThumbnail,
@@ -340,5 +340,5 @@ struct ProfileButtonNarrowLine: View {
 }
 
 #Preview {
-    MypageView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
+    MypageView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }

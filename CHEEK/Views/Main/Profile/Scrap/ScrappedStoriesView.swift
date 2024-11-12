@@ -13,7 +13,7 @@ fileprivate let vGridSpacing: CGFloat = 4
 struct ScrappedStoriesView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var scrapViewModel: ScrapViewModel
     var folderModel: ScrapFolderModel
     
@@ -262,7 +262,7 @@ struct ScrappedStoriesView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             
             scrapViewModel.getCollections(folderId: folderModel.folderId)
         }
@@ -271,10 +271,10 @@ struct ScrappedStoriesView: View {
         }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
-                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
-                StoryView(stateViewModel: stateViewModel, storyIds: $selectedStories)
+                StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
             }
         }
         .alert(isPresented: $showAlert) {
@@ -344,5 +344,5 @@ struct ScrappedStoriesView: View {
 }
 
 #Preview {
-    ScrappedStoriesView(stateViewModel: StateViewModel(), scrapViewModel: ScrapViewModel(), folderModel: ScrapFolderModel(folderId: 1, folderName: "", thumbnailPicture: ""))
+    ScrappedStoriesView(authViewModel: AuthenticationViewModel(), scrapViewModel: ScrapViewModel(), folderModel: ScrapFolderModel(folderId: 1, folderName: "", thumbnailPicture: ""))
 }

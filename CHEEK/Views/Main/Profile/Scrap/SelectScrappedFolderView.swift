@@ -10,7 +10,7 @@ import SwiftUI
 struct SelectScrappedFolderView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     
     var storyModel: StoryModel
     
@@ -45,7 +45,7 @@ struct SelectScrappedFolderView: View {
                                     }
                                 }
                                 
-                                NavigationLink(destination: AddScrapFolderView(storyModel: storyModel, stateViewModel: stateViewModel, scrapViewModel: viewModel, isScrapOpen: $isScrapOpen, isKeyboardUp: $isKeyboardUp)) {
+                                NavigationLink(destination: AddScrapFolderView(storyModel: storyModel, authViewModel: authViewModel, scrapViewModel: viewModel, isScrapOpen: $isScrapOpen, isKeyboardUp: $isKeyboardUp)) {
                                     HStack(spacing: 12) {
                                         Image("IconPlus")
                                             .resizable()
@@ -83,7 +83,7 @@ struct SelectScrappedFolderView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
             
             isKeyboardUp = false
             getFolders()
@@ -102,5 +102,5 @@ struct SelectScrappedFolderView: View {
 }
 
 #Preview {
-    SelectScrappedFolderView(stateViewModel: StateViewModel(), storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), isScrapOpen: .constant(true), isKeyboardUp: .constant(false))
+    SelectScrappedFolderView(authViewModel: AuthenticationViewModel(), storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), isScrapOpen: .constant(true), isKeyboardUp: .constant(false))
 }

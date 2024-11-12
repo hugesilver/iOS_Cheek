@@ -13,7 +13,7 @@ fileprivate let vGridSpacing: CGFloat = 4
 struct DeleteStoryView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var stateViewModel: StateViewModel
+    @ObservedObject var authViewModel: AuthenticationViewModel
     @ObservedObject var profileViewModel: ProfileViewModel
     
     enum deleteModeTypes {
@@ -158,7 +158,7 @@ struct DeleteStoryView: View {
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
         .onAppear {
-            stateViewModel.checkRefreshTokenValid()
+            authViewModel.checkRefreshTokenValid()
         }
         .alert(isPresented: $showAlert) {
             switch deleteMode {
@@ -197,5 +197,5 @@ struct DeleteStoryView: View {
 }
 
 #Preview {
-    DeleteStoryView(stateViewModel: StateViewModel(), profileViewModel: ProfileViewModel())
+    DeleteStoryView(authViewModel: AuthenticationViewModel(), profileViewModel: ProfileViewModel())
 }
