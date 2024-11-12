@@ -81,6 +81,9 @@ struct FeedView: View {
                     NavigationLink(destination: AddQuestionView(stateViewModel: stateViewModel, profileViewModel: profileViewModel, categoryId: selectedCategory)) {
                         FAB()
                     }
+                    .onDisappear {
+                        getFeed()
+                    }
                 }
                 .padding(24)
             }
