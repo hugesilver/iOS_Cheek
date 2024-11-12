@@ -15,8 +15,8 @@ struct RankingCard: View {
     var data: MemberProfileModel
     
     var body: some View {
-        VStack(spacing: 16) {
-            NavigationLink(destination: ProfileView(targetMemberId: data.memberId ?? 0, stateViewModel: stateViewModel)) {
+        NavigationLink(destination: ProfileView(targetMemberId: data.memberId ?? 0, stateViewModel: stateViewModel)) {
+            VStack(spacing: 16) {
                 HStack(spacing: 8) {
                     Ranking(rank: rank)
                     
@@ -26,30 +26,33 @@ struct RankingCard: View {
                         Text(data.nickname ?? "알 수 없는 사용자")
                             .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
                             .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         
                         Spacer()
                         
                         Text(data.description ?? "")
                             .caption1(font: "SUIT", color: .cheekTextAlternative, bold: false)
                             .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .frame(maxWidth: 188)
                 }
+                
+                Text(data.information ?? "")
+                    .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            
-            Text(data.information ?? "")
-                .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
-                .fixedSize(horizontal: false, vertical: true)
-                .lineLimit(2)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 16)
+            .frame(width: 268)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .strokeBorder(.cheekTextAssitive, lineWidth: 1)
+                    .foregroundColor(.cheekBackgroundTeritory)
+            )
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12 + 16)
-        .frame(maxWidth: 268)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .strokeBorder(.cheekTextAssitive, lineWidth: 1)
-                .foregroundColor(.cheekBackgroundTeritory)
-        )
     }
 }
 
