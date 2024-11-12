@@ -91,7 +91,7 @@ struct EditHighlightView: View {
             
             // 내 스토리 목록
             ScrollView {
-                LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: vGridSpacing), count: 3), spacing: 4) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: vGridSpacing), count: 3), spacing: 4) {
                     ForEach(profileViewModel.stories) { story in
                         ZStack(alignment: .leading) {
                             KFImage(URL(string: story.storyPicture))

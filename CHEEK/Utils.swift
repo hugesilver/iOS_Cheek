@@ -30,11 +30,10 @@ class Utils {
         }
     }
     
-    // 현재 기준 지난 날짜 계산 (UTC -> KST)
+    // 현재 기준 지난 날짜 계산
     func timeAgo(dateString: String) -> String? {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-        formatter.timeZone = TimeZone(abbreviation: "KST")
         
         guard let date = formatter.date(from: dateString) else {
             return nil
@@ -57,15 +56,11 @@ class Utils {
     // 날짜 계산
     func convertToKST(dateString: String) -> String? {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        formatter.dateFormat = "yyyy-MM-dd"
         
         guard let date = formatter.date(from: dateString) else {
             return nil
         }
-        
-        formatter.timeZone = TimeZone(abbreviation: "KST")
-        formatter.dateFormat = "yyyy-MM-dd"
         
         return formatter.string(from: date)
     }

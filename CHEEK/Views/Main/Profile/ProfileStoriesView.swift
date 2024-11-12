@@ -17,7 +17,7 @@ struct ProfileStoriesView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: vGridSpacing), count: 3)) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: vGridSpacing), count: 3)) {
                 ForEach(stories) { story in
                     KFImage(URL(string: story.storyPicture))
                         .placeholder {

@@ -95,7 +95,7 @@ struct HomeView: View {
                         .padding(.horizontal, 16)
                         .padding(.top, 24)
                         
-                        LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 21), count: 4), spacing: 24) {
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 21), count: 4), spacing: 24) {
                             ForEach(CategoryModels().categories) { data in
                                 VStack(spacing: 8) {
                                     Image(data.image)

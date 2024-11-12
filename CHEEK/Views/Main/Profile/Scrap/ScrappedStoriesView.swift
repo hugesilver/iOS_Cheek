@@ -93,7 +93,7 @@ struct ScrappedStoriesView: View {
                     
                     // 컬렉션 모음
                     ScrollView {
-                        LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 4), count: 3), spacing: 4) {
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: vGridSpacing), count: 3), spacing: 4) {
                             ForEach(scrapViewModel.collections) { collection in
                                 ZStack(alignment: .leading) {
                                     KFImage(URL(string: collection.storyPicture))
@@ -211,7 +211,7 @@ struct ScrappedStoriesView: View {
                     
                     // 컬렉션 모음
                     ScrollView {
-                        LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 4), count: 3), spacing: 4) {
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: vGridSpacing), count: 3), spacing: 4) {
                             ForEach(scrapViewModel.collections) { collection in
                                 ZStack(alignment: .leading) {
                                     KFImage(URL(string: collection.storyPicture))

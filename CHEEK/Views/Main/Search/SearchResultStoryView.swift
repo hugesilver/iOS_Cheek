@@ -18,7 +18,7 @@ struct SearchResultStoryView: View {
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 4), count: 3), spacing: 4) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 3), spacing: 4) {
                 ForEach(searchViewModel.searchResult!.storyDto) { story in
                     ZStack(alignment: .leading) {
                         KFImage(URL(string: story.storyPicture))
