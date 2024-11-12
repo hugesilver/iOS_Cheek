@@ -71,24 +71,32 @@ class AppleAuthViewModel: NSObject, ObservableObject, ASAuthorizationControllerD
         if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
             guard currentNonce != nil else {
                 print("Invalid state: A login callback was received, but no login request was sent.")
-                self.isComplete = false
+                DispatchQueue.main.async {
+                    self.isComplete = false
+                }
                 return
             }
             guard let appleIDToken = appleIDCredential.identityToken else {
                 print("Unable to fetch identity token")
-                self.isComplete = false
+                DispatchQueue.main.async {
+                    self.isComplete = false
+                }
                 return
             }
             guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
                 print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
-                self.isComplete = false
+                DispatchQueue.main.async {
+                    self.isComplete = false
+                }
                 return
             }
             
             oAuthLogin(token: idTokenString)
             UIPasteboard.general.string = idTokenString
         } else {
-            self.isComplete = false
+            DispatchQueue.main.async {
+                self.isComplete = false
+            }
         }
     }
     

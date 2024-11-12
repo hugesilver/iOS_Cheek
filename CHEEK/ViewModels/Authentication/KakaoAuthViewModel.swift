@@ -106,7 +106,9 @@ class KakaoAuthViewModel: ObservableObject {
                     print("oauthLogin 함수 실행 중 요청 성공")
                 case .failure(let error):
                     print("oauthLogin 함수 실행 중 요청 실패: \(error)")
-                    self.isComplete = false
+                    DispatchQueue.main.async {
+                        self.isComplete = false
+                    }
                 }
             }, receiveValue: { data in
                 Keychain().create(key: "MEMBER_TYPE", value: "KAKAO")

@@ -118,6 +118,9 @@ struct WelcomeView: View {
         .onChange(of: appleAuthViewModel.profileComplete) { profileComplete in
             isProfileComplete(profileComplete: profileComplete)
         }
+        .onAppear {
+            isLoading = false
+        }
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("인증에 실패했습니다."),
