@@ -34,18 +34,14 @@ class Utils {
     func timeAgo(dateString: String) -> String? {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
-        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        formatter.timeZone = TimeZone(abbreviation: "KST")
         
         guard let date = formatter.date(from: dateString) else {
             return nil
         }
         
-        let kstTimeZone = TimeZone(abbreviation: "KST")
-        
-        let koreanDate = date.addingTimeInterval(TimeInterval(kstTimeZone!.secondsFromGMT(for: date) - TimeZone.current.secondsFromGMT(for: date)))
-        
         let now = Date()
-        let components = Calendar.current.dateComponents([.minute, .hour, .day], from: koreanDate, to: now)
+        let components = Calendar.current.dateComponents([.minute, .hour, .day], from: date, to: now)
         
         if let day = components.day, day > 0 {
             return "\(day)일 전"
