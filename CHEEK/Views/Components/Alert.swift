@@ -23,6 +23,7 @@ struct CustomAlert: View {
                 
                 ButtonActive(text: buttonText)
                     .onTapGesture {
+                        onTap()
                         showAlert = false
                     }
             }
