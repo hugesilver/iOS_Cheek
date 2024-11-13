@@ -79,7 +79,7 @@ struct MypageView: View {
                         HStack(spacing: 16) {
                             ProfileXL(url: profileViewModel.profile?.profilePicture)
                             
-                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: 3), spacing: 0) {
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 0), count: profileViewModel.isMentor ? 3 : 2), spacing: 0) {
                                 if profileViewModel.isMentor {
                                     VStack(spacing: 2) {
                                         Text("\(profileViewModel.stories.count)")
