@@ -163,6 +163,8 @@ class AuthenticationViewModel: ObservableObject {
         }
         
         Keychain().delete(key: "MEMBER_TYPE")
+        Keychain().delete(key: "PREV_FCM_TOKEN")
+        Keychain().delete(key: "FCM_TOKEN")
         
         DispatchQueue.main.async {
             self.isRefreshTokenValid = false
