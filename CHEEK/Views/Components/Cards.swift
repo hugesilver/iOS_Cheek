@@ -96,12 +96,12 @@ struct UserFollowCard: View {
             
             if !isMe {
                 if data.following {
-                    ButtonNarrowDisabled(text: "언팔로우")
+                    ButtonHugDisabled(text: "언팔로우")
                         .onTapGesture {
                             onTapUnfollow()
                         }
                 } else {
-                    ButtonNarrowHug(text: "팔로우")
+                    ButtonHugActive(text: "팔로우")
                         .onTapGesture {
                             onTapFollow()
                         }

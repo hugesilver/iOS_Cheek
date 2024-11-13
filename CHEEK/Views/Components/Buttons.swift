@@ -12,7 +12,7 @@ struct ButtonActive: View {
     
     var body: some View {
         Text(text)
-            .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
+            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
             .padding(.horizontal, 16)
             .padding(.vertical, 16)
             .frame(maxWidth: .infinity)
@@ -28,7 +28,7 @@ struct ButtonDisabled: View {
     
     var body: some View {
         Text(text)
-            .label1(font: "SUIT", color: .cheekTextAlternative, bold: true)
+            .body1(font: "SUIT", color: .cheekTextAlternative, bold: true)
             .padding(.horizontal, 16)
             .padding(.vertical, 16)
             .frame(maxWidth: .infinity)
@@ -44,7 +44,7 @@ struct ButtonLine: View {
     
     var body: some View {
         Text(text)
-            .label1(font: "SUIT", color: .cheekTextAlternative, bold: true)
+            .body1(font: "SUIT", color: .cheekTextAlternative, bold: true)
             .padding(.horizontal, 14)
             .padding(.vertical, 14)
             .frame(maxWidth: .infinity)
@@ -60,58 +60,15 @@ struct ButtonLine: View {
     }
 }
 
-struct ButtonHugActive: View {
-    var text: String
-    
-    var body: some View {
-        Text(text)
-            .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(.cheekMainStrong)
-            )
-    }
-}
-
-struct ButtonHugDisabled: View {
-    var text: String
-    
-    var body: some View {
-        Text(text)
-            .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(.cheekLineNormal)
-            )
-    }
-}
-
 struct ButtonNarrowFill: View {
     var text: String
     
     var body: some View {
         Text(text)
-            .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
+            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
             .padding(.horizontal, 10)
             .padding(.vertical, 10)
             .frame(maxWidth: .infinity)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(.cheekMainNormal)
-            )
-    }
-}
-
-struct ButtonNarrowHug: View {
-    var text: String
-    
-    var body: some View {
-        Text(text)
-            .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(.cheekMainNormal)
@@ -124,7 +81,7 @@ struct ButtonNarrowDisabled: View {
     
     var body: some View {
         Text(text)
-            .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
+            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
             .padding(.horizontal, 10)
             .padding(.vertical, 10)
             .background(
@@ -139,13 +96,43 @@ struct ButtonNarrowLine: View {
     
     var body: some View {
         Text(text)
-            .label1(font: "SUIT", color: .cheekTextAlternative, bold: true)
+            .body1(font: "SUIT", color: .cheekTextAlternative, bold: true)
             .padding(.horizontal, 8)
             .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(.cheekTextAssitive, lineWidth: 1)
                     .foregroundColor(.cheekWhite)
+            )
+    }
+}
+
+struct ButtonHugActive: View {
+    var text: String
+    
+    var body: some View {
+        Text(text)
+            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.cheekMainStrong)
+            )
+    }
+}
+
+struct ButtonHugDisabled: View {
+    var text: String
+    
+    var body: some View {
+        Text(text)
+            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.cheekLineNormal)
             )
     }
 }
