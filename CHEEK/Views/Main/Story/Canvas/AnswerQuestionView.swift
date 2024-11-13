@@ -84,12 +84,24 @@ struct AnswerQuestionView: View {
 }
 
 struct AnswerQuestionBlock: View {
-    var data: QuestionModel
+    let data: QuestionModel
+    let profilePicture: UIImage?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
-                ProfileXS(url: data.memberDto.profilePicture)
+                
+                Group {
+                    if profilePicture != nil {
+                        Image(uiImage: profilePicture!)
+                            .resizable()
+                    } else {
+                        Image("ImageDefaultProfile")
+                            .resizable()
+                    }
+                }
+                .frame(width: 32, height: 32)
+                .clipShape(Circle())
                 
                 Text(data.memberDto.nickname ?? "알 수 없는 사용자")
                     .body2(font: "SUIT", color: .cheekTextStrong, bold: true)

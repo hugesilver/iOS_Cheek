@@ -64,6 +64,7 @@ class AddAnswerViewModel: ObservableObject {
         }
     }
     
+    // 질문 조회
     func getQuestion(questionId: Int64) {
         isLoading = true
         print("질문 조회 시도")
@@ -87,16 +88,67 @@ class AddAnswerViewModel: ObservableObject {
             }, receiveValue: { data in
                 DispatchQueue.main.async {
                     self.questionModel = data
-                    self.stackItems.append(
-                        AnswerStackModel(
-                            type: "question",
-                            view: AnyView(AnswerQuestionBlock(data: data))
-                        )
-                    )
-                    self.isLoading = false
+                    self.addAnswerQuestionBlock(questionModel: data)
                 }
             })
             .store(in: &self.cancellables)
+    }
+    
+    // 질문 블록 추가
+    func addAnswerQuestionBlock(questionModel: QuestionModel) {
+        if questionModel.memberDto.profilePicture != nil {
+            convertUIImage(questionModel: questionModel)
+        } else {
+            self.stackItems.append(
+                AnswerStackModel(
+                    type: "question",
+                    view: AnyView(AnswerQuestionBlock(data: questionModel, profilePicture: nil))
+                )
+            )
+            
+            self.isLoading = false
+        }
+    }
+    
+    // URL로부터 UIImage 변환
+    func convertUIImage(questionModel: QuestionModel) {
+        let url = URL(string: "\(questionModel.memberDto.profilePicture!)")!
+        
+        URLSession.shared.dataTaskPublisher(for: url)
+            .tryMap() { data, response in
+                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+                    print("응답 코드: \(response)")
+                }
+                
+                // 디버깅
+                if let dataString = String(data: data, encoding: .utf8) {
+                    print(dataString)
+                }
+                
+                return data
+            }
+            .retry(1)
+            .eraseToAnyPublisher()
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("convertUIImage 함수 실행 중 요청 성공")
+                case .failure(let error):
+                    print("convertUIImage 함수 실행 중 요청 실패: \(error)")
+                }
+            }, receiveValue: { data in
+                DispatchQueue.main.async {
+                    self.stackItems.append(
+                        AnswerStackModel(
+                            type: "question",
+                            view: AnyView(AnswerQuestionBlock(data: questionModel, profilePicture: UIImage(data: data)))
+                        )
+                    )
+                    
+                    self.isLoading = false
+                }
+            })
+            .store(in: &cancellables)
     }
     
     // 텍스트 추가 및 수정 닫기
