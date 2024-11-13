@@ -27,7 +27,7 @@ struct ProfileView: View {
     @State private var menus: [String] = []
     
     @State private var selectedTab: Int = 0
-    @State private var tabViewHeight: CGFloat = 1
+    @State private var tabViewHeights: [CGFloat] = [1, 1]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -186,17 +186,20 @@ struct ProfileView: View {
                         
                         TabView(selection: $selectedTab) {
                             if profileViewModel.isMentor {
-                                ProfileStoriesView(isStoryOpen: $isStoryOpen, selectedStories: $selectedStories, stories: profileViewModel.stories)
-                                    .background(
-                                        GeometryReader { geometry in
-                                            Color.clear
-                                                .preference(key: HeightPreferenceKey.self, value: geometry.size.height)
-                                        }
-                                    )
-                                    .onPreferenceChange(HeightPreferenceKey.self) { value in
-                                        tabViewHeight = value
+                                ProfileStoriesView(
+                                    isStoryOpen: $isStoryOpen,
+                                    selectedStories: $selectedStories,
+                                    stories: profileViewModel.stories)
+                                .background(
+                                    GeometryReader { geometry in
+                                        Color.clear
+                                            .preference(key: HeightPreferenceKey.self, value: geometry.size.height)
                                     }
-                                    .tag(0)
+                                )
+                                .onPreferenceChange(HeightPreferenceKey.self) { value in
+                                    tabViewHeights[0] = value
+                                }
+                                .tag(0)
                             }
                             
                             ProfileQuestionsView(
@@ -210,12 +213,17 @@ struct ProfileView: View {
                                 }
                             )
                             .onPreferenceChange(HeightPreferenceKey.self) { value in
-                                tabViewHeight = value
+                                tabViewHeights[profileViewModel.isMentor ? 1 : 0] = value
                             }
                             .tag(profileViewModel.isMentor ? 1 : 0)
                         }
-                        .frame(height: tabViewHeight)
+                        .frame(height: tabViewHeights[selectedTab])
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                        .onChange(of: selectedTab) { _ in
+                            print(selectedTab)
+                            print(tabViewHeights[selectedTab])
+                            proxy.scrollTo(0, anchor: .top)
+                        }
                     }
                     .padding(.top, 24)
                 }
