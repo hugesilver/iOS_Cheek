@@ -38,14 +38,15 @@ struct SetProfileView: View {
         ZStack {
             VStack(spacing: 0) {
                 HStack {
-                    Image("IconChevronLeft")
-                        .resizable()
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 40, height: 40)
-                        .onTapGesture {
-                            dismiss()
-                        }
-                        .padding(8)
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image("IconChevronLeft")
+                            .resizable()
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 40, height: 40)
+                            .padding(4)
+                    }
                     
                     Spacer()
                 }
@@ -139,10 +140,11 @@ struct SetProfileView: View {
                 
                 // 다음 버튼
                 if !viewModel.isLoading && !nickname.isEmpty && isUniqueNickname && !information.isEmpty {
-                    ButtonActive(text: "다음")
-                        .onTapGesture {
-                            setProfile()
-                        }
+                    Button(action: {
+                        setProfile()
+                    }) {
+                        ButtonActive(text: "다음")
+                    }
                 } else {
                     ButtonDisabled(text: "다음")
                 }

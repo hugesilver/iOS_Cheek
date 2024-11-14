@@ -36,23 +36,21 @@ struct ThumbnailEditingView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Image("IconChevronLeft")
-                    .resizable()
-                    .foregroundColor(.cheekTextNormal)
-                    .frame(width: 32, height: 32)
-                    .onTapGesture {
-                        dismiss()
-                    }
-                    .padding(8)
+                Button(action: {
+                    dismiss()}
+                ) {
+                    Image("IconChevronLeft")
+                        .resizable()
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 32, height: 32)
+                        .padding(8)
+                }
+                
+                                            
                 
                 Spacer()
                 
-                HStack(spacing: 4) {
-                    Text("확인")
-                        .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                }
-                .padding(.horizontal, 11)
-                .onTapGesture {
+                Button(action: {
                     if highlightViewModel.selectedImage != nil {
                         isSaving = true
                         
@@ -67,6 +65,12 @@ struct ThumbnailEditingView: View {
                     } else {
                         showAlert = true
                     }
+                }) {
+                    HStack(spacing: 4) {
+                        Text("확인")
+                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                    }
+                    .padding(.horizontal, 11)
                 }
             }
             .overlay(
@@ -115,7 +119,7 @@ struct ThumbnailEditingView: View {
                                 .onTapGesture {
                                     showPhotosPicker = true
                                 }
-                                .photosPicker(isPresented: $showPhotosPicker, selection: $photosPickerItem)
+                                .photosPicker(isPresented: $showPhotosPicker, selection: $photosPickerItem, matching: .images)
                                 .onChange(of: photosPickerItem) { image in
                                     Task {
                                         guard let data = try? await image?.loadTransferable(type: Data.self) else { return }

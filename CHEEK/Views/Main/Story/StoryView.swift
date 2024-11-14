@@ -111,13 +111,14 @@ struct StoryView: View {
                         Spacer()
                         
                         // 닫기
-                        Image("IconX")
-                            .resizable()
-                            .frame(width: 32, height: 32)
-                            .foregroundColor(.cheekWhite)
-                            .onTapGesture {
-                                dismiss()
-                            }
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image("IconX")
+                                .resizable()
+                                .frame(width: 32, height: 32)
+                                .foregroundColor(.cheekWhite)
+                        }
                     }
                     .padding(.top, 27)
                     .padding(.horizontal, 16)
@@ -125,47 +126,49 @@ struct StoryView: View {
                 
                 if !viewModel.stories.isEmpty && viewModel.isAllLoaded {
                     HStack(spacing: 8) {
-                        HStack(spacing: 4) {
-                            Image("IconHeart")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundColor(viewModel.stories[viewModel.currentIndex].upvoted ? .cheekWhite : .cheekLineNormal)
-                            
-                            Text("좋아요")
-                                .body1(font: "SUIT", color: viewModel.stories[viewModel.currentIndex].upvoted ? .cheekWhite : .cheekLineNormal, bold: true)
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .foregroundColor(viewModel.stories[viewModel.currentIndex].upvoted ? .cheekStatusAlert : .cheekGrey200)
-                        )
-                        .onTapGesture {
+                        Button(action: {
                             onTapLike()
+                        }) {
+                            HStack(spacing: 4) {
+                                Image("IconHeart")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(viewModel.stories[viewModel.currentIndex].upvoted ? .cheekWhite : .cheekLineNormal)
+                                
+                                Text("좋아요")
+                                    .body1(font: "SUIT", color: viewModel.stories[viewModel.currentIndex].upvoted ? .cheekWhite : .cheekLineNormal, bold: true)
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .foregroundColor(viewModel.stories[viewModel.currentIndex].upvoted ? .cheekStatusAlert : .cheekGrey200)
+                            )
                         }
                         
-                        HStack(spacing: 4) {
-                            Image("IconCollection")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundColor(.cheekLineNormal)
-                            
-                            Text("스크랩")
-                                .body1(font: "SUIT", color: .cheekTextAssitive, bold: true)
+                        Button(action: {
+                            isScrapOpen = true
+                        }) {
+                            HStack(spacing: 4) {
+                                Image("IconCollection")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(.cheekLineNormal)
+                                
+                                Text("스크랩")
+                                    .body1(font: "SUIT", color: .cheekTextAssitive, bold: true)
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .foregroundColor(.cheekGrey200)
+                            )
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .foregroundColor(.cheekGrey200)
-                        )
                         .onChange(of: isScrapOpen) { _ in
                             if isScrapOpen {
                                 viewModel.stopTimer()
                             } else {
                                 viewModel.timerStory()
                             }
-                        }
-                        .onTapGesture {
-                            isScrapOpen = true
                         }
                     }
                     .padding(.top, 16)

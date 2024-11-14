@@ -158,80 +158,86 @@ struct AddAnswerMenusView: View {
         VStack {
             HStack(spacing: 12) {
                 // 뒤로가기
-                AddAnswerMenu(image: "IconX")
-                    .onTapGesture {
-                        dismiss()
-                    }
+                Button(action: {
+                    dismiss()
+                }) {
+                    AddAnswerMenu(image: "IconX")
+                }
                 
                 Spacer()
                 
                 // 텍스트
-                AddAnswerMenu(image: "IconFont")
-                    .onTapGesture {
-                        viewModel.userInteractState = .text
-                        viewModel.addTextObject = true
-                        
-                        viewModel.canvas.resignFirstResponder()
-                        
-                        viewModel.stackItems.append(
-                            AnswerStackModel(type: "text")
-                        )
-                        viewModel.currentIndex = viewModel.stackItems.count - 1
-                    }
+                Button(action: {
+                    viewModel.userInteractState = .text
+                    viewModel.addTextObject = true
+                    
+                    viewModel.canvas.resignFirstResponder()
+                    
+                    viewModel.stackItems.append(
+                        AnswerStackModel(type: "text")
+                    )
+                    viewModel.currentIndex = viewModel.stackItems.count - 1
+                }) {
+                    AddAnswerMenu(image: "IconFont")
+                }
                 
                 // 그리기
-                AddAnswerMenu(image: "IconDraw")
-                    .onTapGesture {
-                        viewModel.userInteractState = .draw
-                    }
+                Button(action: {
+                    viewModel.userInteractState = .draw
+                }) {
+                    AddAnswerMenu(image: "IconDraw")
+                }
                 
                 // 사진
-                AddAnswerMenu(image: "IconPic")
-                    .onTapGesture {
-                        showPhotosPicker = true
-                    }
-                    .photosPicker(isPresented: $showPhotosPicker, selection: $photosPickerItem)
-                    .onChange(of: photosPickerItem) { image in
-                        Task {
-                            guard let data = try? await image?.loadTransferable(type: Data.self) else { return }
-                            
-                            viewModel.stackItems.append(
-                                AnswerStackModel(
-                                    type: "image",
-                                    view:
-                                        AnyView(
-                                            Image(uiImage: UIImage(data: data)!)
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: (UIScreen.main.bounds.size.width) / 2)
-                                        )
-                                )
-                            )
-                        }
+                Button(action: {
+                    showPhotosPicker = true
+                }) {
+                    AddAnswerMenu(image: "IconPic")
+                }
+                .photosPicker(isPresented: $showPhotosPicker, selection: $photosPickerItem, matching: .images)
+                .onChange(of: photosPickerItem) { image in
+                    Task {
+                        guard let data = try? await image?.loadTransferable(type: Data.self) else { return }
                         
-                        photosPickerItem = nil
+                        viewModel.stackItems.append(
+                            AnswerStackModel(
+                                type: "image",
+                                view:
+                                    AnyView(
+                                        Image(uiImage: UIImage(data: data)!)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: (UIScreen.main.bounds.size.width) / 2)
+                                    )
+                            )
+                        )
                     }
+                    
+                    photosPickerItem = nil
+                }
                 
                 // 배경색
-                AddAnswerMenu(image: "IconPalette")
-                    .onTapGesture {
-                        viewModel.userInteractState = .backgroundColor
-                    }
+                Button(action: {
+                    viewModel.userInteractState = .backgroundColor
+                }) {
+                    AddAnswerMenu(image: "IconPalette")
+                }
             }
             
             Spacer()
             
-            Text("스토리 추가")
-                .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .foregroundColor(.cheekLineAlternative)
-                )
-                .onTapGesture {
-                    uploadStory()
-                }
+            Button(action: {
+                uploadStory()
+            }) {
+                Text("스토리 추가")
+                    .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .foregroundColor(.cheekLineAlternative)
+                    )
+            }
         }
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -274,13 +280,14 @@ struct DrawPaletteView: View {
             .allowsHitTesting(false)
             
             HStack {
-                Text("취소")
-                    .label1(font: "SUIT", color: .cheekWhite, bold: true)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 12)
-                    .onTapGesture {
-                        viewModel.userInteractState = .save
-                    }
+                Button(action: {
+                    viewModel.userInteractState = .save
+                }) {
+                    Text("취소")
+                        .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 12)
+                }
                 
                 Spacer()
                 
@@ -328,13 +335,14 @@ struct DrawPaletteView: View {
                 
                 Spacer()
                 
-                Text("확인")
-                    .label1(font: "SUIT", color: .cheekWhite, bold: true)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 12)
-                    .onTapGesture {
-                        viewModel.userInteractState = .save
-                    }
+                Button(action: {
+                    viewModel.userInteractState = .save
+                }) {
+                    Text("확인")
+                        .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 12)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 16)
@@ -445,23 +453,25 @@ struct BackgroundColorPaletteView: View {
             .allowsHitTesting(false)
             
             HStack {
-                Text("취소")
-                    .label1(font: "SUIT", color: .cheekWhite, bold: true)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 12)
-                    .onTapGesture {
-                        viewModel.userInteractState = .save
-                    }
+                Button(action: {
+                    viewModel.userInteractState = .save
+                }) {
+                    Text("취소")
+                        .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 12)
+                }
                 
                 Spacer()
                 
-                Text("확인")
-                    .label1(font: "SUIT", color: .cheekWhite, bold: true)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 12)
-                    .onTapGesture {
-                        viewModel.userInteractState = .save
-                    }
+                Button(action: {
+                    viewModel.userInteractState = .save
+                }) {
+                    Text("확인")
+                        .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 12)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 16)
@@ -579,26 +589,28 @@ struct AddTextObjectView: View {
             }
             
             HStack {
-                Text("취소")
-                    .label1(font: "SUIT", color: .cheekWhite, bold: true)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 12)
-                    .onTapGesture {
-                        viewModel.cancelTextView()
-                        viewModel.userInteractState = .save
-                    }
+                Button(action: {
+                    viewModel.cancelTextView()
+                    viewModel.userInteractState = .save
+                }) {
+                    Text("취소")
+                        .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 12)
+                }
                 
                 Spacer()
                 
-                Text("확인")
-                    .label1(font: "SUIT", color: .cheekWhite, bold: true)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 12)
-                    .onTapGesture {
-                        viewModel.addTextObject = false
-                        viewModel.canvas.becomeFirstResponder()
-                        viewModel.userInteractState = .save
-                    }
+                Button(action: {
+                    viewModel.addTextObject = false
+                    viewModel.canvas.becomeFirstResponder()
+                    viewModel.userInteractState = .save
+                }) {
+                    Text("확인")
+                        .label1(font: "SUIT", color: .cheekWhite, bold: true)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 12)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 16)
@@ -659,28 +671,30 @@ struct EditTextObjectView: View {
             }
             
             HStack {
-                Text("취소")
-                    .label1(font: "SUIT", color: .cheekBackgroundTeritory, bold: true)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 12)
-                    .onTapGesture {
-                        viewModel.cancelTextView()
-                        viewModel.userInteractState = .save
-                    }
+                Button(action: {
+                    viewModel.cancelTextView()
+                    viewModel.userInteractState = .save
+                }) {
+                    Text("취소")
+                        .label1(font: "SUIT", color: .cheekBackgroundTeritory, bold: true)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 12)
+                }
                 
                 Spacer()
                 
-                Text("완료")
-                    .label1(font: "SUIT", color: .cheekBackgroundTeritory, bold: true)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 12)
-                    .onTapGesture {
-                        viewModel.editTextObject = false
-                        
-                        viewModel.stackItems[viewModel.currentIndex] = viewModel.tempTextObject
-                        viewModel.canvas.becomeFirstResponder()
-                        viewModel.userInteractState = .save
-                    }
+                Button(action: {
+                    viewModel.editTextObject = false
+                    
+                    viewModel.stackItems[viewModel.currentIndex] = viewModel.tempTextObject
+                    viewModel.canvas.becomeFirstResponder()
+                    viewModel.userInteractState = .save
+                }) {
+                    Text("완료")
+                        .label1(font: "SUIT", color: .cheekBackgroundTeritory, bold: true)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 12)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 16)

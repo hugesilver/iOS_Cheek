@@ -21,14 +21,17 @@ struct EditHighlightView: View {
         VStack(spacing: 0) {
             // 상단바
             HStack {
-                Image("IconChevronLeft")
-                    .resizable()
-                    .foregroundColor(.cheekTextNormal)
-                    .frame(width: 32, height: 32)
-                    .onTapGesture {
-                        dismiss()
-                    }
-                    .padding(8)
+                Button(action: {
+                    dismiss()}
+                ) {
+                    Image("IconChevronLeft")
+                        .resizable()
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 32, height: 32)
+                        .padding(8)
+                }
+                
+                                            
                 
                 Spacer()
                 
@@ -46,6 +49,8 @@ struct EditHighlightView: View {
                         }
                         .padding(.horizontal, 11)
                     }
+                        
+                                            
                 } else {
                     Text("완료")
                         .label1(font: "SUIT", color: .cheekTextNormal, bold: false)

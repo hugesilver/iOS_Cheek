@@ -16,14 +16,17 @@ struct MentorMenteeView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Image("IconChevronLeft")
-                    .resizable()
-                    .foregroundColor(.cheekTextNormal)
-                    .frame(width: 40, height: 40)
-                    .onTapGesture {
-                        dismiss()
-                    }
-                    .padding(8)
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image("IconChevronLeft")
+                        .resizable()
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 40, height: 40)
+                        .padding(4)
+                }
+                
+                                            
                 
                 Spacer()
             }

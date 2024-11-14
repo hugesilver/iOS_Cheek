@@ -97,20 +97,21 @@ struct HomeView: View {
                         
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 21), count: 4), spacing: 24) {
                             ForEach(CategoryModels().categories) { data in
-                                VStack(spacing: 8) {
-                                    Image(data.image)
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .padding(16)
-                                        .background(Circle().fill(.cheekLineAlternative))
-                                    
-                                    Text(data.name)
-                                        .label2(font: "SUIT", color: .cheekTextNormal, bold: true)
-                                }
-                                .onTapGesture {
+                                Button(action: {
                                     currentMainIndex = 1
                                     selectedCategory = data.id
-                                }
+                                }) {
+                                    VStack(spacing: 8) {
+                                        Image(data.image)
+                                            .resizable()
+                                            .frame(width: 40, height: 40)
+                                            .padding(16)
+                                            .background(Circle().fill(.cheekLineAlternative))
+                                        
+                                        Text(data.name)
+                                            .label2(font: "SUIT", color: .cheekTextNormal, bold: true)
+                                    }
+                                }       
                             }
                         }
                         .padding(.horizontal, 20)

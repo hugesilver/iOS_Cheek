@@ -27,14 +27,15 @@ struct SearchView: View {
         VStack(alignment: .leading, spacing: 0) {
             // 뒤로가기와 검색
             HStack {
-                Image("IconChevronLeft")
-                    .resizable()
-                    .foregroundColor(.cheekTextNormal)
-                    .frame(width: 32, height: 32)
-                    .onTapGesture {
-                        dismiss()
-                    }
-                    .padding(8)
+                Button(action: {
+                    dismiss()}
+                ) {
+                    Image("IconChevronLeft")
+                        .resizable()
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 32, height: 32)
+                        .padding(8)
+                }
                 
                 if selectedCategory != nil {
                     ScrollViewReader { proxy in
@@ -92,23 +93,25 @@ struct SearchView: View {
                                     
                                     Spacer()
                                     
-                                    Text("전체 삭제")
-                                        .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 14)
-                                        .onTapGesture {
-                                            viewModel.removeAllSearched()
-                                        }
+                                    Button(action: {
+                                        viewModel.removeAllSearched()
+                                    }) {
+                                        Text("전체 삭제")
+                                            .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                                            .padding(.horizontal, 10)
+                                            .padding(.vertical, 14)
+                                    }
                                 }
                                 .padding(.horizontal, 16)
                                 
                                 ScrollView(.horizontal, showsIndicators: false) {
                                     HStack(spacing: 8) {
                                         ForEach(viewModel.recentSearches, id: \.self) { search in
-                                            ChipDefault(text: search)
-                                                .onTapGesture {
-                                                    searchText = search
-                                                }
+                                            Button(action: {
+                                                searchText = search
+                                            }) {
+                                                ChipDefault(text: search)
+                                            }
                                         }
                                         
                                     }
@@ -128,14 +131,14 @@ struct SearchView: View {
                         .padding(.leading, 16)
                         
                         WrappingHStack(viewModel.trendingKeywords, id: \.self, spacing: .constant(8), lineSpacing: 8) { keyword in
-                            ChipDefault(text: keyword)
-                                .onTapGesture {
-                                    self.searchText = keyword
-                                }
+                            Button(action: {
+                                self.searchText = keyword
+                            }) {
+                                ChipDefault(text: keyword)
+                            }
                         }
                         .padding(.top, 8)
                         .padding(.horizontal, 16)
-                        
                         
                         Spacer()
                     }
@@ -146,10 +149,27 @@ struct SearchView: View {
                                 .headline1(font: "SUIT", color: .cheekTextStrong, bold: true)
                             
                             ForEach(CategoryModels().categories) { category in
-                                SearchCategoryBlock(category: category)
-                                    .onTapGesture {
+                                HStack {
+                                    Button(action: {
                                         selectedCategory = category.id
+                                    }) {
+                                        HStack(spacing: 12) {
+                                            Image(category.image)
+                                                .resizable()
+                                                .frame(width: 24, height: 24)
+                                                .padding(8)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 6)
+                                                        .strokeBorder(.cheekLineNormal, lineWidth: 1)
+                                                )
+                                            
+                                            Text(category.name)
+                                                .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                                        }
                                     }
+                                    
+                                    Spacer()
+                                }
                             }
                         }
                     }
@@ -181,13 +201,13 @@ struct SearchView: View {
                             searchViewModel: viewModel,
                             isStoryOpen: $isStoryOpen,
                             selectedStories: $selectedStories)
-                            .tag(2)
+                        .tag(2)
                         
                         SearchResultQuestionView(
                             authViewModel: authViewModel,
                             profileViewModel: profileViewModel,
                             searchViewModel: viewModel)
-                            .tag(3)
+                        .tag(3)
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -241,20 +261,22 @@ struct SearchCategoryBlock: View {
     let category: CategoryModel
     
     var body: some View {
-        HStack(spacing: 12) {
-            Image(category.image)
-                .resizable()
-                .frame(width: 24, height: 24)
-                .padding(8)
-                .background(
-                    RoundedRectangle(cornerRadius: 6)
-                        .strokeBorder(.cheekLineNormal, lineWidth: 1)
-                )
-            
-            Text(category.name)
-                .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
-            
-            Spacer()
+        Button(action: {}) {
+            HStack(spacing: 12) {
+                Image(category.image)
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                    .padding(8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .strokeBorder(.cheekLineNormal, lineWidth: 1)
+                    )
+                
+                Text(category.name)
+                    .label1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                
+                Spacer()
+            }
         }
     }
 }

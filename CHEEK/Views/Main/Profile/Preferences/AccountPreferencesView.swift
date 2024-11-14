@@ -25,14 +25,17 @@ struct AccountPreferencesView: View {
             VStack(spacing: 24) {
                 // 상단바
                 HStack {
-                    Image("IconChevronLeft")
-                        .resizable()
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 32, height: 32)
-                        .onTapGesture {
-                            dismiss()
-                        }
-                        .padding(8)
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image("IconChevronLeft")
+                            .resizable()
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 32, height: 32)
+                            .padding(8)
+                    }
+                    
+                                            
                     
                     Spacer()
                 }
@@ -56,13 +59,16 @@ struct AccountPreferencesView: View {
                         DividerSmall()
                         
                         // 로그아웃
-                        Text("로그아웃")
-                            .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .onTapGesture {
-                                alertMode = .logout
-                                showAlert = true
-                            }
+                        Button(action: {
+                            alertMode = .logout
+                            showAlert = true
+                        }) {
+                            Text("로그아웃")
+                                .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        
+                                            
                         
                         DividerSmall()
                         
@@ -78,14 +84,17 @@ struct AccountPreferencesView: View {
                         }
                         
                         // 회원 탈퇴
-                        Text("회원 탈퇴")
-                            .title1(font: "SUIT", color: .cheekStatusAlert, bold: true)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .onTapGesture {
-                                alertMode = .delete
-                                showAlert = true
-                            }
-                       
+                        Button(action: {
+                            alertMode = .delete
+                            showAlert = true
+                        }) {
+                            Text("회원 탈퇴")
+                                .title1(font: "SUIT", color: .cheekStatusAlert, bold: true)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        
+                                            
+                        
                         
                         if profileViewModel.profile != nil && profileViewModel.profile!.role == "MENTEE" {
                             NavigationLink(destination: RequestMentorView(authViewModel: authViewModel)) {

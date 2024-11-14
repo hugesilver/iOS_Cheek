@@ -37,27 +37,19 @@ struct ScrappedStoriesView: View {
                 VStack(spacing: 8) {
                     // 상단바
                     HStack {
-                        Text("완료")
-                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                            .padding(.horizontal, 18)
-                            .padding(.vertical, 12)
-                            .onTapGesture {
-                                isSelectable = false
-                            }
+                        Button(action: {
+                            isSelectable = false
+                        }) {
+                            Text("완료")
+                                .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                .padding(.horizontal, 18)
+                                .padding(.vertical, 12)
+                        }
                         
                         Spacer()
                         
                         if selectedCollections.count > 0 {
-                            HStack(spacing: 4) {
-                                Text("삭제")
-                                    .label1(font: "SUIT", color: .cheekStatusAlert, bold: true)
-                                
-                                Text("\(selectedCollections.count)")
-                                    .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
-                            }
-                            .padding(.horizontal, 11)
-                            .padding(.vertical, 12)
-                            .onTapGesture {
+                            Button(action: {
                                 if selectedCollections.count == scrapViewModel.collections.count {
                                     deleteMode = .folder
                                     showAlert = true
@@ -65,21 +57,32 @@ struct ScrappedStoriesView: View {
                                     deleteMode = .collections
                                     showAlert = true
                                 }
+                            }) {
+                                HStack(spacing: 4) {
+                                    Text("삭제")
+                                        .label1(font: "SUIT", color: .cheekStatusAlert, bold: true)
+                                    
+                                    Text("\(selectedCollections.count)")
+                                        .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
+                                }
+                                .padding(.horizontal, 11)
+                                .padding(.vertical, 12)
                             }
                         } else {
-                            Text("삭제")
-                                .label1(font: "SUIT", color: .cheekStatusAlert, bold: true)
-                                .padding(.horizontal, 18)
-                                .padding(.vertical, 12)
-                                .onTapGesture {
-                                    if scrapViewModel.collections.isEmpty {
-                                        deleteMode = .empty
-                                    } else {
-                                        deleteMode = .none
-                                    }
-                                    
-                                    showAlert = true
+                            Button(action: {
+                                if scrapViewModel.collections.isEmpty {
+                                    deleteMode = .empty
+                                } else {
+                                    deleteMode = .none
                                 }
+                                
+                                showAlert = true
+                            }) {
+                                Text("삭제")
+                                    .label1(font: "SUIT", color: .cheekStatusAlert, bold: true)
+                                    .padding(.horizontal, 18)
+                                    .padding(.vertical, 12)
+                            }
                         }
                     }
                     .overlay(
@@ -181,24 +184,28 @@ struct ScrappedStoriesView: View {
                 VStack(spacing: 8) {
                     // 상단바
                     HStack {
-                        Image("IconChevronLeft")
-                            .resizable()
-                            .foregroundColor(.cheekTextNormal)
-                            .frame(width: 32, height: 32)
-                            .padding(8)
-                            .onTapGesture {
-                                dismiss()
-                            }
+                        Button(action: {
+                            dismiss()}
+                        ) {
+                            Image("IconChevronLeft")
+                                .resizable()
+                                .foregroundColor(.cheekTextNormal)
+                                .frame(width: 32, height: 32)
+                                .padding(8)
+                        }
+                        
+                                            
                         
                         Spacer()
                         
-                        Text("편집")
-                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                            .padding(.horizontal, 18)
-                            .padding(.vertical, 12)
-                            .onTapGesture {
-                                isSelectable = true
-                            }
+                        Button(action: {
+                            isSelectable = true
+                        }) {
+                            Text("편집")
+                                .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                .padding(.horizontal, 18)
+                                .padding(.vertical, 12)
+                        }
                     }
                     .overlay(
                         Text(folderModel.folderName)

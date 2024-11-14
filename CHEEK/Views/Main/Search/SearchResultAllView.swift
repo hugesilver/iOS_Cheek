@@ -36,13 +36,14 @@ struct SearchResultAllView: View {
                     
                     Spacer()
                     
-                    Text("모두 보기")
-                        .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 14)
-                        .onTapGesture {
-                            selectedTab = 1
-                        }
+                    Button(action: {
+                        selectedTab = 1
+                    }) {
+                        Text("모두 보기")
+                            .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 14)
+                    }
                 }
                 .padding(.horizontal, 16)
                 
@@ -76,13 +77,14 @@ struct SearchResultAllView: View {
                     
                     Spacer()
                     
-                    Text("모두 보기")
-                        .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 14)
-                        .onTapGesture {
-                            selectedTab = 2
-                        }
+                    Button(action: {
+                        selectedTab = 2
+                    }) {
+                        Text("모두 보기")
+                            .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 14)
+                    }
                 }
                 .padding(.horizontal, 16)
                 
@@ -109,13 +111,14 @@ struct SearchResultAllView: View {
                     
                     Spacer()
                     
-                    Text("모두 보기")
-                        .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 14)
-                        .onTapGesture {
-                            selectedTab = 3
-                        }
+                    Button(action: {
+                        selectedTab = 3
+                    }) {
+                        Text("모두 보기")
+                            .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 14)
+                    }
                 }
                 .padding(.horizontal, 16)
                 

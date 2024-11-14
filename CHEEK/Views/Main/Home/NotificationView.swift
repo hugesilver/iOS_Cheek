@@ -25,24 +25,26 @@ struct NotificationView: View {
         VStack(spacing: 0) {
             // 상단바
             HStack {
-                Image("IconChevronLeft")
-                    .resizable()
-                    .foregroundColor(.cheekTextNormal)
-                    .frame(width: 32, height: 32)
-                    .onTapGesture {
-                        dismiss()
-                    }
-                    .padding(8)
+                Button(action: {
+                    dismiss()}
+                ) {
+                    Image("IconChevronLeft")
+                        .resizable()
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 32, height: 32)
+                        .padding(8)
+                }                      
                 
                 Spacer()
                 
-                Text("모두 삭제")
-                    .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
-                    .padding(.horizontal, 2)
-                    .padding(.vertical, 12)
-                    .onTapGesture {
-                        notificationViewModel.deleteAllNotifications()
-                    }
+                Button(action: {
+                    notificationViewModel.deleteAllNotifications()
+                }) {
+                    Text("모두 삭제")
+                        .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
+                        .padding(.horizontal, 2)
+                        .padding(.vertical, 12)
+                }
             }
             .overlay(
                 Text("활동")
@@ -111,10 +113,7 @@ struct NotificationView: View {
 
 struct NotificationBlock: View {
     var isRead: Bool
-    // let isLike: Bool
-    // let profilePicture: String?
     let message: String
-    // let date: String
     let thumbnailPicture: String?
     let onTapBakcground: () -> Void
     
@@ -128,13 +127,19 @@ struct NotificationBlock: View {
                     .foregroundColor(isRead ? .clear : .cheekStatusCaution)
             }
             
-            HStack(spacing: 0) {
+            Group {
                 if splitedMessage.count == 2 {
-                    Text(splitedMessage.first ?? "")
-                        .body2(font: "SUIT", color: .cheekTextNormal, bold: true)
+                    Group {
+                        Text(splitedMessage.first ?? "")
+                            .fontWeight(.semibold) +
+                        Text("님이" + (splitedMessage.last ?? ""))
+                            .fontWeight(.regular)
+                    }
+                    .font(.custom("SUIT", size: 15))
+                    .foregroundColor(.cheekTextNormal)
+                    .lineSpacing(22 - (UIFont(name: "SUIT", size: 15) ?? UIFont.systemFont(ofSize: 15)).lineHeight)
+                    .tracking(0.005)
                     
-                    Text("님이" + (splitedMessage.last ?? ""))
-                        .body2(font: "SUIT", color: .cheekTextNormal, bold: false)
                 } else {
                     Text(message)
                         .body2(font: "SUIT", color: .cheekTextNormal, bold: false)

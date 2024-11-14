@@ -48,7 +48,7 @@ struct ContentView: View {
                     showAlert: $showAlert,
                     title: "서버에 연결을 할 수 없습니다.",
                     buttonText: "확인",
-                    onTap: {authViewModel.logOut()}
+                    onTap: {}
                 )
             }
         }

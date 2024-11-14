@@ -24,13 +24,17 @@ struct AddHighlightView: View {
         VStack(spacing: 0) {
             // 상단바
             HStack {
-                Image("IconChevronLeft")
-                    .foregroundColor(.cheekTextNormal)
-                    .frame(width: 32, height: 32)
-                    .onTapGesture {
-                        dismiss()
-                    }
-                    .padding(8)
+                Button(action: {
+                    dismiss()}
+                ) {
+                    Image("IconChevronLeft")
+                        .resizable()
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 32, height: 32)
+                        .padding(8)
+                }
+                
+                                            
                 
                 Spacer()
                 
@@ -47,14 +51,17 @@ struct AddHighlightView: View {
                                 .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
                         }
                         .padding(.horizontal, 11)
+                        
+                                            
                     }
                 } else {
-                    Text("완료")
-                        .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                        .padding(.horizontal, 18)
-                        .onTapGesture {
-                            showAlert = true
-                        }
+                    Button(action: {
+                        showAlert = true
+                    }) {
+                        Text("완료")
+                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                            .padding(.horizontal, 18)
+                    }
                 }
             }
             .overlay(

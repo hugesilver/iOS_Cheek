@@ -32,14 +32,17 @@ struct ProfileView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Image("IconChevronLeft")
-                    .resizable()
-                    .foregroundColor(.cheekTextNormal)
-                    .frame(width: 40, height: 40)
-                    .onTapGesture {
-                        dismiss()
-                    }
-                    .padding(8)
+                Button(action: {
+                    dismiss()}
+                ) {
+                    Image("IconChevronLeft")
+                        .resizable()
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 32, height: 32)
+                        .padding(8)
+                }
+                
+                                            
                 
                 Spacer()
             }
@@ -142,20 +145,21 @@ struct ProfileView: View {
                         
                         if myMemberId != nil && profileViewModel.profile != nil && myMemberId != targetMemberId {
                             if profileViewModel.profile!.following {
-                                ButtonUnfollow(text: "언팔로우")
-                                    .padding(.top, 24)
-                                    .padding(.horizontal, 16)
-                                    .onTapGesture {
-                                        onTapUnfollow()
-                                    }
-                                
+                                Button(action: {
+                                    onTapUnfollow()
+                                }) {
+                                    ButtonUnfollow(text: "언팔로우")
+                                        .padding(.top, 24)
+                                        .padding(.horizontal, 16)
+                                }
                             } else {
-                                ButtonFollow(text: "팔로우")
-                                    .padding(.top, 24)
-                                    .padding(.horizontal, 16)
-                                    .onTapGesture {
-                                        onTapFollow()
-                                    }
+                                Button(action: {
+                                    onTapFollow()
+                                }) {
+                                    ButtonFollow(text: "팔로우")
+                                        .padding(.top, 24)
+                                        .padding(.horizontal, 16)
+                                }
                             }
                         }
                         
@@ -163,15 +167,16 @@ struct ProfileView: View {
                             ScrollView(.horizontal) {
                                 HStack(spacing: 16) {
                                     ForEach(profileViewModel.highlights) { highlight in
-                                        VStack(spacing: 12) {
-                                            ProfileL(url: highlight.thumbnailPicture)
-                                            
-                                            Text(highlight.subject)
-                                                .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
-                                        }
-                                        .frame(maxWidth: 72)
-                                        .onTapGesture {
+                                        Button(action: {
                                             onTapHighlight(highlight: highlight)
+                                        }) {
+                                            VStack(spacing: 12) {
+                                                ProfileL(url: highlight.thumbnailPicture)
+                                                
+                                                Text(highlight.subject)
+                                                    .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                            }
+                                            .frame(maxWidth: 72)
                                         }
                                     }
                                 }

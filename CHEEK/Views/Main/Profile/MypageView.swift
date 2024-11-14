@@ -55,6 +55,8 @@ struct MypageView: View {
                                     .frame(width: 32, height: 32)
                                     .padding(8)
                             }
+                            
+                                            
                     }
                     
                     NavigationLink(destination: AccountPreferencesView(
@@ -65,6 +67,8 @@ struct MypageView: View {
                                 .foregroundColor(.cheekTextNormal)
                                 .frame(width: 48, height: 48)
                         }
+                        
+                                            
                 }
             }
             .padding(.top, 8)
@@ -153,20 +157,23 @@ struct MypageView: View {
                             ScrollView(.horizontal) {
                                 HStack(spacing: 16) {
                                     ForEach(profileViewModel.highlights) { highlight in
-                                        VStack(spacing: 12) {
-                                            ProfileL(url: highlight.thumbnailPicture)
-                                            
-                                            Text(highlight.subject)
-                                                .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
-                                        }
-                                        .frame(maxWidth: 72)
-                                        .onTapGesture {
+                                        Button(action: {
                                             selectedHighlightId = highlight.highlightId
                                             selectedHighlightThumbnail = highlight.thumbnailPicture
                                             selectedHighlightSubject = highlight.subject
                                             
                                             isHighlightOpen = true
+                                        }) {
+                                            VStack(spacing: 12) {
+                                                ProfileL(url: highlight.thumbnailPicture)
+                                                
+                                                Text(highlight.subject)
+                                                    .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                            }
+                                            .frame(maxWidth: 72)
                                         }
+                                        
+                                            
                                     }
                                     
                                     NavigationLink(destination: AddHighlightView(
@@ -187,6 +194,8 @@ struct MypageView: View {
                                                     .label2(font: "SUIT", color: .cheekTextNormal, bold: false)
                                             }
                                         }
+                                        
+                                            
                                 }
                                 .padding(.horizontal, 16)
                             }
@@ -198,6 +207,8 @@ struct MypageView: View {
                                 .padding(.top, 24)
                                 .padding(.horizontal, 16)
                         }
+                        
+                                            
                         
                         TabsIcon(tabs: menus, selectedTab: $selectedTab)
                             .padding(.top, 24)

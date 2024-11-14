@@ -48,10 +48,11 @@ struct EditQuestionView: View {
                             question = String(text.prefix(50))
                         }
                     
-                    ButtonActive(text: "수정하기")
-                        .onTapGesture {
-                            editQuestion()
-                        }
+                    Button(action: {
+                        editQuestion()
+                    }) {
+                        ButtonActive(text: "수정하기")
+                    }
                 }
                 .padding(.top, 60)
                 .padding(.bottom, 16)
@@ -75,18 +76,19 @@ struct EditQuestionView: View {
             // 닫기
             VStack {
                 HStack {
-                    Image("IconX")
-                        .resizable()
-                        .frame(width: 32, height: 32)
-                        .foregroundColor(.cheekWhite)
-                        .padding(8)
-                        .background(
-                            Circle()
-                                .foregroundColor(Color(red: 0.29, green: 0.29, blue: 0.29).opacity(0.6))
-                        )
-                        .onTapGesture {
-                            dismiss()
-                        }
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image("IconX")
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                            .foregroundColor(.cheekWhite)
+                            .padding(8)
+                            .background(
+                                Circle()
+                                    .foregroundColor(Color(red: 0.29, green: 0.29, blue: 0.29).opacity(0.6))
+                            )
+                    }
                     
                     Spacer()
                 }

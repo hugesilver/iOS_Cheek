@@ -117,13 +117,14 @@ struct HighlightView: View {
                             Spacer()
                             
                             // 닫기
-                            Image("IconX")
-                                .resizable()
-                                .frame(width: 32, height: 32)
-                                .foregroundColor(.cheekWhite)
-                                .onTapGesture {
-                                    dismiss()
-                                }
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                Image("IconX")
+                                    .resizable()
+                                    .frame(width: 32, height: 32)
+                                    .foregroundColor(.cheekWhite)
+                            }
                         }
                         .padding(.top, 27)
                         .padding(.horizontal, 16)
@@ -147,17 +148,20 @@ struct HighlightView: View {
                                 storyViewModel.stopTimer()
                             })
                             
-                            Text("하이라이트 삭제")
-                                .body1(font: "SUIT", color: .cheekWhite, bold: true)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .foregroundColor(.cheekStatusAlert)
-                                )
-                                .onTapGesture {
-                                    storyViewModel.stopTimer()
-                                    showAlert = true
-                                }
+                                            
+                            
+                            Button(action: {
+                                storyViewModel.stopTimer()
+                                showAlert = true
+                            }) {
+                                Text("하이라이트 삭제")
+                                    .body1(font: "SUIT", color: .cheekWhite, bold: true)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .foregroundColor(.cheekStatusAlert)
+                                    )
+                            }
                         }
                         .padding(.top, 16)
                         .padding(.horizontal, 16)

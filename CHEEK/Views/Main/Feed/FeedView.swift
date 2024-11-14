@@ -52,6 +52,8 @@ struct FeedView: View {
                             .padding(8)
                             .foregroundColor(.cheekTextNormal)
                     }
+                    
+                                            
                 }
                 .padding(.top, 8)
                 .padding(.horizontal, 16)
@@ -84,6 +86,8 @@ struct FeedView: View {
                     .onDisappear {
                         getFeed()
                     }
+                    
+                                            
                 }
                 .padding(24)
             }

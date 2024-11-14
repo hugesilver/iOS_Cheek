@@ -19,14 +19,17 @@ struct ScrappedFoldersView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Image("IconChevronLeft")
-                    .resizable()
-                    .foregroundColor(.cheekTextNormal)
-                    .frame(width: 32, height: 32)
-                    .onTapGesture {
-                        dismiss()
-                    }
-                    .padding(8)
+                Button(action: {
+                    dismiss()}
+                ) {
+                    Image("IconChevronLeft")
+                        .resizable()
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 32, height: 32)
+                        .padding(8)
+                }
+                
+                                            
                 
                 Spacer()
             }
@@ -45,6 +48,8 @@ struct ScrappedFoldersView: View {
                             NavigationLink(destination: ScrappedStoriesView(authViewModel: authViewModel, scrapViewModel: viewModel, folderModel: folder)) {
                                 Folder(folderModel: folder)
                             }
+                            
+                                            
                             
                             if index < viewModel.scrappedFolders.count - 1 {
                                 DividerSmall()

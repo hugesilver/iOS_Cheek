@@ -24,14 +24,15 @@ struct RegisterDomainView: View {
         ZStack {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    Image("IconChevronLeft")
-                        .resizable()
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 40, height: 40)
-                        .onTapGesture {
-                            dismiss()
-                        }
-                        .padding(8)
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image("IconChevronLeft")
+                            .resizable()
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 40, height: 40)
+                            .padding(4)
+                    }
                     
                     Spacer()
                 }
@@ -64,10 +65,11 @@ struct RegisterDomainView: View {
                 
                 // 인증번호 받기
                 if isEmailValidated {
-                    ButtonActive(text: "등록 신청하기")
-                        .onTapGesture {
-                            registerDomain()
-                        }
+                    Button(action: {
+                        registerDomain()
+                    }) {
+                        ButtonActive(text: "등록 신청하기")
+                    }
                 } else {
                     ButtonDisabled(text: "등록 신청하기")
                 }

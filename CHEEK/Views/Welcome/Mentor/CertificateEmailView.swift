@@ -31,14 +31,15 @@ struct CertificateEmailView: View {
         ZStack {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    Image("IconChevronLeft")
-                        .resizable()
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 40, height: 40)
-                        .onTapGesture {
-                            dismiss()
-                        }
-                        .padding(8)
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image("IconChevronLeft")
+                            .resizable()
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 40, height: 40)
+                            .padding(4)
+                    }
                     
                     Spacer()
                 }
@@ -73,10 +74,11 @@ struct CertificateEmailView: View {
                     
                     if isEmailValidated && !viewModel.isVerificationCodeChecked {
                         if viewModel.isSendable {
-                            ButtonActive(text: "인증번호 전송")
-                                .onTapGesture {
-                                    sendCode()
-                                }
+                            Button(action: {
+                                sendCode()
+                            }) {
+                                ButtonActive(text: "인증번호 전송")
+                            }
                         } else {
                             ButtonLine(text: "인증번호 재전송(\(String(format: "%02d:%02d", viewModel.resendTime / 60, viewModel.resendTime % 60)))")
                                 .onAppear {
@@ -116,10 +118,11 @@ struct CertificateEmailView: View {
                             
                             // 인증하기
                             if verificationCode.count == 6 && !viewModel.isVerificationCodeChecked {
-                                ButtonHugActive(text: "인증하기")
-                                    .onTapGesture {
-                                        verifyCode()
-                                    }
+                                Button(action: {
+                                    verifyCode()
+                                }) {
+                                    ButtonHugActive(text: "인증하기")
+                                }
                             } else {
                                 ButtonHugDisabled(text: "인증하기")
                             }
@@ -133,10 +136,11 @@ struct CertificateEmailView: View {
                 // 다음
                 if viewModel.isSent {
                     if viewModel.isVerificationCodeChecked {
-                        ButtonActive(text: "다음")
-                            .onTapGesture {
-                                isDone()
-                            }
+                        Button(action: {
+                            isDone()
+                        }) {
+                            ButtonActive(text: "다음")
+                        }
                     } else {
                         ButtonDisabled(text: "다음")
                     }

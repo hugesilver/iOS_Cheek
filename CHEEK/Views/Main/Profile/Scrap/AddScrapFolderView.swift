@@ -32,14 +32,17 @@ struct AddScrapFolderView: View {
                             .foregroundColor(.cheekLineNormal)
                         
                         HStack {
-                            Image("IconChevronLeft")
-                                .resizable()
-                                .foregroundColor(.cheekTextNormal)
-                                .frame(width: 32, height: 32)
-                                .onTapGesture {
-                                    dismiss()
-                                }
-                                .padding(8)
+                            Button(action: {
+                                dismiss()}
+                            ) {
+                                Image("IconChevronLeft")
+                                    .resizable()
+                                    .foregroundColor(.cheekTextNormal)
+                                    .frame(width: 32, height: 32)
+                                    .padding(8)
+                            }
+                            
+                                            
                             
                             Spacer()
                         }

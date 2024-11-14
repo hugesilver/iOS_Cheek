@@ -24,24 +24,28 @@ struct SetHighlightView: View {
         ZStack {
             VStack(spacing: 0) {
                 HStack {
-                    Image("IconChevronLeft")
-                        .resizable()
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 32, height: 32)
-                        .onTapGesture {
-                            dismiss()
-                        }
-                        .padding(8)
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image("IconChevronLeft")
+                            .resizable()
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 32, height: 32)
+                            .padding(8)
+                    }
+                    
+                                            
                     
                     Spacer()
                     
-                    HStack(spacing: 4) {
-                        Text(highlightViewModel.highlightId != nil ? "수정" : "등록")
-                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                    }
-                    .padding(.horizontal, 11)
-                    .onTapGesture {
+                    Button(action: {
                         onTapDone()
+                    }) {
+                        HStack(spacing: 4) {
+                            Text(highlightViewModel.highlightId != nil ? "수정" : "등록")
+                                .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                        }
+                        .padding(.horizontal, 11)
                     }
                 }
                 .overlay(
@@ -124,6 +128,8 @@ struct SetHighlightView: View {
                             .label1(font: "SUIT", color: .cheekStatusCaution, bold: true)
                             .multilineTextAlignment(.center)
                     }
+                    
+                                            
                     
                 }
                 .padding(.top, 40)

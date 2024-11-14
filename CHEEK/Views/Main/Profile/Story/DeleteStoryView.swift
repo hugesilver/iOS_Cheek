@@ -27,38 +27,43 @@ struct DeleteStoryView: View {
         VStack(spacing: 8) {
             // 상단바
             HStack {
-                Image("IconChevronLeft")
-                    .resizable()
-                    .foregroundColor(.cheekTextNormal)
-                    .frame(width: 32, height: 32)
-                    .onTapGesture {
-                        dismiss()
-                    }
-                    .padding(8)
+                Button(action: {
+                    dismiss()}
+                ) {
+                    Image("IconChevronLeft")
+                        .resizable()
+                        .foregroundColor(.cheekTextNormal)
+                        .frame(width: 32, height: 32)
+                        .padding(8)
+                }
+                
+                                            
                 
                 Spacer()
                 
                 if profileViewModel.selectedStoriesForDelete.count > 0 {
-                    HStack(spacing: 4) {
-                        Text("완료")
-                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                        
-                        Text("\(profileViewModel.selectedStoriesForDelete.count)")
-                            .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
-                    }
-                    .padding(.horizontal, 11)
-                    .onTapGesture {
+                    Button(action: {
                         deleteMode = .delete
                         showAlert = true
+                    }) {
+                        HStack(spacing: 4) {
+                            Text("완료")
+                                .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                            
+                            Text("\(profileViewModel.selectedStoriesForDelete.count)")
+                                .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
+                        }
+                        .padding(.horizontal, 11)
                     }
                 } else {
-                    Text("완료")
-                        .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                        .padding(.horizontal, 18)
-                        .onTapGesture {
-                            deleteMode = .none
-                            showAlert = true
-                        }
+                    Button(action: {
+                        deleteMode = .none
+                        showAlert = true
+                    }) {
+                        Text("완료")
+                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                            .padding(.horizontal, 18)
+                    }
                 }
             }
             .overlay(

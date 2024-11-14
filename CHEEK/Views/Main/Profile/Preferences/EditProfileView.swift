@@ -18,6 +18,7 @@ struct EditProfileView: View {
     @StateObject private var viewModel = SetProfileViewModel()
     
     // 사진
+    @State private var showPhotosPicker: Bool = false
     @State private var selectImage: UIImage?
     @State private var photosPickerItem: PhotosPickerItem?
     
@@ -45,23 +46,27 @@ struct EditProfileView: View {
             VStack {
                 // 상단바
                 HStack {
-                    Image("IconChevronLeft")
-                        .resizable()
-                        .foregroundColor(.cheekTextNormal)
-                        .frame(width: 32, height: 32)
-                        .onTapGesture {
-                            dismiss()
-                        }
-                        .padding(8)
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image("IconChevronLeft")
+                            .resizable()
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 32, height: 32)
+                            .padding(8)
+                    }
+                    
+                                            
                     
                     Spacer()
                     
-                    Text("완료")
-                        .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                        .padding(.horizontal, 18)
-                        .onTapGesture {
-                            onTapDone()
-                        }
+                    Button(action: {
+                        onTapDone()
+                    }) {
+                        Text("완료")
+                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                            .padding(.horizontal, 18)
+                    }
                 }
                 .overlay(
                     Text("계정 편집")
@@ -74,7 +79,9 @@ struct EditProfileView: View {
                 ScrollView {
                     VStack {
                         // 프로필 사진 선택
-                        ZStack {
+                        Button(action: {
+                            showPhotosPicker = true
+                        }) {
                             if let image = selectImage {
                                 Image(uiImage: image)
                                     .resizable()
@@ -108,19 +115,15 @@ struct EditProfileView: View {
                                         .clipShape(Circle())
                                 }
                             }
+                        }
+                        .photosPicker(isPresented: $showPhotosPicker, selection: $photosPickerItem, matching: .images)
+                        .onChange(of: photosPickerItem) { image in
+                            Task {
+                                guard let data = try? await image?.loadTransferable(type: Data.self) else { return }
+                                selectImage = UIImage(data: data)
+                            }
                             
-                            PhotosPicker(selection: $photosPickerItem, matching: .images) {
-                                Color.clear
-                                    .frame(width: 128, height: 128)
-                            }
-                            .onChange(of: photosPickerItem) { image in
-                                Task {
-                                    guard let data = try? await image?.loadTransferable(type: Data.self) else { return }
-                                    selectImage = UIImage(data: data)
-                                }
-                                
-                                photosPickerItem = nil
-                            }
+                            photosPickerItem = nil
                         }
                         .overlay(
                             Circle()
