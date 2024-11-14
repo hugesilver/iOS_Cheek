@@ -33,7 +33,7 @@ struct NotificationView: View {
                         .foregroundColor(.cheekTextNormal)
                         .frame(width: 32, height: 32)
                         .padding(8)
-                }                      
+                }
                 
                 Spacer()
                 
@@ -56,14 +56,31 @@ struct NotificationView: View {
             
             // 목록
             List(notificationViewModel.notifications) { notification in
-                NotificationBlock(
-                    isRead: notificationViewModel.readNotifications.contains(notification.notificationId),
-                    message: notification.body,
-                    thumbnailPicture: notification.picture,
-                    onTapBakcground: {
-                        onTapBackground(notification: notification)
+                let isRead: Bool = notificationViewModel.readNotifications.contains(notification.notificationId)
+                
+                Group {
+                    if notification.type == "MEMBER_CONNECTION" {
+                        NotificationBlock(
+                            isRead: isRead,
+                            message: notification.body,
+                            thumbnailPicture: notification.picture
+                        )
+                        .background(
+                            NavigationLink("", destination: ProfileView(targetMemberId: notification.typeId, authViewModel: authViewModel))
+                                .opacity(0)
+                        )
+                    } else {
+                        Button(action: {
+                            onTapBackground(notification: notification)
+                        }) {
+                            NotificationBlock(
+                                isRead: isRead,
+                                message: notification.body,
+                                thumbnailPicture: notification.picture
+                            )
+                        }
                     }
-                )
+                }
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
                         notificationViewModel.deleteOneNotification(notificationId: notification.notificationId)
@@ -115,7 +132,6 @@ struct NotificationBlock: View {
     var isRead: Bool
     let message: String
     let thumbnailPicture: String?
-    let onTapBakcground: () -> Void
     
     @State var splitedMessage: [Substring] = []
     
@@ -170,9 +186,6 @@ struct NotificationBlock: View {
         .padding(16)
         .frame(maxWidth: .infinity)
         .background(isRead ? .cheekBackgroundTeritory : Color(red: 0.96, green: 0.98, blue: 1))
-        .onTapGesture {
-            onTapBakcground()
-        }
         .onAppear {
             splitedMessage = message.split(separator: "님이")
         }
