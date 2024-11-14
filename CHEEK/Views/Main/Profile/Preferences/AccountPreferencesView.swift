@@ -35,8 +35,6 @@ struct AccountPreferencesView: View {
                             .padding(8)
                     }
                     
-                                            
-                    
                     Spacer()
                 }
                 .overlay(
@@ -68,8 +66,6 @@ struct AccountPreferencesView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         
-                                            
-                        
                         DividerSmall()
                         
                         // 관리자 페이지
@@ -93,10 +89,7 @@ struct AccountPreferencesView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         
-                                            
-                        
-                        
-                        if profileViewModel.profile != nil && profileViewModel.profile!.role == "MENTEE" {
+                        if profileViewModel.profile != nil && !profileViewModel.isMentor {
                             NavigationLink(destination: RequestMentorView(authViewModel: authViewModel)) {
                                 ButtonActive(text: "멘토 회원 전환")
                                     .padding(.top, 8)
