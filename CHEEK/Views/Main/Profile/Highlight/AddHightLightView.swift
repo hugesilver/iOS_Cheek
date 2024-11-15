@@ -121,10 +121,8 @@ struct AddHighlightView: View {
                                 .resizable()
                                 .cancelOnDisappear(true)
                                 .aspectRatio(contentMode: .fill)
-                                .frame(
-                                    width: (UIScreen.main.bounds.width / 3) - (LAZY_V_GRID_SPACING / 2),
-                                    height: 156
-                                )
+                                .frame(height: 156)
+                                .frame(maxWidth: .infinity)
                                 .clipped()
                             
                             if highlightViewModel.selectedStories.contains(story) {
