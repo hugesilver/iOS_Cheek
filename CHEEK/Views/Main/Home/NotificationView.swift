@@ -169,8 +169,7 @@ struct NotificationBlock: View {
             if thumbnailPicture != nil {
                 KFImage(URL(string: thumbnailPicture!))
                     .placeholder {
-                        Image("ImageDefaultProfile")
-                            .resizable()
+                        Color.cheekTextAssitive
                     }
                     .retry(maxCount: 2, interval: .seconds(2))
                     .onSuccess { result in
