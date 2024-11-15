@@ -68,6 +68,9 @@ struct NotificationView: View {
                         .background(
                             NavigationLink("", destination: ProfileView(targetMemberId: notification.typeId, authViewModel: authViewModel))
                                 .opacity(0)
+                                .simultaneousGesture(TapGesture().onEnded {
+                                    onTapBackground(notification: notification)
+                                })
                         )
                     } else {
                         Button(action: {
