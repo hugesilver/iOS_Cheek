@@ -17,6 +17,8 @@ struct AddScrapFolderView: View {
     
     @Binding var isScrapOpen: Bool
     @Binding var isKeyboardUp: Bool
+    @Binding var triggerToast: Bool
+    
     @FocusState private var isFocused: Bool
     
     @State var text: String = ""
@@ -104,10 +106,11 @@ struct AddScrapFolderView: View {
         
         scrapViewModel.addCollection(storyId: storyModel.storyId, categoryId: storyModel.categoryId, forlderName: text) { isDone in
             isScrapOpen = false
+            triggerToast = true
         }
     }
 }
 
 #Preview {
-    AddScrapFolderView(storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), authViewModel: AuthenticationViewModel(), scrapViewModel: ScrapViewModel(), isScrapOpen: .constant(true), isKeyboardUp: .constant(true))
+    AddScrapFolderView(storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), authViewModel: AuthenticationViewModel(), scrapViewModel: ScrapViewModel(), isScrapOpen: .constant(true), isKeyboardUp: .constant(true), triggerToast: .constant(false))
 }

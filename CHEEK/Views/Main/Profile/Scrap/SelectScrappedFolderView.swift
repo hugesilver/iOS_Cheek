@@ -17,6 +17,8 @@ struct SelectScrappedFolderView: View {
     @Binding var isScrapOpen: Bool
     @Binding var isKeyboardUp: Bool
     
+    @Binding var triggerToast: Bool
+    
     @StateObject var viewModel: ScrapViewModel = ScrapViewModel()
     
     var body: some View {
@@ -36,16 +38,24 @@ struct SelectScrappedFolderView: View {
                             VStack(spacing: 16) {
                                 ForEach(Array(viewModel.scrappedFolders.enumerated()), id: \.offset) { index, folder in
                                     VStack(spacing: 16) {
-                                        Folder(folderModel: folder)
-                                            .onTapGesture {
-                                                addCollection(folderName: folder.folderName)
-                                            }
+                                        Button(action: {
+                                            addCollection(folderName: folder.folderName)
+                                        }) {
+                                            Folder(folderModel: folder)
+                                        }
                                         
                                         DividerSmall()
                                     }
                                 }
                                 
-                                NavigationLink(destination: AddScrapFolderView(storyModel: storyModel, authViewModel: authViewModel, scrapViewModel: viewModel, isScrapOpen: $isScrapOpen, isKeyboardUp: $isKeyboardUp)) {
+                                NavigationLink(destination: AddScrapFolderView(
+                                    storyModel: storyModel,
+                                    authViewModel: authViewModel,
+                                    scrapViewModel: viewModel,
+                                    isScrapOpen: $isScrapOpen,
+                                    isKeyboardUp: $isKeyboardUp,
+                                    triggerToast: $triggerToast
+                                )) {
                                     HStack(spacing: 12) {
                                         Image("IconPlus")
                                             .resizable()
@@ -99,10 +109,11 @@ struct SelectScrappedFolderView: View {
     func addCollection(folderName: String) {
         viewModel.addCollection(storyId: storyModel.storyId, categoryId: storyModel.categoryId, forlderName: folderName) { isDone in
             isScrapOpen = false
+            triggerToast = true
         }
     }
 }
 
 #Preview {
-    SelectScrappedFolderView(authViewModel: AuthenticationViewModel(), storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), isScrapOpen: .constant(true), isKeyboardUp: .constant(false))
+    SelectScrappedFolderView(authViewModel: AuthenticationViewModel(), storyModel: StoryModel(storyId: 1, categoryId: 1, storyPicture: "", upvoted: false, upvoteCount: 0, memberDto: MemberDto(memberId: 1, nickname: "", profilePicture: "")), isScrapOpen: .constant(true), isKeyboardUp: .constant(false), triggerToast: .constant(false))
 }

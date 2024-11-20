@@ -21,6 +21,9 @@ struct StoryView: View {
     @State private var isScrapOpen: Bool = false
     @State private var isScrapKeyboardUp: Bool = false
     
+    @State var triggerToast: Bool = false
+    @State var showToast: Bool = false
+    
     var body: some View {
         GeometryReader { reader in
             VStack(spacing: 0) {
@@ -33,7 +36,7 @@ struct StoryView: View {
                         if !viewModel.stories.isEmpty {
                             KFImage(URL(string: viewModel.stories[viewModel.currentIndex].storyPicture))
                                 .placeholder {
-                                    Color.clear
+                                    Color.cheekLineAlternative
                                 }
                                 .retry(maxCount: 2, interval: .seconds(2))
                                 .onSuccess { result in
@@ -98,6 +101,30 @@ struct StoryView: View {
                             }
                             .padding(.top, 27)
                             .padding(.horizontal, 16)
+                            
+                            // 스크랩 토스트
+                            if showToast {
+                                VStack {
+                                    Spacer()
+                                    
+                                    HStack(spacing: 10) {
+                                        Image("IconCheck")
+                                            .resizable()
+                                            .foregroundColor(.cheekStatusPositive)
+                                            .frame(width: 20, height: 20)
+                                        
+                                        Text("스크랩되었습니다!")
+                                            .body1(font: "SUIT", color: .cheekWhite, bold: true)
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 12)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .foregroundColor(Color(red: 0.25, green: 0.25, blue: 0.25))
+                                    )
+                                    .padding(.bottom, 24)
+                                }
+                            }
                         } else {
                             Text("스토리를 불러올 수 없습니다.")
                                 .body1(font: "SUIT", color: .cheekWhite, bold: false)
@@ -194,6 +221,11 @@ struct StoryView: View {
                     }
             )
             .animation(.spring(), value: offset)
+            .onChange(of: triggerToast) { trigger in
+                if trigger {
+                    showToastMessage()
+                }
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationBarBackButtonHidden(true)
@@ -209,7 +241,8 @@ struct StoryView: View {
                 authViewModel: authViewModel,
                 storyModel: viewModel.stories[viewModel.currentIndex],
                 isScrapOpen: $isScrapOpen,
-                isKeyboardUp: $isScrapKeyboardUp)
+                isKeyboardUp: $isScrapKeyboardUp,
+                triggerToast: $triggerToast)
                 .presentationDragIndicator(.hidden)
                 .presentationDetents([.fraction((isScrapKeyboardUp ? 0.17 : 0.63))])
                 .onDisappear {
@@ -244,6 +277,16 @@ struct StoryView: View {
     func onTapLike() {
         viewModel.stories[viewModel.currentIndex].upvoted.toggle()
         viewModel.likeStory()
+    }
+    
+    // 토스트 메시지
+    func showToastMessage() {
+        triggerToast = false
+        showToast = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            showToast = false
+        }
     }
 }
 
