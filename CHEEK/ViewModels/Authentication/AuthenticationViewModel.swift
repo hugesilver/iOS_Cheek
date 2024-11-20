@@ -34,6 +34,9 @@ class AuthenticationViewModel: ObservableObject {
             .tryMap() { data, response in
                 if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
                     print("응답 코드: \(response)")
+                    DispatchQueue.main.async {
+                        self.isConnected = false
+                    }
                 }
                 
                 // 디버깅
@@ -164,7 +167,6 @@ class AuthenticationViewModel: ObservableObject {
         
         Keychain().delete(key: "MEMBER_TYPE")
         Keychain().delete(key: "PREV_FCM_TOKEN")
-        Keychain().delete(key: "FCM_TOKEN")
         
         DispatchQueue.main.async {
             self.isRefreshTokenValid = false
