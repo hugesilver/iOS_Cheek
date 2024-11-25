@@ -20,12 +20,14 @@ struct CustomAlert: View {
             VStack(spacing: 25) {
                 Text(title)
                     .title1(font: "SUIT", color: .cheekTextStrong, bold: true)
+                    .multilineTextAlignment(.center)
                 
-                ButtonActive(text: buttonText)
-                    .onTapGesture {
-                        onTap()
-                        showAlert = false
-                    }
+                Button(action: {
+                    onTap()
+                    showAlert = false
+                }) {
+                    ButtonActive(text: buttonText)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 32)

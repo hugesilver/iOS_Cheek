@@ -20,6 +20,8 @@ struct RegisterDomainView: View {
     @FocusState var isEmailFocused: Bool
     @State private var isEmailValidated: Bool = false
     
+    @State private var showAlert: Bool = false
+    
     var body: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 0) {
@@ -55,7 +57,12 @@ struct RegisterDomainView: View {
                     text: $email,
                     information: .constant(""),
                     status: $statusEmail,
-                    isFocused: $isEmailFocused)
+                    isFocused: $isEmailFocused,
+                    showHelp: true,
+                    onTapHelp: {
+                        showAlert = true
+                    }
+                )
                 .onChange(of: email) { _ in
                     isEmailValidated = viewModel.validateEmail(email: email)
                 }
@@ -77,6 +84,15 @@ struct RegisterDomainView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, isEmailFocused ? 24 : 31)
             .background(.cheekBackgroundTeritory)
+            
+            if showAlert {
+                CustomAlert(
+                    showAlert: $showAlert,
+                    title: "입력하신 이메일 주소에서 도메인 정보만 수집됩니다.",
+                    buttonText: "확인",
+                    onTap: {}
+                )
+            }
             
             if viewModel.isSent {
                 EmailregisterDoneView(time: viewModel.time)

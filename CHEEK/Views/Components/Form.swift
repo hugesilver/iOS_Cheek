@@ -23,6 +23,9 @@ struct TextFieldForm: View {
     @Binding var status: statuses
     @FocusState.Binding var isFocused: Bool
     
+    var showHelp: Bool = false
+    var onTapHelp: () -> Void = {}
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if name != "" {
@@ -33,6 +36,18 @@ struct TextFieldForm: View {
                     if isReqired {
                         Text(" *")
                             .body1(font: "SUIT", color: .cheekStatusAlert, bold: true)
+                    }
+                    
+                    if showHelp {
+                        Button(action: {
+                            onTapHelp()
+                        }) {
+                            Image("IconHelp")
+                                .resizable()
+                                .frame(width: 14, height: 14)
+                                .foregroundColor(.cheekTextAlternative)
+                        }
+                        .padding(.leading, 8)
                     }
                 }
             }

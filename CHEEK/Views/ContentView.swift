@@ -34,22 +34,23 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             
-            if showAlert && alertType == .refreshToken {
-                CustomAlert(
-                    showAlert: $showAlert,
-                    title: "재로그인이 필요합니다.",
-                    buttonText: "확인",
-                    onTap: {}
-                )
-            }
-            
-            if showAlert && alertType == .connection {
-                CustomAlert(
-                    showAlert: $showAlert,
-                    title: "서버에 연결을 할 수 없습니다.",
-                    buttonText: "확인",
-                    onTap: {}
-                )
+            if showAlert {
+                switch alertType {
+                case .refreshToken:
+                    CustomAlert(
+                        showAlert: $showAlert,
+                        title: "재로그인이 필요합니다.",
+                        buttonText: "확인",
+                        onTap: {}
+                    )
+                case .connection:
+                    CustomAlert(
+                        showAlert: $showAlert,
+                        title: "서버에 연결을 할 수 없습니다.",
+                        buttonText: "확인",
+                        onTap: {}
+                    )
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
