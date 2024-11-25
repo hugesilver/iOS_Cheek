@@ -122,7 +122,7 @@ struct AccountPreferencesView: View {
                 )
             case .delete:
                 Alert(
-                    title: Text("정말 회원 탈퇴하시겠습니까?\n모든 데이터가 삭제됩니다."),
+                    title: Text("정말 회원 탈퇴하시겠습니까?\n회원님의 모든 데이터는 삭제되며 복구가 불가능합니다."),
                     primaryButton: .destructive(Text("탈퇴")) {
                         deleteAccount()
                     },
