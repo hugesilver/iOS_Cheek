@@ -290,10 +290,10 @@ struct AggrementView: View {
                 Button(action: {
                     onTapDone()
                 }) {
-                    ButtonActive(text: "확인")
+                    ButtonActive(text: "동의 후 시작")
                 }
             } else {
-                ButtonDisabled(text: "확인")
+                ButtonDisabled(text: "동의 후 시작")
             }
         }
         .padding(.horizontal, 16)
