@@ -52,11 +52,6 @@ class CombinePublishers: ObservableObject {
                     }
                 }
                 
-                // 디버깅
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print(dataString)
-                }
-                
                 return data
             }
             .tryCatch{ error in
@@ -110,11 +105,6 @@ class CombinePublishers: ObservableObject {
             .tryMap() { data, response in
                 if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
                     print("응답 코드: \(response)")
-                }
-                
-                // 디버깅
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print(dataString)
                 }
                 
                 return data

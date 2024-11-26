@@ -250,8 +250,6 @@ struct MypageView: View {
                         .frame(height: tabViewHeights[selectedTab])
                         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                         .onChange(of: selectedTab) { _ in
-                            print(selectedTab)
-                            print(tabViewHeights[selectedTab])
                             proxy.scrollTo(0, anchor: .top)
                         }
                     }

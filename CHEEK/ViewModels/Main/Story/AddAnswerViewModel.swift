@@ -120,11 +120,6 @@ class AddAnswerViewModel: ObservableObject {
                     print("응답 코드: \(response)")
                 }
                 
-                // 디버깅
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print(dataString)
-                }
-                
                 return data
             }
             .retry(1)
@@ -221,6 +216,7 @@ class AddAnswerViewModel: ObservableObject {
         }
     }
     
+    // 스토리 업로드
     func uploadAnswerStory(storyPicture: UIImage, completion: @escaping (Bool) -> Void) {
         guard questionModel != nil else {
             print("questionModel 없음")

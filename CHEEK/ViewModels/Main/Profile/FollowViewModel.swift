@@ -15,7 +15,6 @@ class FollowViewModel: ObservableObject {
     @Published var followers: [FollowModel] = []
     @Published var followings: [FollowModel] = []
     
-    
     // 팔로워 조회
     func getFollowers(targetMemberId: Int64) {
         print("팔로워 조회 시도")
@@ -24,7 +23,6 @@ class FollowViewModel: ObservableObject {
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        
         
         CombinePublishers().urlSession(req: request)
             .decode(type: [FollowModel].self, decoder: JSONDecoder())

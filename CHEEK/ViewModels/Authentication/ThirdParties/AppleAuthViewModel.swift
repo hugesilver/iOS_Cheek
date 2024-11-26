@@ -9,7 +9,6 @@ import Foundation
 import AuthenticationServices
 import CryptoKit
 import Combine
-import UIKit
 
 class AppleAuthViewModel: NSObject, ObservableObject, ASAuthorizationControllerDelegate {
     fileprivate var currentNonce: String?
@@ -92,7 +91,6 @@ class AppleAuthViewModel: NSObject, ObservableObject, ASAuthorizationControllerD
             }
             
             oAuthLogin(token: idTokenString)
-            UIPasteboard.general.string = idTokenString
         } else {
             DispatchQueue.main.async {
                 self.isComplete = false
@@ -129,11 +127,6 @@ class AppleAuthViewModel: NSObject, ObservableObject, ASAuthorizationControllerD
             .tryMap() { data, response in
                 if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
                     print("응답 코드: \(response)")
-                }
-                
-                // 디버깅
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print(dataString)
                 }
                 
                 return data

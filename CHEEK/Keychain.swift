@@ -30,8 +30,6 @@ class Keychain: ObservableObject {
             print("Keychain 생성 실패: \(status)")
             return
         }
-        
-        print("\(key): \(value) 키체인 생성 성공")
     }
     
     // Keychain 조회

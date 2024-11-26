@@ -11,7 +11,6 @@ import KakaoSDKCommon
 import KakaoSDKAuth
 import KakaoSDKUser
 import Combine
-import UIKit
 
 class KakaoAuthViewModel: ObservableObject {
     private let ip = Bundle.main.object(forInfoDictionaryKey: "SERVER_IP") as! String
@@ -30,12 +29,7 @@ class KakaoAuthViewModel: ObservableObject {
                 }
                 
                 if oauthToken != nil {
-                    print("카카오톡 앱을 통하여 로그인 성공: \(String(describing: oauthToken))")
-                    
                     self.oAuthLogin(token: oauthToken!.accessToken)
-                    
-                    // 액세스 토큰 복사 테스트용 코드
-                    UIPasteboard.general.string = oauthToken?.accessToken
                     return
                 }
             }
@@ -47,12 +41,7 @@ class KakaoAuthViewModel: ObservableObject {
                 }
                 
                 if oauthToken != nil {
-                    print("카카오톡 웹사이트를 통하여 로그인 성공: \(String(describing: oauthToken))")
-                    
                     self.oAuthLogin(token: oauthToken!.accessToken)
-                    
-                    // 액세스 토큰 복사 테스트용 코드
-                    UIPasteboard.general.string = oauthToken?.accessToken
                     return
                 }
             }
@@ -88,11 +77,6 @@ class KakaoAuthViewModel: ObservableObject {
             .tryMap() { data, response in
                 if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
                     print("응답 코드: \(response)")
-                }
-                
-                // 디버깅
-                if let dataString = String(data: data, encoding: .utf8) {
-                    print(dataString)
                 }
                 
                 return data
