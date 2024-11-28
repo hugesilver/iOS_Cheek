@@ -45,19 +45,35 @@ struct AddAnswerView: View {
         ZStack {
             if viewModel.isLoading {
                 LoadingView()
-            } else {
-                ZStack(alignment: .top) {
-                    // 캔버스
-                    GeometryReader { _ in
-                        AnswerDrawingView(viewModel: viewModel)
-                            .frame(
-                                width: UIScreen.main.bounds.width,
-                                height: (UIScreen.main.bounds.width / 9) * 16
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                
+                VStack {
+                    HStack {
+                        // 뒤로가기
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            AddAnswerMenu(image: "IconX")
+                        }
+                        .padding(.top, 16)
+                        .padding(.horizontal, 16)
+                        
+                        Spacer()
                     }
-                    .ignoresSafeArea(.keyboard, edges: .all)
+                    
+                    Spacer()
                 }
+            } else {
+                // 캔버스
+                GeometryReader { _ in
+                    AnswerDrawingView(viewModel: viewModel)
+                        .frame(
+                            width: UIScreen.main.bounds.width,
+                            height: (UIScreen.main.bounds.width / 9) * 16
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                }
+                .frame(alignment: .top)
+                .ignoresSafeArea(.keyboard, edges: .all)
                 
                 // 메뉴
                 if viewModel.userInteractState == .save {
