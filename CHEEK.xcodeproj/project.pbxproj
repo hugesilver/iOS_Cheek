@@ -11,6 +11,8 @@
 		E201F12E2C35D3AB0042AA2E /* AnswerTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E201F12D2C35D3AB0042AA2E /* AnswerTextView.swift */; };
 		E201F1302C35D5000042AA2E /* AnswerImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E201F12F2C35D5000042AA2E /* AnswerImageView.swift */; };
 		E201F1322C35D5630042AA2E /* AnswerQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E201F1312C35D5630042AA2E /* AnswerQuestionView.swift */; };
+		E206FC502D0ED31000DB7AD9 /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E206FC4F2D0ED31000DB7AD9 /* ReportView.swift */; };
+		E206FC532D0EECB900DB7AD9 /* ReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E206FC522D0EECB900DB7AD9 /* ReportViewModel.swift */; };
 		E218779F2CBB1A5700DD541C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E218779E2CBB1A5700DD541C /* Utils.swift */; };
 		E21877A12CBC1F9700DD541C /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21877A02CBC1F9700DD541C /* FeedViewModel.swift */; };
 		E21877A62CBC250A00DD541C /* FeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21877A52CBC250A00DD541C /* FeedModel.swift */; };
@@ -96,6 +98,9 @@
 		E2C5621B2CE0BD1100276F44 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C5621A2CE0BD1100276F44 /* Alert.swift */; };
 		E2C5621F2CE0CD5900276F44 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2C5621E2CE0CD5900276F44 /* AppState.swift */; };
 		E2C562222CE0D23800276F44 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = E2C562212CE0D23800276F44 /* Kingfisher */; };
+		E2CA4F7A2D0F27AD00CA0E3C /* BlockViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2CA4F792D0F27AD00CA0E3C /* BlockViewModel.swift */; };
+		E2CA4F7D2D0F2A9200CA0E3C /* BlockListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2CA4F7C2D0F2A9200CA0E3C /* BlockListModel.swift */; };
+		E2CA4F7F2D0F47B300CA0E3C /* BlockListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2CA4F7E2D0F47B300CA0E3C /* BlockListView.swift */; };
 		E2D5577F2CA575A3005285BE /* RegisterDomainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D5577E2CA575A3005285BE /* RegisterDomainViewModel.swift */; };
 		E2D557812CAB0AC5005285BE /* CombinePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D557802CAB0AC5005285BE /* CombinePublisher.swift */; };
 		E2D8BE092CC0D9960064E344 /* SetHighlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D8BE082CC0D9960064E344 /* SetHighlightView.swift */; };
@@ -145,6 +150,8 @@
 		E201F12D2C35D3AB0042AA2E /* AnswerTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerTextView.swift; sourceTree = "<group>"; };
 		E201F12F2C35D5000042AA2E /* AnswerImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerImageView.swift; sourceTree = "<group>"; };
 		E201F1312C35D5630042AA2E /* AnswerQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnswerQuestionView.swift; sourceTree = "<group>"; };
+		E206FC4F2D0ED31000DB7AD9 /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportView.swift; sourceTree = "<group>"; };
+		E206FC522D0EECB900DB7AD9 /* ReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModel.swift; sourceTree = "<group>"; };
 		E218779E2CBB1A5700DD541C /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		E21877A02CBC1F9700DD541C /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
 		E21877A52CBC250A00DD541C /* FeedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModel.swift; sourceTree = "<group>"; };
@@ -225,6 +232,9 @@
 		E2C562182CDC89F500276F44 /* AppleAuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAuthViewModel.swift; sourceTree = "<group>"; };
 		E2C5621A2CE0BD1100276F44 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		E2C5621E2CE0CD5900276F44 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		E2CA4F792D0F27AD00CA0E3C /* BlockViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockViewModel.swift; sourceTree = "<group>"; };
+		E2CA4F7C2D0F2A9200CA0E3C /* BlockListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockListModel.swift; sourceTree = "<group>"; };
+		E2CA4F7E2D0F47B300CA0E3C /* BlockListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockListView.swift; sourceTree = "<group>"; };
 		E2D5577E2CA575A3005285BE /* RegisterDomainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDomainViewModel.swift; sourceTree = "<group>"; };
 		E2D557802CAB0AC5005285BE /* CombinePublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePublisher.swift; sourceTree = "<group>"; };
 		E2D8BE082CC0D9960064E344 /* SetHighlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetHighlightView.swift; sourceTree = "<group>"; };
@@ -289,6 +299,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E206FC4E2D0ED01300DB7AD9 /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				E206FC4F2D0ED31000DB7AD9 /* ReportView.swift */,
+			);
+			path = Report;
+			sourceTree = "<group>";
+		};
+		E206FC512D0EECA600DB7AD9 /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				E206FC522D0EECB900DB7AD9 /* ReportViewModel.swift */,
+			);
+			path = Report;
+			sourceTree = "<group>";
+		};
 		E21877A22CBC22C700DD541C /* Feed */ = {
 			isa = PBXGroup;
 			children = (
@@ -433,6 +459,7 @@
 		E2635C792C071A5400CC3287 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				E206FC4E2D0ED01300DB7AD9 /* Report */,
 				E2B1F8D52C875B0300B5743A /* Question */,
 				E2B1F8D42C875AF500B5743A /* Home */,
 				E28BD7D52C861E6E006BBF4D /* Feed */,
@@ -623,6 +650,22 @@
 			path = Admin;
 			sourceTree = "<group>";
 		};
+		E2CA4F782D0F27A200CA0E3C /* Block */ = {
+			isa = PBXGroup;
+			children = (
+				E2CA4F792D0F27AD00CA0E3C /* BlockViewModel.swift */,
+			);
+			path = Block;
+			sourceTree = "<group>";
+		};
+		E2CA4F7B2D0F2A6B00CA0E3C /* Block */ = {
+			isa = PBXGroup;
+			children = (
+				E2CA4F7C2D0F2A9200CA0E3C /* BlockListModel.swift */,
+			);
+			path = Block;
+			sourceTree = "<group>";
+		};
 		E2D8BE062CC0C3AA0064E344 /* Highlight */ = {
 			isa = PBXGroup;
 			children = (
@@ -705,6 +748,7 @@
 				E2C562062CD6988100276F44 /* EditProfileView.swift */,
 				E2C562092CD9491D00276F44 /* RequestMentorView.swift */,
 				E2C562102CDBDECA00276F44 /* AdminView.swift */,
+				E2CA4F7E2D0F47B300CA0E3C /* BlockListView.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -787,6 +831,8 @@
 		E2F376102C1A1D8200A727C7 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				E2CA4F782D0F27A200CA0E3C /* Block */,
+				E206FC512D0EECA600DB7AD9 /* Report */,
 				E2C562122CDBE14A00276F44 /* Admin */,
 				E2D8BE562CCEC3200064E344 /* Notification */,
 				E2D8BE2B2CC6B1CE0064E344 /* Scrap */,
@@ -823,6 +869,7 @@
 		E2FA48942C2FF4F80098137F /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				E2CA4F7B2D0F2A6B00CA0E3C /* Block */,
 				E2C562152CDBE2A900276F44 /* Admin */,
 				E2D8BE592CCEC6930064E344 /* Notification */,
 				E2D8BE2E2CC6B6450064E344 /* Scrap */,
@@ -964,9 +1011,11 @@
 				E2D8BE4B2CCAD7DE0064E344 /* AnsweredQuestionModel.swift in Sources */,
 				E2417C3C2C71D5E800A7A2A0 /* Checkbox.swift in Sources */,
 				E2C5621B2CE0BD1100276F44 /* Alert.swift in Sources */,
+				E2CA4F7A2D0F27AD00CA0E3C /* BlockViewModel.swift in Sources */,
 				E2F3760F2C1A152F00A727C7 /* AddAnswerView.swift in Sources */,
 				E27EF56D2C7C74E50047E6EC /* SearchView.swift in Sources */,
 				E2F376142C1AAECD00A727C7 /* ErrorModel.swift in Sources */,
+				E2CA4F7D2D0F2A9200CA0E3C /* BlockListModel.swift in Sources */,
 				E2D557812CAB0AC5005285BE /* CombinePublisher.swift in Sources */,
 				E2C5621F2CE0CD5900276F44 /* AppState.swift in Sources */,
 				E2E740E32C00B289003B510B /* CHEEKApp.swift in Sources */,
@@ -1000,6 +1049,7 @@
 				E2F376072C19A0DF00A727C7 /* MainView.swift in Sources */,
 				E2C562192CDC89F500276F44 /* AppleAuthViewModel.swift in Sources */,
 				E2C562112CDBDECA00276F44 /* AdminView.swift in Sources */,
+				E2CA4F7F2D0F47B300CA0E3C /* BlockListView.swift in Sources */,
 				E2D8BE2D2CC6B1D90064E344 /* ScrapViewModel.swift in Sources */,
 				E2417C422C71FC1000A7A2A0 /* Ranking.swift in Sources */,
 				E2417C392C71C52500A7A2A0 /* Images.swift in Sources */,
@@ -1029,8 +1079,10 @@
 				E2D8BE162CC56D300064E344 /* EditHightLightView.swift in Sources */,
 				E2D8BE1C2CC631A30064E344 /* CategoryModels.swift in Sources */,
 				E21877A62CBC250A00DD541C /* FeedModel.swift in Sources */,
+				E206FC532D0EECB900DB7AD9 /* ReportViewModel.swift in Sources */,
 				E283653D2C059DD8002D4624 /* KakaoAuthViewModel.swift in Sources */,
 				E2D8BE4F2CCC11440064E344 /* ContentView.swift in Sources */,
+				E206FC502D0ED31000DB7AD9 /* ReportView.swift in Sources */,
 				E2B1F8E02C8F127B00B5743A /* AuthenticationViewModel.swift in Sources */,
 				E2D8BE282CC6ACF90064E344 /* ScrappedStoriesView.swift in Sources */,
 				E29CF8282C5A2B6800929437 /* SelectableCard.swift in Sources */,
@@ -1204,7 +1256,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.5.4;
+				MARKETING_VERSION = 0.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hugesilver.CHEEK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1241,7 +1293,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.5.4;
+				MARKETING_VERSION = 0.5.6;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hugesilver.CHEEK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

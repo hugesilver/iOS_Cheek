@@ -65,6 +65,24 @@ struct AccountPreferencesView: View {
                         
                         DividerSmall()
                         
+                        // 1:1 문의
+                        Link(destination: URL(string: "https://forms.gle/TArTWnHQqfSpH5bQ6")!) {
+                            Text("1:1 문의")
+                                .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        
+                        DividerSmall()
+                        
+                        // 개인정보처리방침
+                        Link(destination: URL(string: "https://malleable-can-825.notion.site/3eea27e124764715836db58321500b1d?pvs=4")!) {
+                            Text("개인정보처리방침")
+                                .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        
+                        DividerSmall()
+                        
                         // 로그아웃
                         Button(action: {
                             alertMode = .logout
