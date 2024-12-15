@@ -149,7 +149,7 @@ struct UserCardLarge: View {
             Spacer()
             
             Menu {
-                NavigationLink(destination: ReportView(category: objectType, categoryId: objectId, toMemberId: memberId)) {
+                NavigationLink(destination: ReportView(authViewModel: authViewModel, category: objectType, categoryId: objectId, toMemberId: memberId)) {
                     Text("신고")
                 }
             } label: {

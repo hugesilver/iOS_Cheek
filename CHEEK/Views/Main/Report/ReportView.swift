@@ -10,6 +10,8 @@ import SwiftUI
 struct ReportView: View {
     @Environment(\.dismiss) private var dismiss
     
+    @ObservedObject var authViewModel: AuthenticationViewModel
+    
     let category: String
     let categoryId: Int64
     let toMemberId: Int64
@@ -97,10 +99,13 @@ struct ReportView: View {
                 LoadingView()
             }
         }
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
+        .onAppear {
+            authViewModel.checkRefreshTokenValid()
+        }
         .alert(isPresented: $viewModel.showAlert) {
             Alert(title: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")) {
                 DispatchQueue.main.async {
@@ -121,5 +126,5 @@ struct ReportView: View {
 }
 
 #Preview {
-    ReportView(category: "MEMBER", categoryId: 0, toMemberId: 0)
+    ReportView(authViewModel: AuthenticationViewModel(), category: "MEMBER", categoryId: 0, toMemberId: 0)
 }
