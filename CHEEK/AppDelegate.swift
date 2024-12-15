@@ -147,7 +147,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 extension AppDelegate: MessagingDelegate {
     // [START refresh_token]
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        print("Firebase registration token: \(String(describing: fcmToken))")
+        // print("Firebase registration token: \(String(describing: fcmToken))")
         
         if let fcmToken {
             Keychain().create(key: "FCM_TOKEN", value: fcmToken)

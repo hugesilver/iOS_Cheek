@@ -38,8 +38,6 @@ class NotificationViewModel: ObservableObject {
     
     // FCM 토큰 전송
     func setFCMToken(token: String) {
-        print("FCM 토큰 전송 시도: \(token)")
-        
         let url = URL(string: "\(ip)/noti/token")!
         
         // Header 세팅
