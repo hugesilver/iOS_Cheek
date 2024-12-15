@@ -42,9 +42,20 @@ struct ProfileView: View {
                         .padding(8)
                 }
                 
-                                            
-                
                 Spacer()
+                
+                if myMemberId != nil && targetMemberId != myMemberId {
+                    Menu {
+                        NavigationLink(destination: ReportView(category: "MEMBER", categoryId: targetMemberId, toMemberId: targetMemberId)) {
+                            Text("신고")
+                        }
+                    } label: {
+                        Image("IconPreference")
+                            .resizable()
+                            .foregroundColor(.cheekTextNormal)
+                            .frame(width: 48, height: 48)
+                    }
+                }
             }
             .padding(.top, 8)
             .padding(.horizontal, 16)

@@ -117,6 +117,9 @@ struct UserFollowCard: View {
 struct UserCardLarge: View {
     @ObservedObject var authViewModel: AuthenticationViewModel
     
+    let objectType: String
+    let objectId: Int64
+    
     let memberId: Int64
     let profilePicture: String?
     
@@ -124,23 +127,38 @@ struct UserCardLarge: View {
     let date: String?
     
     var body: some View {
-        NavigationLink(destination: ProfileView(targetMemberId: memberId, authViewModel: authViewModel)) {
-            HStack(spacing: 8) {
+        HStack(alignment: .top, spacing: 8) {
+            NavigationLink(destination: ProfileView(targetMemberId: memberId, authViewModel: authViewModel)) {
                 ProfileM(url: profilePicture)
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
-                        .lineLimit(1)
+                    HStack {
+                        Text(title)
+                            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
+                            .lineLimit(1)
+                        
+                        Spacer()
+                    }
                     
                     Text(date ?? "")
                         .label2(font: "SUIT", color: .cheekTextAlternative, bold: false)
                         .lineLimit(1)
                 }
-                
-                Spacer()
             }
-        }
+            
+            Spacer()
+            
+            Menu {
+                NavigationLink(destination: ReportView(category: objectType, categoryId: objectId, toMemberId: memberId)) {
+                    Text("신고")
+                }
+            } label: {
+                Image("IconMore")
+                    .resizable()
+                    .foregroundColor(.cheekTextNormal)
+                    .frame(width: 32, height: 32)
+            }
+    }
     }
 }
 
@@ -240,6 +258,8 @@ struct UserQuestionCard: View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
                 authViewModel: authViewModel,
+                objectType: "QUESTION",
+                objectId: questionId,
                 memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 질문입니다!",
@@ -263,6 +283,8 @@ struct UserQuestionCardWithoutOption: View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
                 authViewModel: authViewModel,
+                objectType: "QUESTION",
+                objectId: questionId,
                 memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 질문입니다!",
@@ -321,6 +343,8 @@ struct UserStoryCard: View {
         VStack(alignment: .leading, spacing: 16) {
             UserCardLarge(
                 authViewModel: authViewModel,
+                objectType: "STORY",
+                objectId: storyId,
                 memberId: memberDto.memberId ?? 0,
                 profilePicture: memberDto.profilePicture,
                 title: "\(memberDto.nickname ?? "알 수 없는 사용자")님의 답변입니다!",
