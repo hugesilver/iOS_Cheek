@@ -54,7 +54,7 @@ struct ProfileView: View {
                 
                 if myMemberId != nil && targetMemberId != myMemberId {
                     Menu {
-                        NavigationLink(destination: ReportView(category: "MEMBER", categoryId: targetMemberId, toMemberId: targetMemberId)) {
+                        NavigationLink(destination: ReportView(authViewModel: authViewModel, category: "MEMBER", categoryId: targetMemberId, toMemberId: targetMemberId)) {
                             Text("신고")
                         }
                         
