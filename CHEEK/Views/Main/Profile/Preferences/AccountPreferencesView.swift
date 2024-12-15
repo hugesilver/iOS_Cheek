@@ -56,6 +56,15 @@ struct AccountPreferencesView: View {
                         
                         DividerSmall()
                         
+                        // 차단한 회원
+                        NavigationLink(destination: BlockListView(authViewModel: authViewModel)) {
+                            Text("차단한 계정")
+                                .title1(font: "SUIT", color: .cheekTextNormal, bold: false)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        
+                        DividerSmall()
+                        
                         // 로그아웃
                         Button(action: {
                             alertMode = .logout

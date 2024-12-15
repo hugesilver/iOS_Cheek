@@ -18,6 +18,14 @@ struct ProfileView: View {
     @StateObject var profileViewModel: ProfileViewModel = ProfileViewModel()
     @StateObject var followViewModel: FollowViewModel = FollowViewModel()
     @StateObject private var highlightViewModel: HighlightViewModel = HighlightViewModel()
+    @StateObject private var blockViewModel: BlockViewModel = BlockViewModel()
+    
+    enum AlertType {
+        case block, unblock
+    }
+    
+    @State private var alertType: AlertType = .unblock
+    @State private var showAlert: Bool = false
     
     @State var isStoryOpen: Bool = false
     @State var selectedStories: [Int64] = []
@@ -48,6 +56,25 @@ struct ProfileView: View {
                     Menu {
                         NavigationLink(destination: ReportView(category: "MEMBER", categoryId: targetMemberId, toMemberId: targetMemberId)) {
                             Text("신고")
+                        }
+                        
+                        if blockViewModel.blockList != nil &&
+                            blockViewModel.index != nil {
+                            if blockViewModel.index == -1 {
+                                Button(action: {
+                                    alertType = .block
+                                    showAlert = true
+                                }) {
+                                    Text("차단")
+                                }
+                            } else {
+                                Button(action: {
+                                    alertType = .unblock
+                                    showAlert = true
+                                }) {
+                                    Text("차단 해제")
+                                }
+                            }
                         }
                     } label: {
                         Image("IconPreference")
@@ -154,7 +181,11 @@ struct ProfileView: View {
                                 .padding(.horizontal, 16)
                         }
                         
-                        if myMemberId != nil && profileViewModel.profile != nil && myMemberId != targetMemberId {
+                        if myMemberId != nil &&
+                            profileViewModel.profile != nil &&
+                            myMemberId != targetMemberId &&
+                            blockViewModel.blockList != nil &&
+                            blockViewModel.index == -1 {
                             if profileViewModel.profile!.following {
                                 Button(action: {
                                     onTapUnfollow()
@@ -266,12 +297,37 @@ struct ProfileView: View {
                 profileViewModel.getQuestions(targetMemberId: targetMemberId)
             }
         }
+        .onChange(of: blockViewModel.blockList) { blockList in
+            if blockList != nil && blockViewModel.index == nil {
+                blockViewModel.getblockListIndex(targetMemberId)
+            }
+        }
         .fullScreenCover(isPresented: $isStoryOpen) {
             if #available(iOS 16.4, *) {
                 StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
                     .presentationBackground(.clear)
             } else {
                 StoryView(authViewModel: authViewModel, storyIds: $selectedStories)
+            }
+        }
+        .alert(isPresented: $showAlert) {
+            switch alertType {
+            case .block:
+                Alert(
+                    title: Text("경고"),
+                    message: Text("해당 회원을 차단하시겠습니까?"),
+                    primaryButton: .cancel(Text("취소")),
+                    secondaryButton: .destructive(Text("차단")) {
+                        blockViewModel.block(targetMemberId)
+                })
+            case .unblock:
+                Alert(
+                    title: Text("경고"),
+                    message: Text("해당 회원을 차단 해제하시겠습니까?"),
+                    primaryButton: .cancel(Text("취소")),
+                    secondaryButton: .default(Text("차단 해제")) {
+                        blockViewModel.unblock()
+                })
             }
         }
     }
