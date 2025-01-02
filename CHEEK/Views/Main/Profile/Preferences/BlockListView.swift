@@ -67,7 +67,7 @@ struct BlockListView: View {
                         viewModel.getblockListIndex(member.memberDto.memberId)
                         showAlert = true
                     }) {
-                        ButtonHugDisabled(text: "차단 해제")
+                        ButtonNarrowHugDisabled(text: "차단 해제")
                     }
                 }
                 .padding(16)

@@ -99,13 +99,13 @@ struct UserFollowCard: View {
                     Button(action: {
                         onTapUnfollow()
                     }) {
-                        ButtonHugDisabled(text: "언팔로우")
+                        ButtonNarrowHugDisabled(text: "언팔로우")
                     }
                 } else {
                     Button(action: {
                         onTapFollow()
                     }) {
-                        ButtonHugActive(text: "팔로우")
+                        ButtonNarrowHugActive(text: "팔로우")
                     }
                 }
             }

@@ -60,6 +60,36 @@ struct ButtonLine: View {
     }
 }
 
+struct ButtonHugActive: View {
+    var text: String
+    
+    var body: some View {
+        Text(text)
+            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 16)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.cheekMainStrong)
+            )
+    }
+}
+
+struct ButtonHugDisabled: View {
+    var text: String
+    
+    var body: some View {
+        Text(text)
+            .body1(font: "SUIT", color: .cheekTextNormal, bold: true)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 16)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.cheekLineNormal)
+            )
+    }
+}
+
 struct ButtonNarrowFill: View {
     var text: String
     
@@ -107,7 +137,7 @@ struct ButtonNarrowLine: View {
     }
 }
 
-struct ButtonHugActive: View {
+struct ButtonNarrowHugActive: View {
     var text: String
     
     var body: some View {
@@ -122,7 +152,7 @@ struct ButtonHugActive: View {
     }
 }
 
-struct ButtonHugDisabled: View {
+struct ButtonNarrowHugDisabled: View {
     var text: String
     
     var body: some View {
