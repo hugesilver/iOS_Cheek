@@ -219,7 +219,7 @@ struct SearchView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.cheekBackgroundTeritory)
         .onTapGesture {
-            Utils().hideKeyboard()
+            hideKeyboard()
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)

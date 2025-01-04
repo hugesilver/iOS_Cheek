@@ -124,7 +124,7 @@ struct RegisterDomainView: View {
     
     // 도메인 전송
     func registerDomain() {
-        Utils().hideKeyboard()
+        hideKeyboard()
         
         // 이메잃 확인 후 전송
         if viewModel.validateEmail(email: email) {

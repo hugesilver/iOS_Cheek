@@ -106,7 +106,7 @@ struct MypageView: View {
                                     targetMemberId: profileViewModel.profile?.memberId ?? 0,
                                     selectedTab: 0)) {
                                         VStack(spacing: 2) {
-                                            Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followerCnt ?? 0))
+                                            Text(formatKoreanNumber(number: profileViewModel.profile?.followerCnt ?? 0))
                                                 .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
                                             
                                             Text("팔로워")
@@ -120,7 +120,7 @@ struct MypageView: View {
                                     targetMemberId: profileViewModel.profile?.memberId ?? 0,
                                     selectedTab: 1)) {
                                         VStack(spacing: 2) {
-                                            Text(Utils().formatKoreanNumber(number: profileViewModel.profile?.followingCnt ?? 0))
+                                            Text(formatKoreanNumber(number: profileViewModel.profile?.followingCnt ?? 0))
                                                 .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
                                             
                                             Text("팔로잉")

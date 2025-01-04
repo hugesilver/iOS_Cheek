@@ -16,7 +16,7 @@ class CombinePublishers: ObservableObject {
     func checkRefreshTokenValid() -> Bool {
         guard let _ = Keychain().read(key: "REFRESH_TOKEN"),
               let refreshTokenExpireTime = Keychain().read(key: "REFRESH_TOKEN_EXPIRE_TIME"),
-              let refreshTokenExpireTimeToDate = Utils().convertTokenTime(timeString: refreshTokenExpireTime) else {
+              let refreshTokenExpireTimeToDate = convertTokenTime(timeString: refreshTokenExpireTime) else {
             return false
         }
         

@@ -29,7 +29,7 @@ struct SearchResultAllView: View {
                         Text("프로필")
                             .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
                         
-                        Text("\(Utils().formatKoreanNumber(number: searchViewModel.searchResult!.memberResCnt))")
+                        Text("\(formatKoreanNumber(number: searchViewModel.searchResult!.memberResCnt))")
                             .label2(font: "SUIT", color: .cheekTextStrong, bold: false)
                     }
                     .padding(.vertical, 10)
@@ -70,7 +70,7 @@ struct SearchResultAllView: View {
                         Text("스토리")
                             .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
                         
-                        Text("\(Utils().formatKoreanNumber(number: searchViewModel.searchResult!.storyResCnt))")
+                        Text("\(formatKoreanNumber(number: searchViewModel.searchResult!.storyResCnt))")
                             .label2(font: "SUIT", color: .cheekTextStrong, bold: false)
                     }
                     .padding(.vertical, 10)
@@ -104,7 +104,7 @@ struct SearchResultAllView: View {
                         Text("질문")
                             .label1(font: "SUIT", color: .cheekTextStrong, bold: true)
                         
-                        Text("\(Utils().formatKoreanNumber(number: searchViewModel.searchResult!.questionResCnt))")
+                        Text("\(formatKoreanNumber(number: searchViewModel.searchResult!.questionResCnt))")
                             .label2(font: "SUIT", color: .cheekTextStrong, bold: false)
                     }
                     .padding(.vertical, 10)

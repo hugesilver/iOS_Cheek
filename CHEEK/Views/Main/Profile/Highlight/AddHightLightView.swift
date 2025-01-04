@@ -163,7 +163,7 @@ struct AddHighlightView: View {
                             VStack {
                                 Spacer()
                                 
-                                Text(Utils().convertToDate(dateString: story.modifiedAt!) ?? "")
+                                Text(convertToDate(dateString: story.modifiedAt!) ?? "")
                                     .caption1(font: "SUIT", color: .cheekWhite, bold: true)
                                     .frame(alignment: .bottomLeading)
                                     .padding(8)

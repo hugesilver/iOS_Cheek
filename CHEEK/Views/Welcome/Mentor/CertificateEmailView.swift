@@ -172,14 +172,14 @@ struct CertificateEmailView: View {
             viewModel.cancelTimer()
         }
         .onTapGesture {
-            Utils().hideKeyboard()
+            hideKeyboard()
         }
     }
     
     // 인증번호 전송
     func sendCode() {
         // 키보드 숨기기
-        Utils().hideKeyboard()
+        hideKeyboard()
         
         // 이메잃 확인 후 전송
         if viewModel.validateEmail(email: email) {
@@ -190,7 +190,7 @@ struct CertificateEmailView: View {
     
     // 인증번호 확인
     func verifyCode() {
-        Utils().hideKeyboard()
+        hideKeyboard()
         
         // 인증번호 확인
         viewModel.verifyEmailCode(email: email, verificationCode: verificationCode)

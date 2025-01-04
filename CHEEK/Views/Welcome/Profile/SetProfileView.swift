@@ -160,7 +160,7 @@ struct SetProfileView: View {
             }
         }
         .onTapGesture {
-            Utils().hideKeyboard()
+            hideKeyboard()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationBarBackButtonHidden(true)
@@ -197,7 +197,7 @@ struct SetProfileView: View {
     // 프로필 설정
     func setProfile() {
         // 키보드 숨기기
-        Utils().hideKeyboard()
+        hideKeyboard()
         
         viewModel.isLoading = true
         

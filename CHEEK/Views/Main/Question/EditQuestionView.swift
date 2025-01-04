@@ -109,7 +109,7 @@ struct EditQuestionView: View {
         .padding(.bottom, isFocused ? 30 : 0)
         .background(.cheekTextNormal)
         .onTapGesture {
-            Utils().hideKeyboard()
+            hideKeyboard()
         }
         .onAppear {
             UINavigationBar.setAnimationsEnabled(false)
@@ -138,7 +138,7 @@ struct EditQuestionView: View {
     
     // 질문 추가
     func editQuestion() {
-        Utils().hideKeyboard()
+        hideKeyboard()
         
         if !question.isEmpty {
             viewModel.editQuestion(content: question, questionId: questionId) { isSuccess in

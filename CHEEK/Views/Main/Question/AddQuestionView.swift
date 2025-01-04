@@ -108,7 +108,7 @@ struct AddQuestionView: View {
         .padding(.bottom, isFocused ? 30 : 0)
         .background(.cheekTextNormal)
         .onTapGesture {
-            Utils().hideKeyboard()
+            hideKeyboard()
         }
         .onAppear {
             UINavigationBar.setAnimationsEnabled(false)
@@ -138,7 +138,7 @@ struct AddQuestionView: View {
     
     // 질문 추가
     func addQuestion() {
-        Utils().hideKeyboard()
+        hideKeyboard()
         
         if !question.isEmpty {
             viewModel.uploadQuestion(categoryId: categoryId, content: question) { isSuccess in

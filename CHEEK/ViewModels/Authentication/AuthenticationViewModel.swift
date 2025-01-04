@@ -75,7 +75,7 @@ class AuthenticationViewModel: ObservableObject {
     func checkRefreshTokenValid() {
         guard let _ = Keychain().read(key: "REFRESH_TOKEN"),
               let refreshTokenExpireTime = Keychain().read(key: "REFRESH_TOKEN_EXPIRE_TIME"),
-              let refreshTokenExpireTimeToDate = Utils().convertTokenTime(timeString: refreshTokenExpireTime) else {
+              let refreshTokenExpireTimeToDate = convertTokenTime(timeString: refreshTokenExpireTime) else {
             isRefreshTokenValid = false
             return
         }
@@ -91,7 +91,7 @@ class AuthenticationViewModel: ObservableObject {
     func checkAccessTokenExpired() -> Bool {
         guard let _ = Keychain().read(key: "ACCESS_TOKEN"),
               let accessTokenExpireTime = Keychain().read(key: "ACCESS_TOKEN_EXPIRE_TIME"),
-              let accessTokenExpireTimeToDate = Utils().convertTokenTime(timeString: accessTokenExpireTime) else {
+              let accessTokenExpireTimeToDate = convertTokenTime(timeString: accessTokenExpireTime) else {
             return false
         }
         
@@ -103,7 +103,7 @@ class AuthenticationViewModel: ObservableObject {
         guard let refreshToken = Keychain().read(key: "REFRESH_TOKEN"),
               let _ = Keychain().read(key: "ACCESS_TOKEN"),
               let accessTokenExpireTime = Keychain().read(key: "ACCESS_TOKEN_EXPIRE_TIME"),
-              let _ = Utils().convertTokenTime(timeString: accessTokenExpireTime) else {
+              let _ = convertTokenTime(timeString: accessTokenExpireTime) else {
             print("토큰 정보가 유효하지 않음")
             return
         }

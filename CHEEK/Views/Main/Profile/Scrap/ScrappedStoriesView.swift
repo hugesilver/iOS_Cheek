@@ -155,7 +155,7 @@ struct ScrappedStoriesView: View {
                                     VStack {
                                         Spacer()
                                         
-                                        Text(Utils().convertToDate(dateString: collection.modifiedAt) ?? "")
+                                        Text(convertToDate(dateString: collection.modifiedAt) ?? "")
                                             .caption1(font: "SUIT", color: .cheekWhite, bold: true)
                                             .frame(alignment: .bottomLeading)
                                             .padding(8)
@@ -240,7 +240,7 @@ struct ScrappedStoriesView: View {
                                     VStack {
                                         Spacer()
                                         
-                                        Text(Utils().convertToDate(dateString: collection.modifiedAt) ?? "")
+                                        Text(convertToDate(dateString: collection.modifiedAt) ?? "")
                                             .caption1(font: "SUIT", color: .cheekWhite, bold: true)
                                             .frame(alignment: .bottomLeading)
                                             .padding(8)

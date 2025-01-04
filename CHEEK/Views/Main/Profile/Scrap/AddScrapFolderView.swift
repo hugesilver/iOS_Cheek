@@ -92,7 +92,7 @@ struct AddScrapFolderView: View {
             }
         }
         .onTapGesture {
-            Utils().hideKeyboard()
+            hideKeyboard()
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
@@ -102,7 +102,7 @@ struct AddScrapFolderView: View {
     }
     
     func addCollection() {
-        Utils().hideKeyboard()
+        hideKeyboard()
         
         scrapViewModel.addCollection(storyId: storyModel.storyId, categoryId: storyModel.categoryId, forlderName: text) { isDone in
             isScrapOpen = false

@@ -194,7 +194,7 @@ struct EditProfileView: View {
                             .onChange(of: description) { text in
                                 if text.last == "\n" {
                                     description = String(text.dropLast())
-                                    Utils().hideKeyboard()
+                                    hideKeyboard()
                                 }
                                 
                                 description = String(text.prefix(50))
@@ -232,7 +232,7 @@ struct EditProfileView: View {
             Alert(title: Text("오류"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("확인")))
         }
         .onTapGesture {
-            Utils().hideKeyboard()
+            hideKeyboard()
         }
         .onAppear {
             authViewModel.checkRefreshTokenValid()
@@ -294,7 +294,7 @@ struct EditProfileView: View {
     // 프로필 수정
     func onTapDone() {
         // 키보드 숨기기
-        Utils().hideKeyboard()
+        hideKeyboard()
         
         viewModel.isLoading = true
         
