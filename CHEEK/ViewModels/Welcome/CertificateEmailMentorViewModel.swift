@@ -16,7 +16,8 @@ class CertificateEmailMentorViewModel: ObservableObject {
     var cancellables = Set<AnyCancellable>()
     
     // 타이머
-    private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    private var codeExpireTimer: Timer?
+    private var resendTimer: Timer?
     
     // 로딩 중
     @Published var isLoading: Bool = false
@@ -228,36 +229,51 @@ class CertificateEmailMentorViewModel: ObservableObject {
     func timerResendTime() {
         resendTime = RESEND_TIME
         
-        timer
-            .sink { _ in
+        DispatchQueue.main.async { [weak self] in
+            self?.resendTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
+                guard let self = self else {
+                    timer.invalidate()
+                    return
+                }
+                
                 if self.resendTime > 0 {
                     self.resendTime -= 1
                 } else {
+                    // 타이머 종료
                     self.isSendable = true
+                    timer.invalidate()
+                    return
                 }
             }
-            .store(in: &cancellables)
+        }
     }
 
     // 인증번호 타이머
     func timerCodeExpireTime() {
         codeExpireTime = CODE_EXPIRE_TIME
         
-        timer
-            .sink { _ in
-                if self.isSent {
-                    if self.codeExpireTime > 0 {
-                        self.codeExpireTime -= 1
-                    } else {
-                        self.isSent = false
-                    }
+        DispatchQueue.main.async { [weak self] in
+            self?.codeExpireTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
+                guard let self = self else {
+                    timer.invalidate()
+                    return
+                }
+                
+                if self.codeExpireTime > 0 {
+                    self.codeExpireTime -= 1
+                } else {
+                    // 타이머 종료
+                    self.isSent = true
+                    timer.invalidate() // 타이머 종료
+                    return
                 }
             }
-            .store(in: &cancellables)
+        }
     }
     
     // 타이머 종료
     func cancelTimer() {
-        self.timer.upstream.connect().cancel()
+        codeExpireTimer?.invalidate()
+        resendTimer?.invalidate()
     }
 }
