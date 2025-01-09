@@ -17,11 +17,11 @@ struct DeleteStoryView: View {
     @ObservedObject var profileViewModel: ProfileViewModel
     
     enum deleteModeTypes {
-        case delete, none, error
+        case delete, error
     }
     
-    @State var deleteMode: deleteModeTypes = .delete
-    @State var showAlert: Bool = false
+    @State private var isPresented: Bool = false
+    @State private var deleteMode: deleteModeTypes = .delete
     
     var body: some View {
         VStack(spacing: 8) {
@@ -37,32 +37,21 @@ struct DeleteStoryView: View {
                         .padding(8)
                 }
                 
-                                            
-                
                 Spacer()
                 
                 if profileViewModel.selectedStoriesForDelete.count > 0 {
                     Button(action: {
                         deleteMode = .delete
-                        showAlert = true
+                        isPresented = true
                     }) {
                         HStack(spacing: 4) {
-                            Text("완료")
+                            Text("삭제")
                                 .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
                             
                             Text("\(profileViewModel.selectedStoriesForDelete.count)")
                                 .label1(font: "SUIT", color: .cheekMainStrong, bold: true)
                         }
                         .padding(.horizontal, 11)
-                    }
-                } else {
-                    Button(action: {
-                        deleteMode = .none
-                        showAlert = true
-                    }) {
-                        Text("완료")
-                            .label1(font: "SUIT", color: .cheekTextNormal, bold: false)
-                            .padding(.horizontal, 18)
                     }
                 }
             }
@@ -93,7 +82,7 @@ struct DeleteStoryView: View {
                                 .resizable()
                                 .cancelOnDisappear(true)
                                 .aspectRatio(contentMode: .fill)
-
+                            
                                 .frame(height: 156)
                                 .frame(maxWidth: .infinity)
                                 .clipped()
@@ -164,7 +153,7 @@ struct DeleteStoryView: View {
         .onAppear {
             authViewModel.checkRefreshTokenValid()
         }
-        .alert(isPresented: $showAlert) {
+        .alert(isPresented: $isPresented) {
             switch deleteMode {
             case .delete:
                 Alert(
@@ -174,11 +163,6 @@ struct DeleteStoryView: View {
                         deleteStories()
                     },
                     secondaryButton: .cancel(Text("취소"))
-                )
-            case .none:
-                Alert(
-                    title: Text("알림"),
-                    message: Text("스토리를 선택해주세요.")
                 )
             case .error:
                 Alert(
@@ -194,7 +178,7 @@ struct DeleteStoryView: View {
         profileViewModel.deleteStories() { isDone in
             if !isDone {
                 deleteMode = .error
-                showAlert = true
+                isPresented = true
             }
         }
     }
