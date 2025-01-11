@@ -8,13 +8,19 @@
 import SwiftUI
 
 struct MentorMenteeView: View {
-    @Environment(\.dismiss) private var dismiss
+    // @Environment(\.dismiss) private var dismiss
     
     @Binding var navPath: NavigationPath
     @Binding var isMentor: Bool?
     
     var body: some View {
         VStack(spacing: 0) {
+            Color.clear
+                .frame(width: 40, height: 40)
+                .padding(4)
+                .padding(.top, 8)
+            
+            /*
             HStack {
                 Button(action: {
                     dismiss()
@@ -26,11 +32,10 @@ struct MentorMenteeView: View {
                         .padding(4)
                 }
                 
-                                            
-                
                 Spacer()
             }
             .padding(.top, 8)
+             */
             
             Text("당신은 멘토인가요? 멘티인가요?")
                 .headline1(font: "SUIT", color: .cheekTextNormal, bold: true)
