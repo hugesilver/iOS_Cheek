@@ -16,14 +16,10 @@
 <br />
 
 <p align="center">
-  <!-- 
   <a href="https://apps.apple.com/kr/app/cheek/id6736381815">
     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" />
   </a>
   <br />
-  Only available in South Korea
-  <br /> 
-  -->
   (서버 운영 문제로 인하여 서비스 종료)
 </p>
 
