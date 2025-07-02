@@ -16,14 +16,10 @@
 <br />
 
 <p align="center">
-  <!-- 
   <a href="https://apps.apple.com/kr/app/cheek/id6736381815">
     <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" />
   </a>
   <br />
-  Only available in South Korea
-  <br /> 
-  -->
   (서버 운영 문제로 인하여 서비스 종료)
 </p>
 
@@ -138,7 +134,7 @@ CHEEK!은 유쾌하고 즐거운 분위기 속에서 직무에 관한 질문과 
 
 ## 외부 패키지
 
-- [kakao-ios-sdk-rx](https://github.com/kakao/kakao-ios-sdk-rx)
-- [firebase-ios-sdk](https://github.com/firebase/firebase-ios-sdk)
+- [Firebase](https://github.com/firebase/firebase-ios-sdk)
+- [KakaoOpenSDK](https://github.com/kakao/kakao-ios-sdk-rx)
 - [Kingfisher](https://github.com/onevcat/Kingfisher)
 - [WrappingHStack](https://github.com/dkk/WrappingHStack)
